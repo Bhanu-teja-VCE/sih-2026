@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MRPL PS 26117 — Team Master Architecture & Presentation Guide</title>
+    <!-- Tailwind CSS — LOCAL BUNDLE (Zero CDN / Zero WAN) -->
+    <script src="/static/vendor/tailwindcss.js"></script>
+    <!-- Local Fonts — Inter + JetBrains Mono (Zero Google Fonts CDN) -->
+    <link rel="stylesheet" href="/static/vendor/fonts/fonts.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #06090f;
+            color: #e2e8f0;
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .cyber-card {
+            background: rgba(13, 19, 33, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+        }
+        .sidebar-card {
+            background: rgba(10, 15, 29, 0.95);
+            backdrop-filter: blur(16px);
+            border-right: 1px solid rgba(30, 41, 59, 0.8);
+        }
+        .neon-glow-cyan {
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.15);
+        }
+        .badge-cyan {
+            background: rgba(6, 182, 212, 0.1);
+            color: #22d3ee;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+        .badge-emerald {
+            background: rgba(16, 185, 129, 0.1);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .badge-amber {
+            background: rgba(245, 158, 11, 0.1);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .badge-purple {
+            background: rgba(168, 85, 247, 0.1);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0ea5e9;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-black">
+
+    <!-- Top Sticky Header -->
+    <header class="border-b border-slate-800 bg-[#0a0f1d]/95 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between shadow-2xl">
+        <div class="flex items-center space-x-4">
+            <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-700 flex items-center justify-center font-bold text-black text-lg shadow-lg shadow-cyan-500/20">
+                M
+            </div>
+            <div>
+                <div class="flex items-center space-x-2">
+                    <span class="font-extrabold tracking-wider text-sm sm:text-base text-slate-100">SIH 2026 — TEAM MASTER KNOWLEDGE PORTAL</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold font-mono badge-cyan">MRPL PS 26117</span>
+                </div>
+                <p class="text-xs text-slate-400 font-mono hidden sm:block">Sovereign On-Premise AI Workbench • Comprehensive Team Study & Defense Guide</p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+            <a href="http://127.0.0.1:8000" target="_blank" class="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 font-bold text-xs text-white tracking-wide transition flex items-center space-x-2 shadow-lg shadow-cyan-500/20">
+                <span>OPEN LIVE WORKBENCH</span>
+                <span>→</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Grid Layout with Left Sidebar -->
+    <div class="flex-1 flex max-w-[1800px] w-full mx-auto">
+
+        <!-- ========================================================================= -->
+        <!-- LEFT SIDEBAR: Sticky Section Navigation -->
+        <!-- ========================================================================= -->
+        <aside class="w-72 hidden lg:flex flex-col sidebar-card sticky top-[61px] h-[calc(100vh-61px)] p-5 overflow-y-auto shrink-0 justify-between">
+            <div class="flex flex-col space-y-6">
+                
+                <div>
+                    <span class="text-[10px] font-mono font-bold text-cyan-400 uppercase tracking-widest block mb-2">QUICK NAVIGATION</span>
+                    <nav class="flex flex-col space-y-1.5 text-xs font-mono">
+                        
+                        <a href="#overview" class="p-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 border border-transparent hover:border-slate-700/60 transition flex items-center space-x-2.5">
+                            <span class="text-cyan-400 font-bold">01.</span>
+                            <span>Executive Overview</span>
+                        </a>
+
+                        <a href="#where-ai-is-used" class="p-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-cyan-950/30 border border-transparent hover:border-cyan-500/30 transition flex items-center space-x-2.5">
+                            <span class="text-purple-400 font-bold">02.</span>
+                            <span>Where AI is Used (4 Roles)</span>
+                        </a>
+
+                        <a href="#architecture" class="p-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-blue-950/30 border border-transparent hover:border-blue-500/30 transition flex items-center space-x-2.5">
+                            <span class="text-blue-400 font-bold">03.</span>
+                            <span>Core DAG Architecture & Math</span>
+                        </a>
+
+                        <a href="#lexical-routing-matrix" class="p-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-emerald-950/30 border border-transparent hover:border-emerald-500/30 transition flex items-center space-x-2.5">
+                            <span class="text-emerald-400 font-bold">04.</span>
+                            <span>Lexical Weights & 28 Prompts</span>
+                        </a>
+
+                        <a href="#innovations" class="p-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-cyan-950/30 border border-transparent hover:border-cyan-500/30 transition flex items-center space-x-2.5">
+                            <span class="text-cyan-400 font-bold">05.</span>
+                            <span>What Makes Us Unique (3 Innovations)</span>
+                        </a>
+
+                        <a href="#pitch-script" class="p-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-amber-950/30 border border-transparent hover:border-amber-500/30 transition flex items-center space-x-2.5">
+                            <span class="text-amber-400 font-bold">06.</span>
+                            <span>5-Minute Pitch Script</span>
+                        </a>
+
+                        <a href="#judge-qa" class="p-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-red-950/30 border border-transparent hover:border-red-500/30 transition flex items-center space-x-2.5">
+                            <span class="text-red-400 font-bold">07.</span>
+                            <span>Hostile Judge Q&A Defense</span>
+                        </a>
+
+                        <a href="#team-matrix" class="p-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 border border-transparent hover:border-slate-700/60 transition flex items-center space-x-2.5">
+                            <span class="text-slate-400 font-bold">08.</span>
+                            <span>Team Matrix & Run Commands</span>
+                        </a>
+
+                    </nav>
+                </div>
+
+                <!-- Live System Snapshot Pill -->
+                <div class="p-3.5 rounded-xl bg-[#070c18] border border-slate-800/80 text-[11px] font-mono space-y-1.5">
+                    <div class="text-slate-400 font-bold flex items-center justify-between">
+                        <span>SYSTEM STATUS</span>
+                        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    </div>
+                    <div class="text-slate-300">Air-Gap: <span class="text-emerald-400 font-bold">0 WAN Packets</span></div>
+                    <div class="text-slate-300">Unit Tests: <span class="text-cyan-400 font-bold">41/41 Passing</span></div>
+                    <div class="text-slate-300">Ledger: <span class="text-purple-400 font-bold">SHA-256 Merkle</span></div>
+                </div>
+
+            </div>
+
+            <div class="text-[10px] font-mono text-slate-500 border-t border-slate-800 pt-3">
+                Lead: Bhanu Teja • SIH 2026
+            </div>
+        </aside>
+
+        <!-- ========================================================================= -->
+        <!-- MAIN CONTENT AREA -->
+        <!-- ========================================================================= -->
+        <main class="flex-1 p-6 lg:p-10 flex flex-col space-y-16 max-w-5xl">
+
+            <!-- SECTION 1: EXECUTIVE OVERVIEW -->
+            <section id="overview" class="cyber-card rounded-2xl p-8 neon-glow-cyan border border-cyan-500/30 scroll-mt-20">
+                <div class="flex flex-col space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold font-mono badge-emerald">100% AIR-GAPPED</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold font-mono badge-purple">POLY-MODEL AGENTIC</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold font-mono badge-amber">ASME B31.3 VERIFIED</span>
+                    </div>
+                    <h1 class="text-3xl font-extrabold text-white tracking-tight sm:text-4xl">
+                        Sovereign On-Premise Agentic AI Workbench
+                    </h1>
+                    <p class="text-base text-slate-300 leading-relaxed">
+                        Built for <strong class="text-cyan-400">Mangalore Refinery and Petrochemicals Limited (MRPL PS 26117)</strong>. Refineries cannot send confidential P&IDs, ultrasonic boiler inspection logs, or multimillion-rupee financial approval notes to cloud AI (ChatGPT, Claude) due to national data sovereignty and PSU compliance. We built an air-gapped on-premise harness where <strong class="text-emerald-400">zero bytes leave local hardware</strong>.
+                    </p>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-slate-800 text-xs font-mono">
+                        <div class="p-3 bg-slate-900/60 rounded-lg">
+                            <span class="text-slate-400 block">Team Lead & Architect:</span>
+                            <strong class="text-slate-100 text-sm">Bhanu Teja</strong>
+                        </div>
+                        <div class="p-3 bg-slate-900/60 rounded-lg">
+                            <span class="text-slate-400 block">Automated Tests:</span>
+                            <strong class="text-emerald-400 text-sm">41 / 41 Passing (100%)</strong>
+                        </div>
+                        <div class="p-3 bg-slate-900/60 rounded-lg">
+                            <span class="text-slate-400 block">Git Commits:</span>
+                            <strong class="text-cyan-400 text-sm">13 Structured Commits</strong>
+                        </div>
+                        <div class="p-3 bg-slate-900/60 rounded-lg">
+                            <span class="text-slate-400 block">Air-Gap Egress:</span>
+                            <strong class="text-emerald-400 text-sm">0 WAN Packets Logged</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: WHERE IS AI ACTUALLY USED IN THE PROJECT? -->
+            <section id="where-ai-is-used" class="flex flex-col space-y-6 scroll-mt-20">
+                <div class="border-b border-slate-800 pb-4">
+                    <span class="text-xs font-mono font-bold text-cyan-400 tracking-wider">SECTION 02</span>
+                    <h2 class="text-2xl font-bold text-white tracking-tight mt-1">Where is AI Actually Used in the Project?</h2>
+                    <p class="text-sm text-slate-400 mt-1">The exact division of labor between Probabilistic AI (The Brain) and Deterministic Software (The Guardrails).</p>
+                </div>
+
+                <!-- The Big Philosophical Truth Box -->
+                <div class="p-6 rounded-xl bg-gradient-to-r from-blue-950/40 to-cyan-950/40 border border-cyan-500/30">
+                    <h3 class="text-sm font-bold font-mono text-cyan-300">💡 THE WINNING PHILOSOPHICAL FORMULA:</h3>
+                    <p class="text-sm text-slate-200 mt-2 leading-relaxed">
+                        <strong class="text-red-400">Traditional software is brittle</strong> — it crashes the moment an input format changes or an ambiguous natural language prompt is given.<br>
+                        <strong class="text-red-400">Raw LLMs are unreliable</strong> — they hallucinate on mathematics and cannot be trusted with refinery equipment safety.<br>
+                        <strong class="text-emerald-400">Our Solution:</strong> We use <strong>AI where AI excels</strong> (unstructured vision perception, semantic intent decomposition, dynamic Python code synthesis, and executive memo drafting) and <strong>deterministic software where software excels</strong> (exact IEEE-754 arithmetic, subprocess isolation, cryptographic SHA-256 Merkle hashing, and air-gap socket sniffing).
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- AI Role 1 -->
+                    <div class="cyber-card rounded-xl p-6 flex flex-col space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded text-xs font-mono font-bold badge-cyan">AI ROLE 1: ROUTING & PLANNING</span>
+                            <span class="text-xs font-mono text-slate-400">Nodes 1 & 2</span>
+                        </div>
+                        <h3 class="text-base font-bold text-slate-100">Unstructured Natural Language Intent Parsing</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            <strong>Why Code Fails:</strong> Traditional software requires rigid command-line flags. If an engineer types free-form text (*"Check the CDU furnace tubes from yesterday's inspection and tell me if we need CGM approval"*), traditional scripts crash.
+                        </p>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            <strong>Where AI is Used:</strong> The <strong>Poly-Model Router & Step Planner</strong> decodes ambiguous intent, detects required domain modalities, and generates the 5-step DAG plan.
+                        </p>
+                    </div>
+
+                    <!-- AI Role 2 -->
+                    <div class="cyber-card rounded-xl p-6 flex flex-col space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded text-xs font-mono font-bold badge-purple">AI ROLE 2: VISION SLM (Qwen2-VL)</span>
+                            <span class="text-xs font-mono text-slate-400">Node 3</span>
+                        </div>
+                        <h3 class="text-base font-bold text-slate-100">Multimodal Scans, Blueprints & P&IDs</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            <strong>Why Code Fails:</strong> Refinery documents are often <strong>scanned photocopies, noisy handwritten inspection grids, or complex visual P&ID diagrams</strong> with crossing piping lines.
+                        </p>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            <strong>Where AI is Used:</strong> The <strong>Multimodal Vision SLM (`Qwen2-VL`)</strong> visually inspects the image, recognizes contextual text, and extracts engineering parameters into structured data.
+                        </p>
+                    </div>
+
+                    <!-- AI Role 3 -->
+                    <div class="cyber-card rounded-xl p-6 flex flex-col space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded text-xs font-mono font-bold badge-emerald">AI ROLE 3: CODE SLM (Qwen-Coder)</span>
+                            <span class="text-xs font-mono text-slate-400">Node 4</span>
+                        </div>
+                        <h3 class="text-base font-bold text-slate-100">Dynamic Code & Algorithm Synthesis</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            <strong>Why Code Fails:</strong> If an engineer asks for a calculation not pre-coded into a script (e.g. *API 579 crack flaw sizing* or *Heat Exchanger LMTD*), hardcoded scripts fail.
+                        </p>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            <strong>Where AI is Used:</strong> The <strong>Code SLM (`Qwen2.5-Coder`)</strong> writes executable Python calculation scripts on the fly and passes them to our subprocess sandbox.
+                        </p>
+                    </div>
+
+                    <!-- AI Role 4 -->
+                    <div class="cyber-card rounded-xl p-6 flex flex-col space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded text-xs font-mono font-bold badge-amber">AI ROLE 4: REASONING SLM (DeepSeek-R1)</span>
+                            <span class="text-xs font-mono text-slate-400">Node 5</span>
+                        </div>
+                        <h3 class="text-base font-bold text-slate-100">PSU Approval Memo & Policy Synthesis</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            <strong>Why Code Fails:</strong> A Python script can only output raw numbers (`6.162` and `5.27`). It cannot write a structured, 3-page formal government PSU memorandum.
+                        </p>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            <strong>Where AI is Used:</strong> The <strong>Reasoning SLM (`DeepSeek-R1`)</strong> synthesizes the technical findings, financial implications, Delegation of Power (DOP) limits, and recommendations into an official Microsoft Word `.docx` note.
+                        </p>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECTION 3: END-TO-END INGESTION & STATE GRAPH DAG ARCHITECTURE -->
+            <section id="architecture" class="flex flex-col space-y-6 scroll-mt-20">
+                <div class="border-b border-slate-800 pb-4">
+                    <span class="text-xs font-mono font-bold text-cyan-400 tracking-wider">SECTION 03</span>
+                    <h2 class="text-2xl font-bold text-white tracking-tight mt-1">Core Architecture & State Graph DAG</h2>
+                    <p class="text-sm text-slate-400 mt-1">How data moves step-by-step through our 5 discrete deterministic state nodes.</p>
+                </div>
+
+                <!-- DAG Flow Chart -->
+                <div class="cyber-card rounded-2xl p-6 overflow-x-auto">
+                    <div class="flex items-center justify-between min-w-[850px] space-x-3">
+                        
+                        <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex-1 text-center">
+                            <span class="text-[10px] font-mono font-bold text-cyan-400 block mb-1">NODE 1</span>
+                            <h4 class="text-xs font-bold text-white">POLY-MODEL ROUTER</h4>
+                            <p class="text-[10px] text-slate-400 mt-1">Sub-10ms intent classifier picks specialized SLM.</p>
+                        </div>
+                        <span class="text-cyan-500 font-bold">→</span>
+
+                        <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex-1 text-center">
+                            <span class="text-[10px] font-mono font-bold text-blue-400 block mb-1">NODE 2</span>
+                            <h4 class="text-xs font-bold text-white">DAG STEP PLANNER</h4>
+                            <p class="text-[10px] text-slate-400 mt-1">Decomposes task into 5 atomic execution stages.</p>
+                        </div>
+                        <span class="text-cyan-500 font-bold">→</span>
+
+                        <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex-1 text-center">
+                            <span class="text-[10px] font-mono font-bold text-emerald-400 block mb-1">NODE 3</span>
+                            <h4 class="text-xs font-bold text-white">PYTHON SANDBOX</h4>
+                            <p class="text-[10px] text-slate-400 mt-1">ASME B31.3 math in isolated OS process (5s limit).</p>
+                        </div>
+                        <span class="text-cyan-500 font-bold">→</span>
+
+                        <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex-1 text-center">
+                            <span class="text-[10px] font-mono font-bold text-purple-400 block mb-1">NODE 4</span>
+                            <h4 class="text-xs font-bold text-white">CIRCUIT BREAKER</h4>
+                            <p class="text-[10px] text-slate-400 mt-1">Traps errors, verifies safety margin, auto-retries.</p>
+                        </div>
+                        <span class="text-cyan-500 font-bold">→</span>
+
+                        <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex-1 text-center">
+                            <span class="text-[10px] font-mono font-bold text-amber-400 block mb-1">NODE 5</span>
+                            <h4 class="text-xs font-bold text-white">DELIVERABLE & LEDGER</h4>
+                            <p class="text-[10px] text-slate-400 mt-1">Compiles .docx & .xlsx with SHA-256 Merkle stamp.</p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- The ASME B31.3 Formula Explained -->
+                <div class="cyber-card rounded-2xl p-6 flex flex-col space-y-4">
+                    <h3 class="text-base font-bold text-slate-100 flex items-center justify-between">
+                        <span>📐 The ASME B31.3 Process Piping Engineering Math</span>
+                        <span class="px-2 py-0.5 rounded text-xs font-mono badge-cyan">Gold Standard Formula</span>
+                    </h3>
+                    
+                    <div class="p-4 rounded-xl bg-[#050811] border border-slate-800 font-mono text-xs sm:text-sm text-cyan-300 flex items-center justify-center">
+                        t_min = [ (P * D) / (2 * (S * E + P * Y)) ] + c
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-mono">
+                        <div class="p-3 bg-slate-900/60 rounded-lg">
+                            <span class="text-slate-400 block">Input Values (From Field Log):</span>
+                            <span class="text-slate-200 block mt-1">• Pressure (P): 4.0 MPa (40 bar)</span>
+                            <span class="text-slate-200 block">• Diameter (D): 219.1 mm (8" Pipe)</span>
+                            <span class="text-slate-200 block">• Stress (S): 137.0 MPa (ASTM A106)</span>
+                            <span class="text-slate-200 block">• Measured Wall: 7.48 mm</span>
+                        </div>
+                        <div class="p-3 bg-slate-900/60 rounded-lg">
+                            <span class="text-slate-400 block">Step 1: Required Minimum:</span>
+                            <span class="text-slate-200 block mt-1">t_nominal = (4.0 * 219.1) / (2 * (137.0*1.0 + 4.0*0.4))</span>
+                            <span class="text-slate-200 block">t_nominal = 3.162 mm</span>
+                            <span class="text-yellow-400 font-bold block mt-1">t_min = 3.162 + 3.0 = 6.162 mm</span>
+                        </div>
+                        <div class="p-3 bg-slate-900/60 rounded-lg">
+                            <span class="text-slate-400 block">Step 2: Safe Remaining Life:</span>
+                            <span class="text-slate-200 block mt-1">Safe Margin = 7.48 - 6.162 = 1.318 mm</span>
+                            <span class="text-slate-200 block">Corrosion Rate = 0.25 mm/year</span>
+                            <span class="text-emerald-400 font-bold text-sm block mt-1">Safe Life = 1.318 / 0.25 = 5.27 Years</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DEEP DIVE: COMPLETE TRACE — FROM EXCEL SHEET TO PSU DELIVERABLES -->
+                <div class="cyber-card rounded-2xl p-6 flex flex-col space-y-5 border border-cyan-500/30">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-3 gap-2">
+                        <div>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold badge-cyan">DETAILED DEMO TRACE</span>
+                            <h3 class="text-base font-bold text-white mt-1">How the Input Excel Sheet & Prompt are Converted into Real Deliverables</h3>
+                        </div>
+                        <span class="text-xs font-mono text-cyan-400">Node 1 ➔ Node 5 Full Execution Cycle</span>
+                    </div>
+
+                    <!-- 1. The Raw Input Excel Sheet -->
+                    <div class="flex flex-col space-y-2">
+                        <h4 class="text-xs font-mono font-bold text-cyan-300 uppercase tracking-wider">1. The Raw Refinery Input (NDT Ultrasonic Field Log)</h4>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Refinery engineers test fired heaters (e.g. <strong>Boiler Tube B-101 in CDU-1 Heavy Crude Loop</strong>) using ultrasound. Over time, hot sour crude erodes the steel pipe from the inside. The attached Excel sheet contains 16 ultrasonic measurements across 4 grid zones:
+                        </p>
+
+                        <div class="overflow-x-auto rounded-xl border border-slate-800 bg-[#070c18]">
+                            <table class="w-full text-left font-mono text-[11px]">
+                                <thead class="bg-slate-900/90 text-slate-400 border-b border-slate-800">
+                                    <tr>
+                                        <th class="p-2.5">Grid Section</th>
+                                        <th class="p-2.5">Point 1 (mm)</th>
+                                        <th class="p-2.5">Point 2 (mm)</th>
+                                        <th class="p-2.5">Point 3 (mm)</th>
+                                        <th class="p-2.5">Point 4 (mm)</th>
+                                        <th class="p-2.5 text-cyan-400">Critical Finding</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800/60 text-slate-300">
+                                    <tr>
+                                        <td class="p-2.5 font-bold text-slate-200">Grid A (Top Coil)</td>
+                                        <td class="p-2.5">7.82</td>
+                                        <td class="p-2.5">7.75</td>
+                                        <td class="p-2.5">7.60</td>
+                                        <td class="p-2.5">7.55</td>
+                                        <td class="p-2.5 text-slate-400">Nominal</td>
+                                    </tr>
+                                    <tr class="bg-amber-950/20 text-amber-200">
+                                        <td class="p-2.5 font-bold text-amber-300">Grid B (Radiation Zone)</td>
+                                        <td class="p-2.5">7.62</td>
+                                        <td class="p-2.5">7.50</td>
+                                        <td class="p-2.5">7.52</td>
+                                        <td class="p-2.5 font-bold text-amber-400 bg-amber-900/40 rounded">7.48 mm ⭐</td>
+                                        <td class="p-2.5 font-bold text-amber-400">Worst-Case Thin Spot!</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5 font-bold text-slate-200">Grid C (Convection Zone)</td>
+                                        <td class="p-2.5">7.58</td>
+                                        <td class="p-2.5">7.51</td>
+                                        <td class="p-2.5">7.49</td>
+                                        <td class="p-2.5">7.50</td>
+                                        <td class="p-2.5 text-slate-400">Nominal</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2.5 font-bold text-slate-200">Grid D (Bottom Header)</td>
+                                        <td class="p-2.5">7.65</td>
+                                        <td class="p-2.5">7.54</td>
+                                        <td class="p-2.5">7.52</td>
+                                        <td class="p-2.5">7.50</td>
+                                        <td class="p-2.5 text-slate-400">Nominal</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 2. The 5-Node Conversion Lifecycle -->
+                    <div class="flex flex-col space-y-3">
+                        <h4 class="text-xs font-mono font-bold text-cyan-300 uppercase tracking-wider">2. What the 5-Node DAG Architecture Does With This Data</h4>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
+                            <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800">
+                                <div class="text-cyan-400 font-bold mb-1">NODE 1: POLY-MODEL ROUTER</div>
+                                <p class="text-slate-300 text-[11px] leading-relaxed">
+                                    Detects keyword tokens (<em>ultrasonic, inspection, boiler, .xlsx</em>) in &lt;2ms. Routes to <span class="text-purple-300 font-bold">Qwen2-VL-7B</span>. Seals <strong>Block #1</strong>.
+                                </p>
+                            </div>
+
+                            <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800">
+                                <div class="text-blue-400 font-bold mb-1">NODE 2: DAG STEP PLANNER</div>
+                                <p class="text-slate-300 text-[11px] leading-relaxed">
+                                    Decomposes request into 5 verifiable steps: <em>(1) Extract metrics, (2) Scan grid minimum, (3) Synthesize ASME script, (4) Sandbox math, (5) Compile PSU deliverables</em>. Seals <strong>Block #2</strong>.
+                                </p>
+                            </div>
+
+                            <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800">
+                                <div class="text-emerald-400 font-bold mb-1">NODE 3: MULTIMODAL EXTRACTION</div>
+                                <p class="text-slate-300 text-[11px] leading-relaxed">
+                                    Uses <code>openpyxl</code> to parse physical cells: <code>P=4.0 MPa</code>, <code>D=219.1 mm</code>, <code>S=137.0 MPa</code>, <code>c=3.0 mm</code>, and catches minimum wall <code>t_actual = 7.48 mm</code>. Seals <strong>Block #3</strong>.
+                                </p>
+                            </div>
+
+                            <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800">
+                                <div class="text-amber-400 font-bold mb-1">NODE 4: ASME SANDBOX CALCULATION</div>
+                                <p class="text-slate-300 text-[11px] leading-relaxed">
+                                    Executes Python script in isolated subprocess: <code>t_min = 6.162 mm</code>, <code>Margin = +1.318 mm</code>, <code>Safe Life = 5.27 Yrs</code>, <code>Status = APPROVED_SAFE</code>. Seals <strong>Block #4</strong>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. The 3 Generated Industrial Deliverables -->
+                    <div class="flex flex-col space-y-3">
+                        <h4 class="text-xs font-mono font-bold text-cyan-300 uppercase tracking-wider">3. The 3 Real Industrial Deliverables Generated (Node 5)</h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs font-mono">
+                            <div class="p-3 bg-blue-950/30 rounded-xl border border-blue-800/60 flex flex-col space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-blue-300">1. PSU Word Note (.docx)</span>
+                                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-900 text-blue-200">DOCX</span>
+                                </div>
+                                <p class="text-slate-300 text-[11px]">
+                                    Compiles standard 7-section MRPL administrative format (Subject, Background, 16-point NDT findings, ASME calculations, Financials, Section 14 DOP, and Technical Recommendation).
+                                </p>
+                            </div>
+
+                            <div class="p-3 bg-emerald-950/30 rounded-xl border border-emerald-800/60 flex flex-col space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-emerald-300">2. Engineering Sheet (.xlsx)</span>
+                                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-900 text-emerald-200">XLSX</span>
+                                </div>
+                                <p class="text-slate-300 text-[11px]">
+                                    Formatted spreadsheet with branded header banner, step-by-step Barlow equation breakdown, corrosion projection table, and green APPROVED_SAFE badge.
+                                </p>
+                            </div>
+
+                            <div class="p-3 bg-purple-950/30 rounded-xl border border-purple-800/60 flex flex-col space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-purple-300">3. Merkle Audit Certificate</span>
+                                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-purple-900 text-purple-200">SEAL</span>
+                                </div>
+                                <p class="text-slate-300 text-[11px]">
+                                    Hashes on-disk .docx and .xlsx raw bytes into SHA-256 Block #5, generating an immutable Root Merkle Hash and verifiable proof of 0 WAN packet egress.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECTION 4: LEXICAL WEIGHTS & 28 MULTI-SCENARIO TEST PROMPT MATRIX -->
+            <section id="lexical-routing-matrix" class="flex flex-col space-y-6 scroll-mt-20">
+                <div class="border-b border-slate-800 pb-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs font-mono font-bold text-emerald-400 tracking-wider">SECTION 04</span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold badge-emerald">28 READY-TO-TEST SCENARIOS</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white tracking-tight mt-1">Lexical Weights Engine & Multi-Scenario Test Matrix</h2>
+                    <p class="text-sm text-slate-400 mt-1">
+                        How our deterministic semantic router classifies user requests in &lt;2ms, and 28 ready-to-run prompt combinations teammates can test right now.
+                    </p>
+                </div>
+
+                <!-- How Lexical Weighting Works Under the Hood -->
+                <div class="cyber-card rounded-2xl p-6 flex flex-col space-y-4 border border-emerald-500/30">
+                    <h3 class="text-base font-bold text-slate-100 flex items-center justify-between">
+                        <span>⚡ How the Lexical Semantic Router Classifies Intent (&lt;2ms)</span>
+                        <span class="px-2 py-0.5 rounded text-xs font-mono badge-cyan">Zero LLM Latency</span>
+                    </h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        In production industrial systems, we never spin up a heavy 8B LLM just to figure out what the user wants. Instead, 
+                        <code class="text-cyan-300">harness/semantic_router.py</code> uses a prioritized <strong>Lexical &amp; MIME Intent Analyzer</strong>:
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-mono">
+                        <div class="p-3 bg-purple-950/30 rounded-xl border border-purple-800/60">
+                            <span class="text-purple-400 font-bold block mb-1">1. VISION_INSPECTION</span>
+                            <div class="text-[11px] text-slate-300">• Files: <code>.xlsx, .pdf, .png, .jpg</code></div>
+                            <div class="text-[11px] text-slate-300">• Keywords: <em>ultrasonic, inspection, p&amp;id, drawing, boiler, tube, grid</em></div>
+                            <div class="text-purple-300 font-bold mt-1">➔ Model: Qwen2-VL-7B</div>
+                        </div>
+
+                        <div class="p-3 bg-emerald-950/30 rounded-xl border border-emerald-800/60">
+                            <span class="text-emerald-400 font-bold block mb-1">2. CODE_GEN</span>
+                            <div class="text-[11px] text-slate-300">• Files: <em>None / Custom script</em></div>
+                            <div class="text-[11px] text-slate-300">• Keywords: <em>python, script, code, asme, barlow, lmtd, npsh, darcy, formula</em></div>
+                            <div class="text-emerald-300 font-bold mt-1">➔ Model: Qwen-2.5-Coder</div>
+                        </div>
+
+                        <div class="p-3 bg-cyan-950/30 rounded-xl border border-cyan-800/60">
+                            <span class="text-cyan-400 font-bold block mb-1">3. DOCUMENT_RAG</span>
+                            <div class="text-[11px] text-slate-300">• Files: <code>refinery_sop_handbook.txt</code></div>
+                            <div class="text-[11px] text-slate-300">• Keywords: <em>sop, manual, handbook, procedure, permit, turnaround, dop</em></div>
+                            <div class="text-cyan-300 font-bold mt-1">➔ Model: DeepSeek-R1 (BM25)</div>
+                        </div>
+
+                        <div class="p-3 bg-amber-950/30 rounded-xl border border-amber-800/60">
+                            <span class="text-amber-400 font-bold block mb-1">4. REASONING_MEMO</span>
+                            <div class="text-[11px] text-slate-300">• Files: <em>Optional</em></div>
+                            <div class="text-[11px] text-slate-300">• Keywords: <em>approval note, memo, board, capex, justification, sanction</em></div>
+                            <div class="text-amber-300 font-bold mt-1">➔ Model: DeepSeek-R1</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- THE 28 PROMPT COMBINATION MATRIX -->
+                <div class="cyber-card rounded-2xl p-6 flex flex-col space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div>
+                            <h3 class="text-base font-bold text-white">The 28 Testable Industrial Prompts</h3>
+                            <p class="text-xs text-slate-400 font-mono">Teammates can copy and test any prompt on the live dashboard.</p>
+                        </div>
+                        <span class="px-2.5 py-1 rounded bg-slate-900 text-cyan-400 text-xs font-mono font-bold border border-slate-700">4 Categories × 7 Scenarios</span>
+                    </div>
+
+                    <!-- CATEGORY 1: VISION & MULTIMODAL INSPECTION (7 Prompts) -->
+                    <div class="flex flex-col space-y-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold badge-purple">CATEGORY A</span>
+                            <h4 class="text-sm font-bold text-purple-300">Multimodal &amp; Ultrasonic Inspection (Qwen2-VL-7B)</h4>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
+                            <!-- Prompt 1 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-purple-400 mb-1">
+                                        <span class="font-bold">PROMPT #01 (Boiler Tube B-101)</span>
+                                        <span class="text-slate-500">File: .xlsx</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Read the attached ultrasonic inspection report for B-101-Crude-Furnace-Tube. Extract the measured wall thickness, execute ASME B31.3 modified Barlow formula in the sandbox, verify remaining safe life, and draft a formal MRPL approval note.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Attached: <code>data/sample_boiler_inspection_data.xlsx</code></span>
+                                    <span class="text-emerald-400 font-bold">Outputs: .docx + .xlsx</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 2 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-purple-400 mb-1">
+                                        <span class="font-bold">PROMPT #02 (P&amp;ID Interlock Safety)</span>
+                                        <span class="text-slate-500">File: .json</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Review the attached CDU-1 P&amp;ID instrumentation diagram metadata. Identify all safety interlocks on emergency fuel shutoff valve XV-1001 and confirm high pressure alarm PT-1044 trip logic.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Attached: <code>data/sample_pid_metadata.json</code></span>
+                                    <span class="text-cyan-400 font-bold">Outputs: Interlock Memo</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 3 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-purple-400 mb-1">
+                                        <span class="font-bold">PROMPT #03 (Atmospheric Column C-101)</span>
+                                        <span class="text-slate-500">File: .xlsx</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Inspect the ultrasonic thickness field log for Atmospheric Column C-101 shell plates. Calculate minimum allowable thickness under ASME Section VIII and determine corrosion allowance margin.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Attached: <code>data/sample_boiler_inspection_data.xlsx</code></span>
+                                    <span class="text-emerald-400 font-bold">Outputs: .docx Note</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 4 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-purple-400 mb-1">
+                                        <span class="font-bold">PROMPT #04 (Furnace F-102 Radiant Coil)</span>
+                                        <span class="text-slate-500">File: .xlsx</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Parse the attached ultrasonic inspection dataset for Furnace F-102 radiant coils. Identify the minimum measured thickness across Grid B and execute Barlow equation to evaluate fitness-for-service.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Attached: <code>data/sample_boiler_inspection_data.xlsx</code></span>
+                                    <span class="text-emerald-400 font-bold">Outputs: .xlsx Sheet</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 5 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-purple-400 mb-1">
+                                        <span class="font-bold">PROMPT #05 (Exchanger E-104 Tube Sheet)</span>
+                                        <span class="text-slate-500">File: .xlsx</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Evaluate the attached NDT ultrasonic report for Heat Exchanger E-104 tube sheet. Extract corrosion rate, calculate remaining operational life in sandbox, and generate MRPL PSU approval memo.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Attached: <code>data/sample_boiler_inspection_data.xlsx</code></span>
+                                    <span class="text-emerald-400 font-bold">Outputs: .docx Note</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 6 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-purple-400 mb-1">
+                                        <span class="font-bold">PROMPT #06 (Flare Header Piping Scan)</span>
+                                        <span class="text-slate-500">File: .xlsx</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Review the ultrasonic inspection grid for the 24-inch Main Flare Header. Identify any localized erosion-corrosion spots below structural minimum threshold and draft maintenance notice.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Attached: <code>data/sample_boiler_inspection_data.xlsx</code></span>
+                                    <span class="text-emerald-400 font-bold">Outputs: .docx + .xlsx</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 7 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2 md:col-span-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-purple-400 mb-1">
+                                        <span class="font-bold">PROMPT #07 (Vacuum Column V-101 Nozzle Weld UT)</span>
+                                        <span class="text-slate-500">File: .json</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Examine the attached P&amp;ID metadata and ultrasonic weld test log for Vacuum Column V-101 bottom nozzle. Verify safety relief valve PSV-1022 set pressure and calculate safe nozzle reinforcement thickness.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Attached: <code>data/sample_pid_metadata.json</code></span>
+                                    <span class="text-cyan-400 font-bold">Outputs: Verifiable DAG Seal</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CATEGORY 2: CODE GEN & ENGINEERING MATH (7 Prompts) -->
+                    <div class="flex flex-col space-y-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold badge-emerald">CATEGORY B</span>
+                            <h4 class="text-sm font-bold text-emerald-300">Code Generation &amp; Sandboxed Engineering Math (Qwen-Coder-7B)</h4>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
+                            <!-- Prompt 8 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-emerald-400 mb-1">
+                                        <span class="font-bold">PROMPT #08 (ASME B31.3 Standalone Script)</span>
+                                        <span class="text-slate-500">File: None</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Generate a sandboxed Python calculation script for ASME B31.3 pipe wall thickness with Design Pressure = 4.0 MPa, Outer Diameter = 219.1 mm, Allowable Stress = 137.0 MPa, and Corrosion Allowance = 3.0 mm.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Trigger: <code>python, script, asme, barlow</code></span>
+                                    <span class="text-emerald-400 font-bold">Runs in Sandbox (5s)</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 9 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-emerald-400 mb-1">
+                                        <span class="font-bold">PROMPT #09 (Counter-Flow Exchanger LMTD)</span>
+                                        <span class="text-slate-500">File: None</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Write a Python function to calculate Log Mean Temperature Difference (LMTD) for a counter-flow heat exchanger with Hot In = 180°C, Hot Out = 110°C, Cold In = 30°C, Cold Out = 85°C.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Trigger: <code>python, lmtd, heat exchanger</code></span>
+                                    <span class="text-emerald-400 font-bold">Runs in Sandbox (5s)</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 10 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-emerald-400 mb-1">
+                                        <span class="font-bold">PROMPT #10 (Darcy-Weisbach Head Loss)</span>
+                                        <span class="text-slate-500">File: None</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Write a Python code script to calculate Darcy-Weisbach pipeline friction head loss for crude oil flow rate 250 m3/hr through 500m length of 10-inch Schedule 40 pipe.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Trigger: <code>python, code, darcy-weisbach, friction</code></span>
+                                    <span class="text-emerald-400 font-bold">Runs in Sandbox (5s)</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 11 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-emerald-400 mb-1">
+                                        <span class="font-bold">PROMPT #11 (Centrifugal Pump NPSHA)</span>
+                                        <span class="text-slate-500">File: None</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Generate a Python calculation script for Centrifugal Pump Net Positive Suction Head Available (NPSHA) with atmospheric pressure 1.013 bar, suction head 3.5m, friction loss 0.8m, and vapor pressure 0.35 bar.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Trigger: <code>python, script, calculation, npsh</code></span>
+                                    <span class="text-emerald-400 font-bold">Runs in Sandbox (5s)</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 12 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-emerald-400 mb-1">
+                                        <span class="font-bold">PROMPT #12 (ASME Sec VIII Cylindrical Shell)</span>
+                                        <span class="text-slate-500">File: None</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Create a Python script calculating ASME Section VIII Div 1 cylindrical shell required thickness under internal pressure P = 2.5 MPa, Inside Radius R = 1200 mm, Stress S = 118 MPa, Joint Efficiency E = 0.85.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Trigger: <code>python, script, asme, stress</code></span>
+                                    <span class="text-emerald-400 font-bold">Runs in Sandbox (5s)</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 13 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-emerald-400 mb-1">
+                                        <span class="font-bold">PROMPT #13 (API 570 Corrosion Life Projection)</span>
+                                        <span class="text-slate-500">File: None</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Write a Python calculation function to compute API 570 remaining corrosion life and next mandatory inspection interval for actual thickness 8.2 mm, required thickness 5.4 mm, and corrosion rate 0.35 mm/yr.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Trigger: <code>python, calculation, corrosion rate</code></span>
+                                    <span class="text-emerald-400 font-bold">Runs in Sandbox (5s)</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 14 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2 md:col-span-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-emerald-400 mb-1">
+                                        <span class="font-bold">PROMPT #14 (Gas Orifice Meter Flow Rate)</span>
+                                        <span class="text-slate-500">File: None</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Generate an isolated Python script to calculate standard gas volumetric flow rate across an orifice meter with pipe diameter 150 mm, orifice bore 75 mm, differential pressure 25 kPa, and discharge coefficient 0.61.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Trigger: <code>python, script, formula, calculation</code></span>
+                                    <span class="text-emerald-400 font-bold">Runs in Sandbox (5s)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CATEGORY 3: REFINERY SOP & POLICY RAG (7 Prompts) -->
+                    <div class="flex flex-col space-y-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold badge-cyan">CATEGORY C</span>
+                            <h4 class="text-sm font-bold text-cyan-300">Refinery SOP &amp; Policy RAG (DeepSeek-R1 + BM25)</h4>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
+                            <!-- Prompt 15 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-cyan-400 mb-1">
+                                        <span class="font-bold">PROMPT #15 (SOP Section 14 Turnaround Limits)</span>
+                                        <span class="text-slate-500">File: .txt</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Search MRPL Standard Operating Procedures for Section 14: Emergency Turnaround delegation of power limits and required General Manager approval thresholds.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Attached: <code>data/refinery_sop_handbook.txt</code></span>
+                                    <span class="text-cyan-400 font-bold">BM25 Grounded Memo</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 16 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-cyan-400 mb-1">
+                                        <span class="font-bold">PROMPT #16 (Hot Work Permit Gas Testing)</span>
+                                        <span class="text-slate-500">File: .txt</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Lookup refinery SOP handbook for Hot Work Permit positive isolation, blinding sequence, and mandatory explosive gas testing (LEL &lt; 1%) requirements in hydrocarbon processing areas.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Attached: <code>data/refinery_sop_handbook.txt</code></span>
+                                    <span class="text-cyan-400 font-bold">BM25 Grounded Memo</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 17 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-cyan-400 mb-1">
+                                        <span class="font-bold">PROMPT #17 (Furnace Flame-Out Emergency Trip)</span>
+                                        <span class="text-slate-500">File: .txt</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Find standard operating procedure manual instructions for fired furnace flame-out emergency trip protocol and fuel gas header double-block-and-bleed sequence.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Attached: <code>data/refinery_sop_handbook.txt</code></span>
+                                    <span class="text-cyan-400 font-bold">BM25 Grounded Memo</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 18 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-cyan-400 mb-1">
+                                        <span class="font-bold">PROMPT #18 (Sour Water Stripper Chemical Dosage)</span>
+                                        <span class="text-slate-500">File: .txt</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Retrieve SOP guidelines from the handbook regarding sour water stripper caustic and corrosion inhibitor chemical injection dosage limits for H2S abatement.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Attached: <code>data/refinery_sop_handbook.txt</code></span>
+                                    <span class="text-cyan-400 font-bold">BM25 Grounded Memo</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 19 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-cyan-400 mb-1">
+                                        <span class="font-bold">PROMPT #19 (DOP Authority for &gt;₹50 Lakhs Spares)</span>
+                                        <span class="text-slate-500">File: .txt</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Search MRPL Delegation of Power (DOP) circular for single-tender emergency procurement limits of proprietary alloy furnace tubes exceeding 50 Lakhs INR.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Attached: <code>data/refinery_sop_handbook.txt</code></span>
+                                    <span class="text-cyan-400 font-bold">BM25 Grounded Memo</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 20 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-cyan-400 mb-1">
+                                        <span class="font-bold">PROMPT #20 (Pipeline Hydrotest Acceptance Standards)</span>
+                                        <span class="text-slate-500">File: .txt</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Search refinery handbook for hydrostatic pressure test holding time, test pressure factor (1.5x design pressure), and pressure drop acceptance criteria for newly welded process lines.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Attached: <code>data/refinery_sop_handbook.txt</code></span>
+                                    <span class="text-cyan-400 font-bold">BM25 Grounded Memo</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 21 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2 md:col-span-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-cyan-400 mb-1">
+                                        <span class="font-bold">PROMPT #21 (Hydrocracker Inspection Past Correspondence)</span>
+                                        <span class="text-slate-500">File: .txt</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Query refinery SOP circulars and past correspondence regarding mandatory internal inspection intervals and high-temperature hydrogen attack (HTHA) testing for Hydrocracker Unit reactors.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Attached: <code>data/refinery_sop_handbook.txt</code></span>
+                                    <span class="text-cyan-400 font-bold">BM25 Grounded Memo</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CATEGORY 4: PSU FORMAL REASONING & BOARD APPROVAL NOTES (7 Prompts) -->
+                    <div class="flex flex-col space-y-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold badge-amber">CATEGORY D</span>
+                            <h4 class="text-sm font-bold text-amber-300">PSU Formal Reasoning &amp; Board Approval Notes (DeepSeek-R1)</h4>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
+                            <!-- Prompt 22 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-amber-400 mb-1">
+                                        <span class="font-bold">PROMPT #22 (Board Note: Tube Replacement Approval)</span>
+                                        <span class="text-slate-500">File: Optional</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Draft formal PSU board approval note for B-101 crude furnace tube replacement during upcoming turnaround, citing structural integrity findings and estimated CAPEX of 45 Lakhs INR.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Trigger: <code>approval note, board, capex</code></span>
+                                    <span class="text-amber-400 font-bold">Outputs: 7-Section Word .docx</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 23 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-amber-400 mb-1">
+                                        <span class="font-bold">PROMPT #23 (CDU-1 Turnaround Budget Sanction)</span>
+                                        <span class="text-slate-500">File: Optional</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Prepare an administrative justification memo for CDU-1 emergency turnaround maintenance budget allocation under MRPL Delegation of Power Section 8.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Trigger: <code>justification memo, delegation of power</code></span>
+                                    <span class="text-amber-400 font-bold">Outputs: 7-Section Word .docx</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 24 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-amber-400 mb-1">
+                                        <span class="font-bold">PROMPT #24 (GM Note: ASTM A335 P9 Alloy Spares)</span>
+                                        <span class="text-slate-500">File: Optional</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Synthesize General Manager approval note for procurement of high-temperature alloy ASTM A335 Grade P9 replacement furnace coils for vacuum heater H-201.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Trigger: <code>approval note, general manager</code></span>
+                                    <span class="text-amber-400 font-bold">Outputs: 7-Section Word .docx</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 25 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-amber-400 mb-1">
+                                        <span class="font-bold">PROMPT #25 (FFS Memo: Preheat Exchanger E-102)</span>
+                                        <span class="text-slate-500">File: Optional</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Draft PSU fitness-for-service memorandum for continued operation of crude preheat train exchanger E-102 with de-rated operating pressure of 2.8 MPa.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Trigger: <code>memorandum, fitness-for-service</code></span>
+                                    <span class="text-amber-400 font-bold">Outputs: 7-Section Word .docx</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 26 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-amber-400 mb-1">
+                                        <span class="font-bold">PROMPT #26 (NDT Scanning Contract Sanction)</span>
+                                        <span class="text-slate-500">File: Optional</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Generate administrative sanction proposal for ultrasonic thickness scanning annual rate contract extension under Chief General Manager approval authority.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Trigger: <code>sanction proposal, approval authority</code></span>
+                                    <span class="text-amber-400 font-bold">Outputs: 7-Section Word .docx</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 27 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-amber-400 mb-1">
+                                        <span class="font-bold">PROMPT #27 (Board Note: Continuous Corrosion Probes)</span>
+                                        <span class="text-slate-500">File: Optional</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Prepare board note evaluating CAPEX vs OPEX implications and asset safety risk reduction of installing automated continuous ER corrosion monitoring probes across crude distillation overhead lines.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Trigger: <code>board note, capex, opex, proposal</code></span>
+                                    <span class="text-amber-400 font-bold">Outputs: 7-Section Word .docx</span>
+                                </div>
+                            </div>
+
+                            <!-- Prompt 28 -->
+                            <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex flex-col justify-between space-y-2 md:col-span-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-amber-400 mb-1">
+                                        <span class="font-bold">PROMPT #28 (Technical Justification: Piping Clamp Box Enclosure)</span>
+                                        <span class="text-slate-500">File: Optional</span>
+                                    </div>
+                                    <p class="text-slate-200 text-[11px] font-mono bg-black/40 p-2 rounded border border-slate-800 select-all">
+                                        Draft technical justification memo recommending Chief General Manager approval for temporary engineered piping clamp box enclosure on 8-inch naphtha line pinhole leak pending next planned shutdown.
+                                    </p>
+                                </div>
+                                <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-slate-800/80 pt-1.5">
+                                    <span>Trigger: <code>justification memo, approval, proposal</code></span>
+                                    <span class="text-amber-400 font-bold">Outputs: 7-Section Word .docx</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECTION 5: WHAT MAKES US UNIQUE (3 INNOVATIONS) -->
+            <section id="innovations" class="flex flex-col space-y-6 scroll-mt-20">
+                <div class="border-b border-slate-800 pb-4">
+                    <span class="text-xs font-mono font-bold text-cyan-400 tracking-wider">SECTION 05</span>
+                    <h2 class="text-2xl font-bold text-white tracking-tight mt-1">What Makes Us Unique? (Our 3 Standout Innovations)</h2>
+                    <p class="text-sm text-slate-400 mt-1">Why our sovereign workbench beats any basic GitHub open-source project.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <!-- Innovation 1 -->
+                    <div class="cyber-card rounded-xl p-6 flex flex-col space-y-3">
+                        <span class="px-2.5 py-1 rounded text-xs font-mono font-bold badge-emerald w-fit">INNOVATION 1</span>
+                        <h3 class="text-base font-bold text-slate-100">Cryptographic SHA-256 Merkle Ledger</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            <strong>The Problem:</strong> Refinery safety regulators demand non-repudiation: <em>How do we prove calculations weren't tampered with by AI?</em>
+                        </p>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            <strong>Our Solution:</strong> Every single DAG node generates a SHA-256 hash chaining to parent nodes with canonical lexicographical sorting:
+                            <code class="text-[10px] text-cyan-400 block mt-1 bg-slate-900 p-2 rounded">SHA-256(SortedParents + Node + InHash + OutHash)</code>
+                        </p>
+                    </div>
+
+                    <!-- Innovation 2 -->
+                    <div class="cyber-card rounded-xl p-6 flex flex-col space-y-3">
+                        <span class="px-2.5 py-1 rounded text-xs font-mono font-bold badge-cyan w-fit">INNOVATION 2</span>
+                        <h3 class="text-base font-bold text-slate-100">Local Model Context Protocol (MCP)</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            <strong>The Problem:</strong> Hardcoded tools make agent systems brittle when new refinery equipment is added.
+                        </p>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            <strong>Our Solution:</strong> Air-gapped implementation of Anthropic's open <strong>Model Context Protocol (MCP)</strong> over local JSON-RPC. New plant tools can be plugged in with zero downtime.
+                        </p>
+                    </div>
+
+                    <!-- Innovation 3 -->
+                    <div class="cyber-card rounded-xl p-6 flex flex-col space-y-3">
+                        <span class="px-2.5 py-1 rounded text-xs font-mono font-bold badge-amber w-fit">INNOVATION 3</span>
+                        <h3 class="text-base font-bold text-slate-100">Edge Hardware & Memory Guard</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            <strong>The Problem:</strong> Low-spec 8GB/12GB laptops in remote pumping stations crash due to Out-Of-Memory (OOM).
+                        </p>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            <strong>Our Solution:</strong> Real-time hardware telemetry profiler via `psutil`. If available RAM drops below 1.0 GB, it triggers automatic memory throttling and subprocess memory boundaries.
+                        </p>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECTION 6: 5-MINUTE PITCH PLAYBOOK -->
+            <section id="pitch-script" class="cyber-card rounded-2xl p-8 border border-emerald-500/30 scroll-mt-20">
+                <div class="border-b border-slate-800 pb-4 mb-6">
+                    <span class="text-xs font-mono font-bold text-emerald-400 tracking-wider">SECTION 06</span>
+                    <h2 class="text-2xl font-bold text-white tracking-tight mt-1">Step-by-Step 5-Minute Live Presentation Script</h2>
+                </div>
+
+                <div class="flex flex-col space-y-6 text-sm">
+                    
+                    <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800">
+                        <span class="text-xs font-mono font-bold text-cyan-400 block mb-1">MINUTE 1: THE HOOK & THE PROBLEM</span>
+                        <p class="text-slate-200 italic leading-relaxed">
+                            "Respected Judges, refineries and defense PSUs handle confidential Piping & Instrumentation Diagrams, financial approval notes, and boiler inspection logs daily. None of this can be sent to cloud AI like ChatGPT or Claude due to data sovereignty mandates. We built the Sovereign Industrial AI Workbench (MRPL PS 26117)—a 100% air-gapped on-premise harness where zero bytes leave local hardware."
+                        </p>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800">
+                        <span class="text-xs font-mono font-bold text-emerald-400 block mb-1">MINUTE 2: THE FLAGSHIP DEMO (EXCEL INGESTION)</span>
+                        <p class="text-slate-200 italic leading-relaxed">
+                            "Here, we ingest an ultrasonic inspection Excel sheet from Crude Furnace Tube B-101. In under 100ms, our Deterministic State Graph DAG executes: our Poly-Model Router selects the Code SLM, our Subprocess Sandbox calculates the ASME B31.3 minimum wall thickness (6.162 mm) and safe remaining life (5.27 years) with zero arithmetic hallucinations, and our SHA-256 Merkle Ledger generates an immutable state hash."
+                        </p>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800">
+                        <span class="text-xs font-mono font-bold text-amber-400 block mb-1">MINUTE 3: SHOWING THE REAL DELIVERABLES</span>
+                        <p class="text-slate-200 italic leading-relaxed">
+                            "Unlike chat wrappers that only print text, our system outputs real industrial deliverables: Here is the official Microsoft Word (.docx) Approval Note formatted for MRPL's Chief General Manager matching Delegation of Power limits, alongside a compiled Excel (.xlsx) calculation sheet."
+                        </p>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800">
+                        <span class="text-xs font-mono font-bold text-purple-400 block mb-1">MINUTE 4: AIR-GAP SOVEREIGNTY PROOF</span>
+                        <p class="text-slate-200 italic leading-relaxed">
+                            "Finally, our live network socket sniffer continuously audits operating system sockets, mathematically proving that zero outbound WAN packets left this machine during the entire workflow."
+                        </p>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECTION 7: HOSTILE JUDGE Q&A DEFENSE -->
+            <section id="judge-qa" class="flex flex-col space-y-6 scroll-mt-20">
+                <div class="border-b border-slate-800 pb-4">
+                    <span class="text-xs font-mono font-bold text-red-400 tracking-wider">SECTION 07</span>
+                    <h2 class="text-2xl font-bold text-white tracking-tight mt-1">Hostile Judge Q&A Defense (Top Traps & Answers)</h2>
+                    <p class="text-sm text-slate-400 mt-1">Word-for-word responses to tough technical questions from evaluators.</p>
+                </div>
+
+                <div class="flex flex-col space-y-4">
+                    
+                    <div class="cyber-card rounded-xl p-5 space-y-2">
+                        <h4 class="text-sm font-bold text-yellow-400">❓ Trap 1: "Why not just use Azure OpenAI with private VPC endpoints?"</h4>
+                        <p class="text-xs text-slate-200 leading-relaxed italic">
+                            "Sir, in critical national infrastructure like oil refineries, policy mandates physical air-gapping—meaning zero physical connection to external backbones. Private endpoints still route through multi-tenant cloud infrastructure subject to foreign provider terms and external cable cuts. Our solution runs 100% on bare-metal PSU servers with zero internet egress."
+                        </p>
+                    </div>
+
+                    <div class="cyber-card rounded-xl p-5 space-y-2">
+                        <h4 class="text-sm font-bold text-yellow-400">❓ Trap 2: "What if the company wants calculations not present in your sandbox?"</h4>
+                        <p class="text-xs text-slate-200 leading-relaxed italic">
+                            "Our sandbox is an arbitrary isolated Python execution runtime. Our Code SLM dynamically writes Python scripts for any engineering problem (e.g. Heat Exchanger LMTD or pump NPSH) on the fly. Furthermore, MRPL engineers can plug certified company formulas into our Local MCP Registry in under two minutes with zero system redesign."
+                        </p>
+                    </div>
+
+                    <div class="cyber-card rounded-xl p-5 space-y-2">
+                        <h4 class="text-sm font-bold text-yellow-400">❓ Trap 3: "Isn't this just a LangChain wrapper?"</h4>
+                        <p class="text-xs text-slate-200 leading-relaxed italic">
+                            "No, sir. We deliberately avoided heavy sequential frameworks. LangChain crashes when context overflows or JSON output is malformed. We engineered a custom State Graph DAG with typed Pydantic memory, an isolated subprocess sandbox with circuit breakers, and an on-premise SHA-256 Merkle Ledger."
+                        </p>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECTION 8: TEAM MATRIX & RUN COMMANDS -->
+            <section id="team-matrix" class="cyber-card rounded-2xl p-8 border border-slate-800 scroll-mt-20">
+                <div class="border-b border-slate-800 pb-4 mb-4">
+                    <span class="text-xs font-mono font-bold text-slate-400 tracking-wider">SECTION 08</span>
+                    <h2 class="text-xl font-bold text-white tracking-tight mt-1">👥 Team Responsibility Matrix & Key File Paths</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs font-mono">
+                    <div class="p-4 bg-slate-900/60 rounded-xl space-y-2">
+                        <h4 class="text-sm font-bold text-cyan-400 font-sans">Team Member Roles:</h4>
+                        <p><strong class="text-slate-200">Bhanu Teja (Lead):</strong> Full AI Harness Architecture, State Graph DAG, Sandbox, API & UI.</p>
+                        <p><strong class="text-slate-200">Member 2:</strong> PowerPoint Slide Deck (<code class="text-cyan-300">presentation/SIH_PITCH_DECK_STORYBOARD.md</code>)</p>
+                        <p><strong class="text-slate-200">Member 3:</strong> Industrial Datasets (<code class="text-cyan-300">data/sample_boiler_inspection_data.xlsx</code>)</p>
+                        <p><strong class="text-slate-200">Member 4 & 5:</strong> ASME Math Auditing & Word Formatting Verification</p>
+                        <p><strong class="text-slate-200">Member 6:</strong> Live Pitch Rehearsal & Judge Q&A Defense (<code class="text-cyan-300">docs/JUDGE_QA_DEFENSE_PLAYBOOK.md</code>)</p>
+                    </div>
+
+                    <div class="p-4 bg-slate-900/60 rounded-xl space-y-2">
+                        <h4 class="text-sm font-bold text-emerald-400 font-sans">How to Run Commands:</h4>
+                        <p><span class="text-slate-400">1. Run Automated Unit Tests:</span><br><code class="text-emerald-300">python -m unittest discover -s tests -p "test_*.py" -v</code></p>
+                        <p><span class="text-slate-400">2. Run Terminal CLI Demo:</span><br><code class="text-emerald-300">python cli/demo.py</code></p>
+                        <p><span class="text-slate-400">3. Start Web Dashboard:</span><br><code class="text-emerald-300">python api/server.py</code> (Open http://127.0.0.1:8000)</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-[#070b14] px-8 py-6 text-center text-xs text-slate-500 font-mono">
+        Mangalore Refinery and Petrochemicals Limited (MRPL PS 26117) • Smart India Hackathon 2026 • AI Harness Engineered by Bhanu Teja
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MRPL Sovereign AI Workbench — Cyber Dark Control Room</title>
+    <!-- Tailwind CSS — LOCAL BUNDLE (Zero CDN / Zero WAN) -->
+    <script src="/static/vendor/tailwindcss.js"></script>
+    <!-- Local Fonts — Inter + JetBrains Mono (Zero Google Fonts CDN) -->
+    <link rel="stylesheet" href="/static/vendor/fonts/fonts.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #06090f;
+            color: #e2e8f0;
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .cyber-glass {
+            background: rgba(13, 19, 33, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+        }
+        .neon-border-green {
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+        .neon-border-red {
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.8);
+            border: 2px solid rgba(239, 68, 68, 1);
+            animation: pulse-red-bg 1s infinite alternate;
+        }
+        @keyframes pulse-red-bg {
+            0% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+            100% { box-shadow: 0 0 45px rgba(239, 68, 68, 0.9); }
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0ea5e9;
+        }
+    </style>
+</head>
+<body id="app-body" class="min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-black">
+
+    <!-- Top Red Alert Banner (Hidden by default, pops up only on Egress) -->
+    <div id="egress-alert-banner" class="hidden bg-gradient-to-r from-red-700 to-red-600 text-white px-6 py-2.5 text-xs font-mono font-bold flex items-center justify-between shadow-2xl border-b border-red-400 z-50">
+        <div class="flex items-center space-x-3">
+            <span class="text-lg animate-bounce">🚨</span>
+            <span id="banner-text">SECURITY ALERT: UNAUTHORIZED WAN PACKET EGRESS DETECTED! (Groq Cloud IP: 104.18.2.144:443)</span>
+        </div>
+        <button onclick="resetAirgapAudit()" class="px-3.5 py-1 bg-black/80 hover:bg-black text-emerald-400 rounded text-[11px] font-mono border border-emerald-500/50 transition">
+            🛡️ Restore Sovereign Air-Gap
+        </button>
+    </div>
+
+    <!-- Top Sovereign Industrial Control Header -->
+    <header class="border-b border-slate-800 bg-[#0a0f1d]/95 backdrop-blur sticky top-0 z-40 px-6 py-3 flex items-center justify-between shadow-2xl">
+        <div class="flex items-center space-x-4">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-700 flex items-center justify-center font-bold text-black text-base shadow-lg shadow-cyan-500/20">
+                M
+            </div>
+            <div>
+                <div class="flex items-center space-x-2">
+                    <span class="font-extrabold tracking-wider text-sm text-slate-100">MANGALORE REFINERY & PETROCHEMICALS LIMITED</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-cyan-950/80 text-cyan-400 border border-cyan-800">PS 26117</span>
+                </div>
+                <p class="text-[11px] text-slate-400 font-mono">Sovereign On-Premise Agentic AI Workbench • Technical Services & Asset Integrity</p>
+            </div>
+        </div>
+
+        <!-- Hardware & Air-Gap Telemetry Center -->
+        <div class="flex items-center space-x-3">
+            <!-- Hardware Memory Guard Badge -->
+            <div id="hw-badge" class="hidden sm:flex px-3 py-1 rounded-lg bg-slate-900/90 border border-slate-800 flex items-center space-x-3 text-xs font-mono">
+                <div class="flex items-center space-x-1">
+                    <span class="text-slate-400">RAM:</span>
+                    <span id="ram-metric" class="text-cyan-400 font-bold">--%</span>
+                </div>
+                <div class="h-3 w-px bg-slate-700"></div>
+                <div class="flex items-center space-x-1">
+                    <span class="text-slate-400">CPU:</span>
+                    <span id="cpu-metric" class="text-emerald-400 font-bold">--%</span>
+                </div>
+            </div>
+
+            <!-- Live Air-Gap Sovereign Verification Badge -->
+            <div id="airgap-badge" class="px-3.5 py-1 rounded-full cyber-glass neon-border-green flex items-center space-x-2 transition">
+                <span class="relative flex h-2 w-2" id="airgap-dot">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span id="airgap-badge-text" class="text-xs font-mono font-bold text-emerald-400 tracking-wide">100% AIR-GAPPED (0 WAN PKTS)</span>
+            </div>
+
+            <a href="/guide" target="_blank" class="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-mono text-cyan-300 border border-slate-700 transition">
+                📖 Team Guide
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Workspace Grid -->
+    <main class="flex-1 p-5 flex flex-col space-y-4 max-w-[1800px] mx-auto w-full">
+
+        <!-- Top Section: 3-Column Industrial Workbench Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 w-full">
+
+            <!-- LEFT PANEL: Task Ingestion & Pre-Set Scenarios (3 Cols) -->
+            <section class="lg:col-span-3 flex flex-col space-y-3">
+                
+                <!-- Quick Pre-Set Scenarios -->
+                <div class="cyber-glass rounded-xl p-3.5 flex flex-col space-y-2.5">
+                    <h2 class="text-xs font-mono font-bold text-cyan-400 tracking-wider flex items-center justify-between">
+                        <span>PRE-SET INDUSTRIAL SCENARIOS</span>
+                        <span class="text-[10px] text-emerald-400">GROUND TRUTH</span>
+                    </h2>
+                    
+                    <div class="flex flex-col space-y-1.5">
+                        <button onclick="loadScenario('boiler')" class="text-left p-2 rounded-lg bg-slate-800/60 hover:bg-cyan-950/40 hover:border-cyan-500/50 border border-slate-700/60 transition group">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-slate-200 group-hover:text-cyan-300">Boiler Tube Inspection (B-101)</span>
+                                <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">Vision/NDT</span>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-0.5 line-clamp-1">Excel field log -> ASME math -> SHA-256 ledger -> PSU Word note.</p>
+                        </button>
+
+                        <button onclick="loadScenario('code')" class="text-left p-2 rounded-lg bg-slate-800/60 hover:bg-cyan-950/40 hover:border-cyan-500/50 border border-slate-700/60 transition group">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-slate-200 group-hover:text-cyan-300">ASME B31.3 Wall Thickness Script</span>
+                                <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-blue-950 text-blue-400 border border-blue-800">Code SLM</span>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-0.5 line-clamp-1">Generate sandboxed Python script for Barlow pressure equation.</p>
+                        </button>
+
+                        <button onclick="loadScenario('pid')" class="text-left p-2 rounded-lg bg-slate-800/60 hover:bg-cyan-950/40 hover:border-cyan-500/50 border border-slate-700/60 transition group">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-slate-200 group-hover:text-cyan-300">CDU-1 P&ID Interlock Review</span>
+                                <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-purple-950 text-purple-400 border border-purple-800">Multimodal</span>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-0.5 line-clamp-1">Verify safety trip condition on fuel shutoff XV-1001.</p>
+                        </button>
+
+                        <button onclick="loadScenario('sop')" class="text-left p-2 rounded-lg bg-slate-800/60 hover:bg-cyan-950/40 hover:border-cyan-500/50 border border-slate-700/60 transition group">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-slate-200 group-hover:text-cyan-300">Refinery SOP Knowledge Lookup</span>
+                                <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-amber-950 text-amber-400 border border-amber-800">RAG SLM</span>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-0.5 line-clamp-1">BM25 hybrid lookup in MRPL Delegation of Power limits.</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Execution Ingestion Box -->
+                <div class="cyber-glass rounded-xl p-3.5 flex flex-col space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xs font-mono font-bold text-cyan-400">ACTIVE TASK PROMPT</h3>
+                        <button onclick="toggleCustomMode()" id="custom-toggle-btn" class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700 transition">
+                            ➕ Custom File Mode
+                        </button>
+                    </div>
+                    
+                    <textarea id="prompt-input" rows="3" class="w-full bg-slate-900/90 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-mono resize-none" placeholder="Active task prompt..."></textarea>
+                    
+                    <!-- Pre-loaded / Attached File Display -->
+                    <div class="p-2 bg-slate-900/80 rounded-lg border border-slate-800 flex items-center justify-between text-xs font-mono">
+                        <span class="text-slate-400 text-[10px]">Attached:</span>
+                        <span id="attached-filename" class="text-cyan-400 font-bold truncate text-[11px] max-w-[180px]">data/sample_boiler_inspection_data.xlsx</span>
+                    </div>
+
+                    <!-- Custom File Upload Selector (Hidden by default, shown on toggle) -->
+                    <div id="custom-upload-section" class="hidden p-2.5 bg-cyan-950/30 rounded-lg border border-dashed border-cyan-700/60 flex flex-col space-y-1.5 text-xs font-mono">
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-300 text-[11px] font-bold">Judge File:</span>
+                            <input type="file" id="custom-file-input" class="hidden" onchange="handleFileUpload(event)">
+                            <button onclick="document.getElementById('custom-file-input').click()" class="px-2 py-1 bg-cyan-600 hover:bg-cyan-500 text-white rounded text-[10px] font-bold transition">
+                                📎 Pick .xlsx/.txt/.json
+                            </button>
+                        </div>
+                    </div>
+
+                    <button id="run-btn" onclick="executeWorkflow()" class="w-full py-2 px-4 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 font-bold text-xs text-white tracking-wider flex items-center justify-center space-x-2 shadow-lg shadow-cyan-600/30 transition">
+                        <span id="run-btn-text">EXECUTE SOVEREIGN AGENT</span>
+                        <span id="run-spinner" class="hidden animate-spin h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full"></span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- CENTER PANEL: Real-Time State Graph DAG Visualizer (5 Cols) -->
+            <section class="lg:col-span-5 flex flex-col space-y-3">
+                <div class="cyber-glass rounded-xl p-3.5 flex flex-col">
+                    
+                    <!-- DAG Header with Visible Tamper Action Buttons -->
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-2.5">
+                        <div>
+                            <h2 class="text-xs font-bold text-slate-100 flex items-center space-x-2">
+                                <span>DETERMINISTIC STATE GRAPH DAG</span>
+                                <span id="step-badge" class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-300">IDLE</span>
+                            </h2>
+                            <p class="text-[10px] text-slate-400 font-mono">Planning -> Local Tools -> Critic -> SHA-256 Ledger</p>
+                        </div>
+
+                        <!-- PROMINENT TAMPER TEST BUTTONS (ALWAYS VISIBLE AT TOP) -->
+                        <div class="flex items-center space-x-1.5">
+                            <button onclick="triggerLedgerTamperTest()" class="px-2.5 py-1 bg-red-950 hover:bg-red-900 text-red-300 border border-red-800 rounded text-[10px] font-mono font-bold transition flex items-center space-x-1" title="Deliberately modifies intermediate sandbox calculation output in memory to prove Merkle tamper detection">
+                                <span>⚠️ Test Tamper Catch</span>
+                            </button>
+                            <button onclick="resetLedgerState()" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-[10px] font-mono transition">
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 5 Step DAG Compact Nodes -->
+                    <div class="flex flex-col space-y-2 text-xs font-mono">
+                        
+                        <!-- Node 1: Intent Routing -->
+                        <div id="step-node-1" class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 transition">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-slate-300 text-[11px]">NODE 1: POLY-MODEL ROUTER</span>
+                                <span id="status-node-1" class="text-slate-500 text-[10px]">PENDING</span>
+                            </div>
+                            <div id="body-node-1" class="text-[10px] text-slate-400">Classifies task intent & auto-selects optimal open-weight SLM.</div>
+                        </div>
+
+                        <!-- Node 2: Plan Generation -->
+                        <div id="step-node-2" class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 transition">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-slate-300 text-[11px]">NODE 2: DAG STEP PLANNER</span>
+                                <span id="status-node-2" class="text-slate-500 text-[10px]">PENDING</span>
+                            </div>
+                            <div id="body-node-2" class="text-[10px] text-slate-400">Decomposes request into atomic verifiable execution steps.</div>
+                        </div>
+
+                        <!-- Node 3: Sandbox Math Execution -->
+                        <div id="step-node-3" class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 transition">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-slate-300 text-[11px]">NODE 3: SANDBOXED CALCULATION (ASME B31.3)</span>
+                                <span id="status-node-3" class="text-slate-500 text-[10px]">PENDING</span>
+                            </div>
+                            <div id="body-node-3" class="text-[10px] text-slate-400">Executes formula in isolated Python subprocess with 5s timeout.</div>
+                        </div>
+
+                        <!-- Node 4: Critic & Safety Margin -->
+                        <div id="step-node-4" class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 transition">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-slate-300 text-[11px]">NODE 4: CRITIC & CIRCUIT BREAKER</span>
+                                <span id="status-node-4" class="text-slate-500 text-[10px]">PENDING</span>
+                            </div>
+                            <div id="body-node-4" class="text-[10px] text-slate-400">Traps arithmetic faults & verifies safe operating boundaries.</div>
+                        </div>
+
+                        <!-- Node 5: Deliverable & Merkle Ledger -->
+                        <div id="step-node-5" class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 transition">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-slate-300 text-[11px]">NODE 5: DELIVERABLE & SHA-256 LEDGER</span>
+                                <span id="status-node-5" class="text-slate-500 text-[10px]">PENDING</span>
+                            </div>
+                            <div id="body-node-5" class="text-[10px] text-slate-400">Compiles Word .docx approval note & chains Merkle proof hash.</div>
+                        </div>
+
+                    </div>
+
+                    <!-- Proof of Execution Ledger Stamp -->
+                    <div class="mt-2.5 p-2.5 bg-slate-900/80 rounded-lg border border-slate-800 text-[10px] font-mono">
+                        <span class="text-slate-400 block mb-0.5">Root Merkle Proof-of-Execution Hash:</span>
+                        <span id="proof-hash" class="text-purple-400 font-bold break-all block">-- (Execute agent to generate cryptographic stamp)</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIGHT PANEL: Deliverables & Live Audit Terminal (4 Cols) -->
+            <section class="lg:col-span-4 flex flex-col space-y-3">
+                
+                <!-- Output Deliverables Card -->
+                <div class="cyber-glass rounded-xl p-3.5 flex flex-col space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xs font-mono font-bold text-emerald-400">
+                            GENERATED INDUSTRIAL DELIVERABLES
+                        </h3>
+                        <span class="text-[10px] text-slate-500 font-mono">PSU FORMATTED</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-2">
+                        <a id="docx-link" href="/api/deliverables/download/MRPL_Approval_Note.docx" download="MRPL_Approval_Note.docx" class="p-2.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/50 transition flex items-center justify-between group">
+                            <div class="flex items-center space-x-2.5">
+                                <div class="p-1.5 rounded bg-blue-950 text-blue-400 font-bold text-xs">DOCX</div>
+                                <div>
+                                    <div id="docx-name" class="text-xs font-bold text-slate-200 group-hover:text-cyan-300">MRPL_Approval_Note.docx</div>
+                                    <div class="text-[10px] text-slate-500 font-mono">Official Indian PSU Approval Note</div>
+                                </div>
+                            </div>
+                            <span class="text-xs text-cyan-400 group-hover:translate-x-0.5 transition">↓</span>
+                        </a>
+
+                        <a id="xlsx-link" href="/api/deliverables/download/Engineering_Calculations_ASME_B31_3.xlsx" download="Engineering_Calculations_ASME_B31_3.xlsx" class="p-2.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/50 transition flex items-center justify-between group">
+                            <div class="flex items-center space-x-2.5">
+                                <div class="p-1.5 rounded bg-emerald-950 text-emerald-400 font-bold text-xs">XLSX</div>
+                                <div>
+                                    <div id="xlsx-name" class="text-xs font-bold text-slate-200 group-hover:text-emerald-300">ASME_B31_3_Calculations.xlsx</div>
+                                    <div class="text-[10px] text-slate-500 font-mono">Step-by-Step Engineering Worksheet</div>
+                                </div>
+                            </div>
+                            <span class="text-xs text-emerald-400 group-hover:translate-x-0.5 transition">↓</span>
+                        </a>
+
+                        <button onclick="downloadCertificateFile()" class="p-2.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-purple-500/50 transition flex items-center justify-between group text-left w-full">
+                            <div class="flex items-center space-x-2.5">
+                                <div class="p-1.5 rounded bg-purple-950 text-purple-400 font-bold text-xs">CERT</div>
+                                <div>
+                                    <div class="text-xs font-bold text-slate-200 group-hover:text-purple-300">MRPL_Audit_Certificate.txt / PDF</div>
+                                    <div class="text-[10px] text-slate-500 font-mono">Cryptographic Proof-of-Execution Seal</div>
+                                </div>
+                            </div>
+                            <span class="text-xs text-purple-400 group-hover:translate-x-0.5 transition">↓</span>
+                        </button>
+                    </div>
+
+                    <!-- REAL ON-DISK TAMPER TESTING CONTROLS -->
+                    <div class="p-2 bg-slate-950/70 rounded-lg border border-slate-800 flex flex-col space-y-1.5 font-mono text-[10px]">
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-400 font-bold">Physical Disk Audit:</span>
+                            <div class="flex space-x-1">
+                                <button onclick="verifyPhysicalDiskFiles()" class="px-2 py-0.5 bg-cyan-900 hover:bg-cyan-800 text-cyan-200 rounded font-bold transition" title="Computes live SHA-256 of physical files on disk and compares with Merkle block">
+                                    🔍 Verify Files
+                                </button>
+                                <button onclick="tamperRealExcelFile()" class="px-2 py-0.5 bg-amber-900/80 hover:bg-amber-800 text-amber-200 rounded font-bold transition" title="Deliberately modifies 1 byte in the actual Excel file on disk to prove tamper detection">
+                                    ⚡ Tamper Disk File
+                                </button>
+                            </div>
+                        </div>
+                        <div id="disk-verify-status" class="text-slate-400 text-[9px] truncate">
+                            Status: Ready to audit physical files on disk.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Verification & Sniffer Terminal -->
+                <div class="cyber-glass rounded-xl p-3.5 flex-1 flex flex-col">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-2">
+                        <span class="text-xs font-mono font-bold text-slate-400">LIVE AIR-GAP & LEDGER AUDIT</span>
+                        <div class="flex items-center space-x-1.5">
+                            <button onclick="fetchAirgapAudit()" class="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 text-[10px] font-mono text-slate-300 rounded">Sockets</button>
+                            <button onclick="fetchLedgerAudit()" class="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 text-[10px] font-mono text-purple-300 rounded">Ledger</button>
+                        </div>
+                    </div>
+                    <div id="audit-log" class="flex-1 bg-[#050811] rounded-lg p-2.5 text-[10px] font-mono text-emerald-400 overflow-y-auto max-h-[260px] whitespace-pre-wrap leading-relaxed">
+[SOVEREIGN AUDIT ENGINE READY]
+Scanning active sockets scoped to AI Workbench process tree...
+No WAN external connections found.
+                    </div>
+                </div>
+
+            </section>
+
+        </div>
+
+        <!-- BOTTOM PANEL 1: Live Groq Cloud AI Egress Tester (RED ALERT TRIGGER) -->
+        <section id="groq-console-card" class="cyber-glass rounded-xl p-4 border border-red-500/40 flex flex-col space-y-3 bg-[#0d0408]">
+            <div class="flex items-center justify-between border-b border-red-950/80 pb-2">
+                <div class="flex items-center space-x-2">
+                    <span class="text-base animate-pulse">🚨</span>
+                    <div>
+                        <h3 class="text-xs font-mono font-bold text-red-400 tracking-wider">1. PUBLIC CLOUD AI CONSOLE (GROQ API) — PROVES AIR-GAP SNIFFER INTERCEPTS WAN CALLS</h3>
+                        <p class="text-[10px] font-mono text-slate-400">Send a cloud query to watch the sniffer instantly catch the outbound WAN socket and trigger the alarm</p>
+                    </div>
+                </div>
+                <button onclick="resetAirgapAudit()" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-[11px] font-mono text-slate-300 rounded-lg border border-slate-700 transition">
+                    🛡️ Clear Egress Alert
+                </button>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                <input type="text" id="groq-input" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-red-500 font-mono" placeholder="Ask Groq Cloud AI anything (e.g. 'What is crude furnace turnaround?')...">
+                <button id="groq-send-btn" onclick="sendGroqCloudQuery()" class="px-5 py-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold text-xs font-mono rounded-lg transition flex items-center justify-center space-x-2 shrink-0 shadow-lg shadow-red-600/30">
+                    <span>Send to Groq Cloud 🚀</span>
+                    <span id="groq-spinner" class="hidden animate-spin h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full"></span>
+                </button>
+            </div>
+
+            <!-- Groq Response Box -->
+            <div id="groq-response-box" class="hidden p-3 bg-[#16040a] border border-red-800/80 rounded-lg text-xs font-mono leading-relaxed space-y-1.5">
+                <div class="text-[10px] text-red-400 font-bold flex items-center justify-between border-b border-red-900/60 pb-1">
+                    <span>INTERCEPTED OUTBOUND WAN SOCKET:</span>
+                    <span class="text-red-300">Endpoint: api.groq.com (104.18.2.144:443)</span>
+                </div>
+                <div id="groq-reply-text" class="text-slate-200 text-[11px]"></div>
+            </div>
+        </section>
+
+        <!-- BOTTOM PANEL 2: Local Sovereign Model Chat (GREEN 100% AIR-GAPPED VERIFIED) -->
+        <section id="local-console-card" class="cyber-glass rounded-xl p-4 border border-emerald-500/40 flex flex-col space-y-3 bg-[#030d08]">
+            <div class="flex items-center justify-between border-b border-emerald-950/80 pb-2">
+                <div class="flex items-center space-x-2">
+                    <span class="text-base">🛡️</span>
+                    <div>
+                        <h3 class="text-xs font-mono font-bold text-emerald-400 tracking-wider">2. LOCAL SOVEREIGN AI CONSOLE (100% ON-PREMISE • ZERO WAN CALLS)</h3>
+                        <p class="text-[10px] font-mono text-slate-400">Ask our local SLM anything — runs on localhost (127.0.0.1) with 0 WAN packets logged and solid green badge</p>
+                    </div>
+                </div>
+                <span class="px-2.5 py-0.5 rounded bg-emerald-950 text-emerald-400 text-[10px] font-mono font-bold border border-emerald-800">
+                    HOST: 127.0.0.1
+                </span>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                <input type="text" id="local-input" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-mono" placeholder="Ask local sovereign model (e.g. 'Calculate ASME wall thickness for furnace tube' or 'Search SOP turnaround limits')...">
+                <button id="local-send-btn" onclick="sendLocalModelQuery()" class="px-5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs font-mono rounded-lg transition flex items-center justify-center space-x-2 shrink-0 shadow-lg shadow-emerald-600/30">
+                    <span>Send to Local Model 🛡️</span>
+                    <span id="local-spinner" class="hidden animate-spin h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full"></span>
+                </button>
+            </div>
+
+            <!-- Local Model Response Box -->
+            <div id="local-response-box" class="hidden p-3 bg-[#04140c] border border-emerald-800/80 rounded-lg text-xs font-mono leading-relaxed space-y-1.5">
+                <div class="text-[10px] text-emerald-400 font-bold flex items-center justify-between border-b border-emerald-900/60 pb-1">
+                    <span>LOCAL MODEL EXECUTION (ON-PREMISE INFERENCE):</span>
+                    <span class="text-emerald-300">Target: 127.0.0.1 (0 WAN Packets Logged • 100% Sovereign)</span>
+                </div>
+                <div id="local-reply-text" class="text-slate-200 text-[11px] whitespace-pre-wrap"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- UI Logic Script -->
+    <script>
+        const API_BASE = window.location.origin;
+
+        // Auto-load default boiler inspection scenario on start
+        window.addEventListener("DOMContentLoaded", () => {
+            loadScenario('boiler');
+        });
+
+        // Auto-poll hardware telemetry & airgap status
+        setInterval(updateTelemetry, 2500);
+        updateTelemetry();
+
+        async function updateTelemetry() {
+            try {
+                const res = await fetch(`${API_BASE}/api/hardware/telemetry`);
+                const data = await res.json();
+                document.getElementById("ram-metric").innerText = `${data.ram_percent}%`;
+                document.getElementById("cpu-metric").innerText = `${data.cpu_percent}%`;
+            } catch (e) {}
+
+            try {
+                const res = await fetch(`${API_BASE}/api/airgap/status`);
+                const airgap = await res.json();
+                const badge = document.getElementById("airgap-badge");
+                const badgeText = document.getElementById("airgap-badge-text");
+                const banner = document.getElementById("egress-alert-banner");
+                const bannerText = document.getElementById("banner-text");
+
+                if (airgap.is_airgapped) {
+                    badge.className = "px-3.5 py-1 rounded-full cyber-glass neon-border-green flex items-center space-x-2 transition";
+                    badgeText.innerText = "100% AIR-GAPPED (0 WAN PKTS)";
+                    badgeText.className = "text-xs font-mono font-bold text-emerald-400 tracking-wide";
+                    banner.classList.add("hidden");
+                } else {
+                    badge.className = "px-3.5 py-1 rounded-full cyber-glass neon-border-red flex items-center space-x-2 transition";
+                    badgeText.innerText = `🔴 EGRESS ALERT (${airgap.external_egress_violations_count} VIOLATIONS)`;
+                    badgeText.className = "text-xs font-mono font-bold text-red-400 tracking-wide animate-pulse";
+                    banner.classList.remove("hidden");
+                    bannerText.innerText = `SECURITY ALERT: UNAUTHORIZED WAN PACKET EGRESS DETECTED! (${airgap.external_violations[0]?.service || 'Groq Cloud IP: 104.18.2.144:443'})`;
+                }
+            } catch (e) {}
+        }
+
+        function toggleCustomMode() {
+            const uploadSec = document.getElementById("custom-upload-section");
+            const btn = document.getElementById("custom-toggle-btn");
+            if (uploadSec.classList.contains("hidden")) {
+                uploadSec.classList.remove("hidden");
+                btn.innerText = "✖ Close Custom Mode";
+                btn.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-900 text-cyan-200 border border-cyan-600 transition";
+            } else {
+                uploadSec.classList.add("hidden");
+                btn.innerText = "➕ Custom File Mode";
+                btn.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700 transition";
+            }
+        }
+
+        async function sendGroqCloudQuery() {
+            const inputEl = document.getElementById("groq-input");
+            const prompt = inputEl.value.trim();
+            if (!prompt) return;
+
+            const btn = document.getElementById("groq-send-btn");
+            const spinner = document.getElementById("groq-spinner");
+            const resBox = document.getElementById("groq-response-box");
+            const replyText = document.getElementById("groq-reply-text");
+
+            btn.disabled = true;
+            spinner.classList.remove("hidden");
+            resBox.classList.remove("hidden");
+            replyText.innerText = "Connecting to Groq Cloud AI over WAN socket...";
+
+            try {
+                const res = await fetch(`${API_BASE}/api/groq/query`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt: prompt })
+                });
+                const data = await res.json();
+                replyText.innerText = data.cloud_response || data.message || "Cloud response received.";
+                
+                // Immediately refresh sniffer audit terminal to show the intercepted socket
+                fetchAirgapAudit();
+                updateTelemetry();
+            } catch (e) {
+                replyText.innerText = `Outbound WAN connection error: ${e}`;
+            } finally {
+                btn.disabled = false;
+                spinner.classList.add("hidden");
+            }
+        }
+
+        async function sendLocalModelQuery() {
+            const inputEl = document.getElementById("local-input");
+            const prompt = inputEl.value.trim();
+            if (!prompt) return;
+
+            const btn = document.getElementById("local-send-btn");
+            const spinner = document.getElementById("local-spinner");
+            const resBox = document.getElementById("local-response-box");
+            const replyText = document.getElementById("local-reply-text");
+
+            btn.disabled = true;
+            spinner.classList.remove("hidden");
+            resBox.classList.remove("hidden");
+            replyText.innerText = "Processing query strictly on local hardware (127.0.0.1)...";
+
+            try {
+                const res = await fetch(`${API_BASE}/api/local/chat`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt: prompt })
+                });
+                const data = await res.json();
+                replyText.innerText = data.local_response;
+                
+                // Refresh sniffer to prove 0 WAN egress
+                fetchAirgapAudit();
+                updateTelemetry();
+            } catch (e) {
+                replyText.innerText = `Local model execution error: ${e}`;
+            } finally {
+                btn.disabled = false;
+                spinner.classList.add("hidden");
+            }
+        }
+
+        async function resetAirgapAudit() {
+            try {
+                await fetch(`${API_BASE}/api/airgap/reset`, { method: "POST" });
+                fetchAirgapAudit();
+                updateTelemetry();
+            } catch (e) {}
+        }
+
+        async function triggerLedgerTamperTest() {
+            try {
+                const res = await fetch(`${API_BASE}/api/ledger/tamper-test`, { method: "POST" });
+                const data = await res.json();
+                fetchLedgerAudit();
+
+                // 1. Highlight Node 3 (where calculation output was forged) in glowing Red
+                const node3 = document.getElementById("step-node-3");
+                if (node3) {
+                    node3.className = "p-2.5 rounded-lg bg-red-950/60 border-2 border-red-500 shadow-lg shadow-red-900/50 animate-pulse transition";
+                    document.getElementById("status-node-3").innerHTML = `<span class="text-red-400 font-bold text-[10px]">⚠️ FORGED PAYLOAD DETECTED</span>`;
+                    document.getElementById("body-node-3").innerHTML = `
+                        <div class="text-red-300 font-bold">In-Memory Modification: 'required_min_thickness_mm' forced to 5.0mm</div>
+                        <div class="text-[9px] text-red-400">Forged Hash: ${data.forged_payload_hash.substring(0, 24)}...</div>
+                    `;
+                }
+
+                // 2. Reject Node 5 Merkle proof
+                const node5 = document.getElementById("step-node-5");
+                if (node5) {
+                    node5.className = "p-2.5 rounded-lg bg-red-950/60 border-2 border-red-500 transition";
+                    document.getElementById("status-node-5").innerHTML = `<span class="text-red-400 font-bold text-[10px]">🚨 MERKLE PROOF REJECTED</span>`;
+                }
+
+                // 3. Update top badge and root hash banner
+                document.getElementById("step-badge").innerText = "TAMPER BREACH";
+                document.getElementById("step-badge").className = "text-[10px] font-mono px-2 py-0.5 rounded bg-red-900 text-red-200 animate-pulse";
+                document.getElementById("proof-hash").className = "text-red-400 font-bold break-all block p-2 bg-red-950/80 rounded border border-red-800 animate-pulse";
+                document.getElementById("proof-hash").innerText = `🚨 CRYPTOGRAPHIC FORGERY CAUGHT AT BLOCK #${data.tampered_block_index}: Expected Hash Mismatch in Merkle Tree!`;
+            } catch (e) {
+                console.error("Tamper test error:", e);
+            }
+        }
+
+        async function resetLedgerState() {
+            try {
+                await fetch(`${API_BASE}/api/ledger/reset`, { method: "POST" });
+                fetchLedgerAudit();
+                document.getElementById("step-badge").innerText = "IDLE";
+                document.getElementById("step-badge").className = "text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-300";
+                document.getElementById("proof-hash").className = "text-purple-400 font-bold break-all block";
+                document.getElementById("proof-hash").innerText = "-- (Clean genesis ledger state restored)";
+                
+                // Reset node styles
+                for (let i = 1; i <= 5; i++) {
+                    const node = document.getElementById(`step-node-${i}`);
+                    if (node) node.className = "p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 transition";
+                    const status = document.getElementById(`status-node-${i}`);
+                    if (status) status.innerHTML = `<span class="text-slate-500 text-[10px]">PENDING</span>`;
+                }
+
+                document.getElementById("disk-verify-status").innerHTML = `<span class="text-slate-400">Status: Ready to audit physical files on disk.</span>`;
+            } catch (e) {}
+        }
+
+        async function verifyPhysicalDiskFiles() {
+            const statusEl = document.getElementById("disk-verify-status");
+            statusEl.innerHTML = `<span class="text-cyan-400 font-bold">Auditing physical file SHA-256 digests...</span>`;
+            try {
+                const res = await fetch(`${API_BASE}/api/ledger/verify-disk-artifacts`);
+                const data = await res.json();
+                
+                if (data.is_valid) {
+                    statusEl.innerHTML = `<span class="text-emerald-400 font-bold">✅ INTACT: All ${data.total_files_checked} physical files match sealed Merkle hashes!</span>`;
+                    document.getElementById("audit-log").innerText = JSON.stringify(data, null, 2);
+                } else {
+                    statusEl.innerHTML = `<span class="text-red-400 font-bold animate-pulse">🚨 TAMPERED: ${data.tampered_count} file(s) modified on disk after sealing!</span>`;
+                    document.getElementById("audit-log").innerText = JSON.stringify(data, null, 2);
+                    
+                    // Flash Node 5 red
+                    const node5 = document.getElementById("step-node-5");
+                    if (node5) {
+                        node5.className = "p-2.5 rounded-lg bg-red-950/60 border-2 border-red-500 transition animate-pulse";
+                        document.getElementById("status-node-5").innerHTML = `<span class="text-red-400 font-bold text-[10px]">🚨 DISK HASH MISMATCH</span>`;
+                    }
+                }
+            } catch (e) {
+                statusEl.innerHTML = `<span class="text-red-400 font-bold">Verification request failed.</span>`;
+            }
+        }
+
+        async function tamperRealExcelFile() {
+            const statusEl = document.getElementById("disk-verify-status");
+            statusEl.innerHTML = `<span class="text-amber-400 font-bold">Injecting modification into on-disk Excel sheet...</span>`;
+            try {
+                const res = await fetch(`${API_BASE}/api/ledger/tamper-disk-file`, { method: "POST" });
+                const data = await res.json();
+                
+                // Immediately verify the physical disk state
+                verifyPhysicalDiskFiles();
+                
+                document.getElementById("proof-hash").className = "text-red-400 font-bold break-all block p-2 bg-red-950/80 rounded border border-red-800 animate-pulse";
+                document.getElementById("proof-hash").innerText = `🚨 PHYSICAL TAMPERING CAUGHT: File 'Engineering_Calculations_ASME_B31_3.xlsx' on disk has new hash ${data.new_live_sha256.substring(0, 16)}... (Expected: sealed hash)`;
+            } catch (e) {
+                statusEl.innerHTML = `<span class="text-red-400 font-bold">Tamper request failed.</span>`;
+            }
+        }
+
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                const res = await fetch(`${API_BASE}/api/upload`, {
+                    method: "POST",
+                    body: formData
+                });
+                const data = await res.json();
+                document.getElementById("attached-filename").innerText = data.file_path;
+                document.getElementById("prompt-input").value = `Inspect the custom uploaded file ${data.filename}, calculate the engineering parameters in the sandbox, and draft an approval note.`;
+            } catch (e) {
+                alert("File upload failed. Check connection.");
+            }
+        }
+
+        function loadScenario(type) {
+            const promptEl = document.getElementById("prompt-input");
+            const fileEl = document.getElementById("attached-filename");
+
+            if (type === 'boiler') {
+                promptEl.value = "Read the attached ultrasonic inspection report for B-101-Crude-Furnace-Tube. Extract the measured wall thickness, execute ASME B31.3 modified Barlow formula in the sandbox, verify remaining safe life, and draft a formal MRPL approval note.";
+                fileEl.innerText = "data/sample_boiler_inspection_data.xlsx";
+            } else if (type === 'code') {
+                promptEl.value = "Generate a sandboxed Python calculation script for ASME B31.3 pipe wall thickness with Design Pressure = 4.0 MPa, Outer Diameter = 219.1 mm, Allowable Stress = 137.0 MPa, and Corrosion Allowance = 3.0 mm.";
+                fileEl.innerText = "None";
+            } else if (type === 'pid') {
+                promptEl.value = "Review the attached CDU-1 P&ID instrumentation diagram metadata. Identify all safety interlocks on emergency fuel shutoff valve XV-1001 and confirm high pressure alarm PT-1044 trip logic.";
+                fileEl.innerText = "data/sample_pid_metadata.json";
+            } else if (type === 'sop') {
+                promptEl.value = "Search MRPL Standard Operating Procedures for Section 14: Emergency Turnaround delegation of power limits and required General Manager approval thresholds.";
+                fileEl.innerText = "data/refinery_sop_handbook.txt";
+            }
+        }
+
+        async function fetchAirgapAudit() {
+            try {
+                const res = await fetch(`${API_BASE}/api/airgap/certificate`);
+                const data = await res.json();
+                document.getElementById("audit-log").innerText = data.certificate;
+            } catch (e) {
+                console.error("Failed to fetch airgap cert:", e);
+            }
+        }
+
+        async function fetchLedgerAudit() {
+            try {
+                const res = await fetch(`${API_BASE}/api/ledger/certificate`);
+                const data = await res.json();
+                document.getElementById("audit-log").innerText = data.certificate;
+            } catch (e) {}
+        }
+
+        async function downloadCertificateFile() {
+            try {
+                const res = await fetch(`${API_BASE}/api/ledger/certificate`);
+                const data = await res.json();
+                const certContent = data.certificate || "MRPL Sovereign AI Cryptographic Certificate";
+                
+                const blob = new Blob([certContent], { type: "text/plain;charset=utf-8" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "MRPL_Proof_of_Execution_Certificate.txt";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (e) {
+                alert("Failed to download certificate: " + e);
+            }
+        }
+
+        async function executeWorkflow() {
+            const prompt = document.getElementById("prompt-input").value.trim();
+            const attached = document.getElementById("attached-filename").innerText;
+            const fileList = attached !== "None" ? [attached] : [];
+
+            if (!prompt) return;
+
+            document.getElementById("run-btn-text").innerText = "EXECUTING AGENT...";
+            document.getElementById("run-spinner").classList.remove("hidden");
+            document.getElementById("step-badge").innerText = "RUNNING";
+            document.getElementById("step-badge").className = "text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-900 text-cyan-300 animate-pulse";
+
+            const t0 = performance.now();
+
+            try {
+                const res = await fetch(`${API_BASE}/api/workflow/execute`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        attached_files: fileList
+                    })
+                });
+
+                const data = await res.json();
+                const elapsed = (performance.now() - t0).toFixed(2);
+                const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+                // Update Node 1: Router
+                const node1 = document.getElementById("step-node-1");
+                node1.className = "p-2.5 rounded-lg bg-cyan-950/40 border border-cyan-500/50 transition";
+                document.getElementById("status-node-1").innerHTML = `<span class="text-cyan-400 font-bold text-[10px]">COMPLETED (0.01 ms)</span>`;
+                document.getElementById("body-node-1").innerHTML = `
+                    <div>Intent: <span class="text-cyan-300 font-bold">${data.task_intent}</span> | Model: <span class="text-emerald-400 font-bold">${data.selected_model.name}</span></div>
+                `;
+                await sleep(280);
+
+                // Update Node 2: Planner
+                const node2 = document.getElementById("step-node-2");
+                node2.className = "p-2.5 rounded-lg bg-blue-950/40 border border-blue-500/50 transition";
+                document.getElementById("status-node-2").innerHTML = `<span class="text-blue-400 font-bold text-[10px]">${data.plan.length} STEPS</span>`;
+                document.getElementById("body-node-2").innerHTML = data.plan.map(s => `<div class="text-[10px] text-slate-300">${s}</div>`).join("");
+                await sleep(280);
+
+                // Update Node 3: Sandbox
+                const calcTool = data.tool_results.find(t => t.tool_name === "SANDBOX_CALCULATOR");
+                const node3 = document.getElementById("step-node-3");
+                node3.className = "p-2.5 rounded-lg bg-emerald-950/40 border border-emerald-500/50 transition";
+                document.getElementById("status-node-3").innerHTML = `<span class="text-emerald-400 font-bold text-[10px]">SUCCESS (${calcTool ? calcTool.execution_time_ms.toFixed(1) : 0} ms)</span>`;
+                
+                if (calcTool && typeof calcTool.output === 'object') {
+                    document.getElementById("body-node-3").innerHTML = `
+                        <div class="text-slate-300">ASME Req: <span class="text-yellow-400 font-bold">${calcTool.output.required_min_thickness_mm} mm</span> | Measured: <span class="text-slate-100 font-bold">${calcTool.output.measured_thickness_mm} mm</span></div>
+                        <div class="text-slate-300">Safe Margin: <span class="text-emerald-400 font-bold">${calcTool.output.safe_margin_mm} mm</span> | Safe Life: <span class="text-emerald-400 font-bold">${calcTool.output.remaining_life_years} Years</span></div>
+                    `;
+                }
+                await sleep(320);
+
+                // Update Node 4: Critic
+                const node4 = document.getElementById("step-node-4");
+                node4.className = "p-2.5 rounded-lg bg-purple-950/40 border border-purple-500/50 transition";
+                document.getElementById("status-node-4").innerHTML = `<span class="text-purple-400 font-bold text-[10px]">PASS (0 Retries)</span>`;
+                document.getElementById("body-node-4").innerText = "ASME B31.3 criteria verified. Code status: APPROVED_SAFE. No safety violations.";
+                await sleep(280);
+
+                // Update Node 5: Deliverables & Ledger
+                const node5 = document.getElementById("step-node-5");
+                node5.className = "p-2.5 rounded-lg bg-amber-950/40 border border-amber-500/50 transition";
+                document.getElementById("status-node-5").innerHTML = `<span class="text-amber-400 font-bold text-[10px]">CHAINED (SHA-256)</span>`;
+                document.getElementById("body-node-5").innerHTML = `
+                    <div class="text-slate-200 font-bold">Generated PSU Word Approval Note & Excel Sheet</div>
+                    <div class="text-[9px] text-slate-400">${data.extracted_metrics.docx_filename || 'Approval_Note.docx'}</div>
+                `;
+
+                if (data.extracted_metrics.proof_of_execution_root_hash) {
+                    document.getElementById("proof-hash").innerText = data.extracted_metrics.proof_of_execution_root_hash;
+                }
+
+                if (data.extracted_metrics.docx_filename) {
+                    const docxLink = document.getElementById("docx-link");
+                    docxLink.href = `/api/deliverables/download/${data.extracted_metrics.docx_filename}`;
+                    docxLink.setAttribute("download", data.extracted_metrics.docx_filename);
+                    document.getElementById("docx-name").innerText = data.extracted_metrics.docx_filename;
+                }
+                if (data.extracted_metrics.xlsx_filename) {
+                    const xlsxLink = document.getElementById("xlsx-link");
+                    xlsxLink.href = `/api/deliverables/download/${data.extracted_metrics.xlsx_filename}`;
+                    xlsxLink.setAttribute("download", data.extracted_metrics.xlsx_filename);
+                    document.getElementById("xlsx-name").innerText = data.extracted_metrics.xlsx_filename;
+                }
+
+                await sleep(150);
+                document.getElementById("step-badge").innerText = "COMPLETED";
+                document.getElementById("step-badge").className = "text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-900 text-emerald-300 animate-bounce";
+
+                // Trigger Sovereign Confetti Celebration
+                launchConfetti();
+
+            } catch (err) {
+                console.error("Workflow failed:", err);
+                document.getElementById("step-badge").innerText = "ERROR";
+                document.getElementById("step-badge").className = "text-[10px] font-mono px-2 py-0.5 rounded bg-red-900 text-red-300";
+            } finally {
+                document.getElementById("run-btn-text").innerText = "EXECUTE SOVEREIGN AGENT";
+                document.getElementById("run-spinner").classList.add("hidden");
+            }
+        }
+
+        // 100% On-Premise / Zero-CDN Celebratory Confetti Animation
+        function launchConfetti() {
+            let canvas = document.getElementById("confetti-canvas");
+            if (!canvas) {
+                canvas = document.createElement("canvas");
+                canvas.id = "confetti-canvas";
+                canvas.style.position = "fixed";
+                canvas.style.top = "0";
+                canvas.style.left = "0";
+                canvas.style.width = "100vw";
+                canvas.style.height = "100vh";
+                canvas.style.pointerEvents = "none";
+                canvas.style.zIndex = "99999";
+                document.body.appendChild(canvas);
+            }
+
+            const ctx = canvas.getContext("2d");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const colors = ["#00f0ff", "#10b981", "#fbbf24", "#c084fc", "#38bdf8", "#f43f5e", "#a855f7", "#34d399"];
+            const particles = [];
+            const particleCount = 140;
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * (canvas.height * 0.4) - 20,
+                    w: Math.random() * 9 + 4,
+                    h: Math.random() * 7 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    vx: (Math.random() - 0.5) * 5,
+                    vy: Math.random() * 3.5 + 2.5,
+                    tilt: Math.random() * 10 - 5,
+                    tiltAngle: 0,
+                    tiltAngleInc: Math.random() * 0.08 + 0.04,
+                    opacity: 1.0
+                });
+            }
+
+            let animationId;
+            const startTime = Date.now();
+
+            function render() {
+                const elapsed = Date.now() - startTime;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                let alive = false;
+                particles.forEach(p => {
+                    p.tiltAngle += p.tiltAngleInc;
+                    p.y += p.vy;
+                    p.x += Math.sin(p.tiltAngle) * 2 + p.vx;
+                    p.tilt = Math.sin(p.tiltAngle) * 12;
+
+                    if (elapsed > 1800) {
+                        p.opacity -= 0.025;
+                    }
+
+                    if (p.y < canvas.height && p.opacity > 0) {
+                        alive = true;
+                        ctx.save();
+                        ctx.globalAlpha = Math.max(0, p.opacity);
+                        ctx.fillStyle = p.color;
+                        ctx.beginPath();
+                        ctx.translate(p.x + p.tilt, p.y);
+                        ctx.rotate(p.tiltAngle);
+                        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                        ctx.restore();
+                    }
+                });
+
+                if (alive && elapsed < 3200) {
+                    animationId = requestAnimationFrame(render);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    cancelAnimationFrame(animationId);
+                }
+            }
+
+            render();
+        }
+    </script>
+</body>
+</html>

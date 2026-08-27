@@ -1,0 +1,45 @@
+{
+  "plant_id": "MRPL-CDU-1",
+  "drawing_number": "MRPL-PID-DWG-7701-REV3",
+  "drawing_title": "Crude Pre-Heat Train & Furnace Feed Piping & Instrumentation Diagram",
+  "equipment": [
+    {
+      "tag": "B-101",
+      "type": "Crude Heating Furnace",
+      "design_duty_gcal_hr": 48.5,
+      "tube_metallurgy": "ASTM A106 Gr. B",
+      "design_pressure_mpa": 4.0,
+      "inlet_lines": ["10-CR-1001-A1", "10-CR-1002-A1"],
+      "outlet_lines": ["12-CR-1003-A2"]
+    }
+  ],
+  "instrumentation": [
+    {
+      "tag": "PT-1044",
+      "type": "Pressure Transmitter",
+      "location": "Furnace Coil Inlet Header",
+      "calibrated_range_bar": "0-60",
+      "alarm_high_bar": 45.0
+    },
+    {
+      "tag": "TT-1082",
+      "type": "Temperature Transmitter",
+      "location": "Coil Outlet Transfer Line",
+      "calibrated_range_deg_c": "0-500",
+      "alarm_high_deg_c": 440.0
+    },
+    {
+      "tag": "FCV-1021",
+      "type": "Flow Control Valve",
+      "fail_safe_position": "FAIL_OPEN",
+      "line": "10-CR-1001-A1"
+    }
+  ],
+  "safety_interlocks": [
+    {
+      "interlock_id": "I-101",
+      "condition": "PT-1044 > 45.0 bar OR TT-1082 > 440 °C",
+      "action": "Trip Emergency Fuel Gas Shutoff Valve XV-1001"
+    }
+  ]
+}

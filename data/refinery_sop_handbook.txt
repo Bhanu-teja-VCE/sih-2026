@@ -1,0 +1,14 @@
+MANGALORE REFINERY AND PETROCHEMICALS LIMITED
+STANDARD OPERATING PROCEDURES (SOP) MANUAL
+SECTION 14: ASSET INTEGRITY MANAGEMENT AND PRESSURE PIPING CODE COMPLIANCE
+
+14.1 SCOPE AND COMPLIANCE STANDARDS
+All hydrocarbon carrying pressure piping within the refinery battery limits must adhere strictly to ASME B31.3 (Process Piping Code) and OISD-STD-129 (Inspection of Pressure Vessels).
+
+14.2 CORROSION ALLOWANCE AND WALL THICKNESS THRESHOLDS
+- For crude distillation furnaces and high-temperature transfer lines, a minimum nominal corrosion allowance of 3.0 mm must be maintained over the theoretical pressure-design thickness.
+- If ultrasonic thickness testing indicates a measured wall thickness (t_actual) within 0.5 mm of the code-mandated minimum thickness (t_min), the equipment must be flagged for mandatory turnaround retubing within 12 calendar months.
+
+14.3 DELEGATION OF POWER (DOP) APPROVAL WORKFLOW
+- Routine engineering integrity approvals for equipment operating with > 3.0 years of calculated remaining life fall under the approving authority of the Chief General Manager (Technical Services).
+- Any emergency shutdown, derating of operating pressure, or capital replacement exceeding INR 50,00,000/- requires approval from the Executive Director (Refinery Operations).

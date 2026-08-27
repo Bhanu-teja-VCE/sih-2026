@@ -1,0 +1,30 @@
+MANGALORE REFINERY AND PETROCHEMICALS LIMITED (MRPL)
+NON-DESTRUCTIVE TESTING & INSPECTION DIVISION
+REPORT NO: MRPL/NDT/2026/UT-4482
+DATE: 2026-08-20
+
+EQUIPMENT IDENTIFICATION:
+- Unit: Crude Distillation Unit (CDU-1)
+- Equipment Tag: B-101-Crude-Furnace-Tube
+- Service: Heavy Crude Oil Heating Loop
+- Material Specification: ASTM A106 Grade B Carbon Steel
+- Pipe Outside Diameter (OD): 219.1 mm (8 inch Nominal)
+- Original Nominal Wall Thickness: 8.18 mm (Schedule 40)
+- Design Operating Pressure: 4.0 MPa (40 bar)
+- Design Temperature: 420 °C
+- Specified Corrosion Allowance: 3.0 mm
+
+ULTRASONIC THICKNESS GAUGING RESULTS (Grid Measurement in mm):
+Grid A1: 7.82 mm | Grid A2: 7.75 mm | Grid A3: 7.60 mm | Grid A4: 7.55 mm
+Grid B1: 7.62 mm | Grid B2: 7.50 mm | Grid B3: 7.52 mm | Grid B4: 7.48 mm
+Grid C1: 7.58 mm | Grid C2: 7.51 mm | Grid C3: 7.49 mm | Grid C4: 7.50 mm
+Grid D1: 7.65 mm | Grid D2: 7.54 mm | Grid D3: 7.52 mm | Grid D4: 7.50 mm
+
+INSPECTION SUMMARY:
+- Minimum Recorded Wall Thickness: 7.48 mm (at Grid B4)
+- Average Measured Wall Thickness: 7.56 mm
+- Estimated Annual Metal Loss Rate: 0.25 mm/year
+- Visual Inspection: No external localized pitting or hydrogen blistering observed.
+
+RECOMMENDATION:
+Engineering integrity calculation required under ASME B31.3 to establish minimum required wall thickness and determine remaining safe operational life before scheduled retubing.
