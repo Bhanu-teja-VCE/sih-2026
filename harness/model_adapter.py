@@ -18,7 +18,7 @@ class LocalModelAdapter:
     with self-contained deterministic industrial reasoning and natural language conversational generation.
     """
 
-    def __init__(self, default_timeout_seconds: float = 5.0):
+    def __init__(self, default_timeout_seconds: float = 45.0):
         self.timeout = default_timeout_seconds
 
     def query_local_ollama(self, endpoint_url: str, model_id: str, prompt: str, system: str = "") -> Optional[str]:
