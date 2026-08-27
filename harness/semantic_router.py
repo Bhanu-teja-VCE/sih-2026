@@ -9,9 +9,9 @@ from typing import List, Optional, Tuple, Dict
 from harness.types import TaskIntent, ModelRole, ModelConfig, WorkbenchState
 
 # Configurable via environment variable:
-#   set OLLAMA_HOST=http://192.168.1.42:11434    (friend's GPU laptop on LAN)
-#   or leave unset to default to localhost
-_DEFAULT_OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434")
+#   set OLLAMA_HOST=https://acquire-strict-lodging-planners.trycloudflare.com
+#   or set OLLAMA_HOST=http://192.168.1.X:11434
+_DEFAULT_OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "https://acquire-strict-lodging-planners.trycloudflare.com")
 
 
 class SemanticRouter:
