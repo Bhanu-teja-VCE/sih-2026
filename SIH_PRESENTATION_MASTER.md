@@ -15,7 +15,7 @@
 - **Problem Statement ID**: MRPL PS 26117
 - **Ministry / PSU Partner**: Mangalore Refinery and Petrochemicals Limited (MRPL) / Ministry of Petroleum and Natural Gas (MoPNG)
 - **Theme**: Smart Automation / Industrial Sovereign AI
-- **Team Name**: [Insert Your Team Name]
+- **Team Name**: SecureNex
 - **Team Role**: Sovereign AI Harness Engineering Team
 - **Key Highlight Badge**: 🔒 100% Air-Gapped • 0 WAN Calls • Deterministic ASME B31.3 Math • SHA-256 Merkle Ledger
 
