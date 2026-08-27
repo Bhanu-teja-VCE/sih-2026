@@ -4,9 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MRPL PS 26117 — Team Master Architecture & Presentation Guide</title>
-    <!-- Tailwind CSS — LOCAL BUNDLE (Zero CDN / Zero WAN) -->
-    <script src="/static/vendor/tailwindcss.js"></script>
-    <!-- Local Fonts — Inter + JetBrains Mono (Zero Google Fonts CDN) -->
+    <!-- Tailwind CSS with High-Availability CDN & Local Offline Fallbacks -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (typeof tailwind === 'undefined') {
+            document.write('<script src="./vendor/tailwindcss.js"><\/script>');
+            document.write('<script src="/static/vendor/tailwindcss.js"><\/script>');
+        }
+    </script>
+    <!-- Local Fonts Fallbacks -->
+    <link rel="stylesheet" href="./vendor/fonts/fonts.css">
     <link rel="stylesheet" href="/static/vendor/fonts/fonts.css">
     <style>
         body {
