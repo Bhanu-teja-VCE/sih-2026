@@ -318,8 +318,8 @@
                             <div class="flex items-center space-x-2.5">
                                 <div class="p-1.5 rounded bg-purple-950 text-purple-400 font-bold text-xs">CERT</div>
                                 <div>
-                                    <div class="text-xs font-bold text-slate-200 group-hover:text-purple-300">MRPL_Audit_Certificate.txt / PDF</div>
-                                    <div class="text-[10px] text-slate-500 font-mono">Cryptographic Proof-of-Execution Seal</div>
+                                    <div class="text-xs font-bold text-slate-200 group-hover:text-purple-300">MRPL_Compliance_Certificate.pdf</div>
+                                    <div class="text-[10px] text-slate-500 font-mono">Official Corporate Achievement & Sovereignty Seal</div>
                                 </div>
                             </div>
                             <span class="text-xs text-purple-400 group-hover:translate-x-0.5 transition">↓</span>
@@ -724,24 +724,9 @@ No WAN external connections found.
             } catch (e) {}
         }
 
-        async function downloadCertificateFile() {
-            try {
-                const res = await fetch(`${API_BASE}/api/ledger/certificate`);
-                const data = await res.json();
-                const certContent = data.certificate || "MRPL Sovereign AI Cryptographic Certificate";
-                
-                const blob = new Blob([certContent], { type: "text/plain;charset=utf-8" });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = "MRPL_Proof_of_Execution_Certificate.txt";
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            } catch (e) {
-                alert("Failed to download certificate: " + e);
-            }
+        function downloadCertificateFile() {
+            // Direct download for high-resolution print-ready corporate achievement certificate PDF
+            window.location.href = `${API_BASE}/api/airgap/certificate/pdf`;
         }
 
         async function executeWorkflow() {

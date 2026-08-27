@@ -30,6 +30,7 @@ from harness.deliverable_engine import DeliverableEngine
 from harness.network_monitor import NetworkAirGapMonitor, MOCK_PUBLIC_WAN_ENDPOINT
 from harness.hardware_profiler import HardwareResourceGuard
 from harness.local_mcp import LocalMCPEngine, MCPToolCall
+from harness.certificate_generator import generate_certificate
 
 app = FastAPI(
     title="MRPL Sovereign Industrial AI Workbench",
@@ -339,6 +340,12 @@ def execute_workflow(req: WorkflowRequest):
     docx_name = state.extracted_metrics.get("docx_filename", "Approval_Note.docx")
     xlsx_name = state.extracted_metrics.get("xlsx_filename", "Engineering_Calculations.xlsx")
 
+    # Generate high-resolution official MRPL Corporate Achievement Certificate
+    try:
+        generate_certificate(extracted_metrics=state.extracted_metrics)
+    except Exception as e:
+        print(f"[WARN] Failed to auto-generate achievement certificate: {e}")
+
     return {
         "task_intent": state.task_intent.value if state.task_intent else "VISION_INSPECTION",
         "selected_model": state.selected_model.model_dump() if state.selected_model else None,
@@ -351,24 +358,49 @@ def execute_workflow(req: WorkflowRequest):
         "deliverables": {
             "docx_url": f"/api/deliverables/download/{docx_name}",
             "xlsx_url": f"/api/deliverables/download/{xlsx_name}",
+            "cert_pdf_url": "/api/deliverables/download/MRPL_Proof_of_Execution_Certificate.pdf",
+            "cert_png_url": "/api/deliverables/download/MRPL_Proof_of_Execution_Certificate.png",
             "docx_filename": docx_name,
             "xlsx_filename": xlsx_name
         }
     }
 
 
+@app.get("/api/airgap/certificate/pdf")
+def download_certificate_pdf():
+    """Serves the print-ready MRPL Corporate Achievement Certificate PDF."""
+    path = os.path.join("deliverables", "MRPL_Proof_of_Execution_Certificate.pdf")
+    if not os.path.exists(path):
+        generate_certificate()
+    return FileResponse(path, filename="MRPL_Proof_of_Execution_Certificate.pdf", media_type="application/pdf")
+
+
+@app.get("/api/airgap/certificate/png")
+def download_certificate_png():
+    """Serves the high-resolution MRPL Corporate Achievement Certificate PNG."""
+    path = os.path.join("deliverables", "MRPL_Proof_of_Execution_Certificate.png")
+    if not os.path.exists(path):
+        generate_certificate()
+    return FileResponse(path, filename="MRPL_Proof_of_Execution_Certificate.png", media_type="image/png")
+
+
 @app.get("/api/deliverables/download/{filename}")
 @app.get("/api/deliverables/{filename}")
 def download_deliverable(filename: str):
-    """Downloads PSU-formatted Word or Excel deliverable."""
+    """Downloads PSU-formatted Word, Excel, or Certificate deliverable."""
     safe_name = Path(filename).name
     path = os.path.join("deliverables", safe_name)
     if os.path.exists(path):
-        media_type = (
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            if safe_name.endswith(".xlsx")
-            else "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-        )
+        if safe_name.endswith(".xlsx"):
+            media_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        elif safe_name.endswith(".docx"):
+            media_type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        elif safe_name.endswith(".pdf"):
+            media_type = "application/pdf"
+        elif safe_name.endswith(".png"):
+            media_type = "image/png"
+        else:
+            media_type = "text/plain"
         return FileResponse(path, filename=safe_name, media_type=media_type)
     raise HTTPException(status_code=404, detail=f"Deliverable '{safe_name}' not found")
 

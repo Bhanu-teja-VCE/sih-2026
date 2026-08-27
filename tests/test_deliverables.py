@@ -51,6 +51,24 @@ class TestDeliverableEngine(unittest.TestCase):
         self.assertTrue(os.path.exists(xlsx_path))
         self.assertGreater(os.path.getsize(xlsx_path), 500)
 
+    def test_generate_achievement_certificate_png_and_pdf(self):
+        from harness.certificate_generator import generate_certificate
+        res = generate_certificate(
+            deliverables_dir="deliverables",
+            output_png_name="Test_Certificate.png",
+            output_pdf_name="Test_Certificate.pdf",
+            extracted_metrics={
+                "required_min_thickness_mm": 6.162,
+                "measured_thickness_mm": 7.480,
+                "remaining_life_years": 5.27
+            }
+        )
+        self.assertTrue(os.path.exists(res["png_path"]))
+        self.assertTrue(os.path.exists(res["pdf_path"]))
+        self.assertGreater(os.path.getsize(res["png_path"]), 5000)
+        self.assertGreater(os.path.getsize(res["pdf_path"]), 5000)
+        self.assertTrue(res["certificate_id"].startswith("MRPL-SAI-POE-"))
+
 
 if __name__ == "__main__":
     unittest.main()
