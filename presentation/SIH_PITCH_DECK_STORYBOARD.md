@@ -1,7 +1,7 @@
 # Smart India Hackathon 2026 — Master Pitch Deck Storyboard
 ## Problem Statement ID: 26117 | Organization: Mangalore Refinery and Petrochemicals Limited (MRPL)
 ### Title: Sovereign On-Premise Agentic AI Workbench for Confidential Industrial Work
-**Team Lead & AI Harness Architect:** Bhanu Teja
+**SIH 2026 Team Pitch Deck Guide**
 
 ---
 
@@ -79,8 +79,8 @@
 
 ## 🌐 Slide 9: Distributed Edge-to-Server Industrial Topology
 - **Realistic Plant Architecture:**
-  - **Master Edge Station (Bhanu's Laptop):** UI + State Graph DAG + Sandboxed Runner.
-  - **Server Compute Pod (Friend's Laptop):** Ollama / llama.cpp running over isolated private LAN.
+  - **Master Edge Station (Client Workstation):** UI + State Graph DAG + Sandboxed Runner.
+  - **Server Compute Pod (LAN Inference Node):** Local GPU inference running over isolated private LAN.
 - **The Pitch:** Demonstrates how control room workstations communicate with on-premise refinery server racks over air-gapped subnets.
 
 ---
@@ -90,4 +90,4 @@
   - Reduces turnaround approval note preparation time from **6 hours to under 30 seconds**.
   - 100% compliant with Indian Public Sector Undertaking cybersecurity policies.
 - **Horizontal Scalability:** Readily deployable across IOCL, ONGC, HPCL, BPCL, GAIL, and defense-linked ordnance manufacturing units.
-- **Team Execution:** Lead by Bhanu Teja with fully tested deterministic code and 100% pass rate.
+- **Team Execution:** Delivered with fully tested deterministic code, 65 automated tests, and 100% pass rate.

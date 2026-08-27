@@ -16,7 +16,7 @@
 - **Ministry / PSU Partner**: Mangalore Refinery and Petrochemicals Limited (MRPL) / Ministry of Petroleum and Natural Gas (MoPNG)
 - **Theme**: Smart Automation / Industrial Sovereign AI
 - **Team Name**: [Insert Your Team Name]
-- **Team Leader**: Bhanu Teja (AI Harness Architect)
+- **Team Role**: Sovereign AI Harness Engineering Team
 - **Key Highlight Badge**: 🔒 100% Air-Gapped • 0 WAN Calls • Deterministic ASME B31.3 Math • SHA-256 Merkle Ledger
 
 ---
@@ -127,7 +127,7 @@
 - **Team Matrix**:
   | Role / Member | Domain Responsibility | Concrete High-Leverage Deliverables |
   | :--- | :--- | :--- |
-  | **Bhanu Teja (Lead)** | **AI Harness Architect & Full-Stack** | State Graph DAG, Poly-Model Router, Python Sandbox, Merkle Ledger, Air-Gap Sniffer |
+  | **AI Harness Lead** | **AI Harness Architect & Full-Stack** | State Graph DAG, Poly-Model Router, Python Sandbox, Merkle Ledger, Air-Gap Sniffer |
   | **Member 2** | **Industrial UI/UX & Web Dashboard** | Cyber Dark telemetry control room, responsive DAG visualizer, alert banner |
   | **Member 3** | **Multimodal & Ground Truth Datasets** | Sourcing P&ID schematics, refinery inspection logs, MRPL SOP corpus |
   | **Member 4** | **Engineering Math & ASME Standards** | Validating ASME B31.3 Barlow calculations, corrosion life formulas, circuit breakers |

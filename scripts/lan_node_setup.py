@@ -1,7 +1,7 @@
 """
 scripts/lan_node_setup.py
 Distributed LAN Compute Node Network Configurator & Health Prober.
-Connects Master Station (Bhanu's Laptop) to Remote Compute Node (Friend's Laptop) over Private Subnet.
+Connects Master Edge Workstation to Remote GPU Compute Node over Private Subnet.
 Zero WAN Egress.
 """
 

@@ -1,7 +1,7 @@
 # Sovereign On-Premise Agentic AI Workbench (MRPL PS 26117)
 > **Smart India Hackathon 2026 — Mangalore Refinery and Petrochemicals Limited (MRPL)**  
 > **Problem Statement ID:** 26117 | **Theme:** Smart Automation | **Category:** Software  
-> **Team Lead & AI Harness Architect:** Bhanu Teja
+> **Architecture:** 100% Air-Gapped Sovereign AI Harness
 
 ---
 
@@ -98,8 +98,8 @@ sih 2026/
 - **Result:** Semantic router dynamically selects `Qwen-2.5-Coder-7B` vs `DeepSeek-R1-Distill-8B` in $<5\text{ms}$ and updates UI telemetry.
 
 ### Flow 2: Scanned Boiler Inspection $\rightarrow$ Formal PSU Approval Note
-- **Action:** User uploads [`sample_inspection_report.txt`](file:///c:/Users/bhanu/OneDrive/Desktop/sih%202026/data/sample_inspection_report.txt).
-- **Result:** State Graph extracts ultrasonic wall thickness ($7.48\text{ mm}$), runs ASME B31.3 modified Barlow formula in sandbox, calculates $5.12\text{ years}$ safe remaining life, and automatically outputs a downloadable Microsoft Word document [`Test_MRPL_Approval_Note.docx`](file:///c:/Users/bhanu/OneDrive/Desktop/sih%202026/deliverables/Test_MRPL_Approval_Note.docx).
+- **Action:** User uploads [`sample_inspection_report.txt`](data/sample_inspection_report.txt).
+- **Result:** State Graph extracts ultrasonic wall thickness ($7.48\text{ mm}$), runs ASME B31.3 modified Barlow formula in sandbox, calculates $5.12\text{ years}$ safe remaining life, and automatically outputs a downloadable Microsoft Word document [`Test_MRPL_Approval_Note.docx`](deliverables/Test_MRPL_Approval_Note.docx).
 
 ### Flow 3: Sandboxed Code Execution & Circuit Breaker Recovery
 - **Action:** Sandboxed Python runner executes mathematical equations with timeout protection ($5\text{s}$).

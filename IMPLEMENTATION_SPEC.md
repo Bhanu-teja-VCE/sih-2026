@@ -60,7 +60,7 @@ graph TD
 
 | Role | Member | Key Responsibilities | Concrete Deliverables |
 | :--- | :--- | :--- | :--- |
-| **Lead & Architect** | **Bhanu Teja** | State Graph DAG, Semantic Router, Pitch Deck & Live Demo Flow | `state_graph.py`, `semantic_router.py`, Master Presentation |
+| **Lead & Architect** | Member 1 | State Graph DAG, Semantic Router, Pitch Deck & Live Demo Flow | `state_graph.py`, `semantic_router.py`, Master Presentation |
 | **Backend & Security** | Member 2 | FastAPI Server, Air-gap Network Egress Logger, Tool API Harness | `server.py`, `network_monitor.py`, `/api/tools/*` |
 | **AI / SLM Engineer** | Member 3 | GGUF Quantization, Model Registry, Local Inference Pipeline | `model_loader.py` (Ollama/llama.cpp bindings) |
 | **Frontend & UX** | Member 4 | Industrial Dark Mode UI, Live Thought Graph, Artifact Previewer | React + Vite UI, Cytoscape/React-Flow DAG Visualizer |

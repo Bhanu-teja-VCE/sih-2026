@@ -1,6 +1,6 @@
 # Master Study Guide & Conceptual Breakdown — MRPL PS 26117
-> **Companion Learning Guide for Bhanu Teja (AI Harness Architect)**  
-> *Master these concepts step-by-step to gain 100% conceptual ownership of the architecture.*
+> **Technical Architecture & Engineering Foundation Guide**  
+> *Master these concepts step-by-step to understand 100% of the sovereign system.*
 
 ---
 
@@ -65,7 +65,7 @@ $$\text{Remaining Safe Life (Years)} = \frac{t_{\text{actual}} - t_{\text{min}}}
 - Proves cryptographically to judges that no data leaves the physical laptop.
 
 ### B. Distributed LAN Compute Topology
-- Connects Master Edge Laptop (Bhanu) $\leftrightarrow$ Local Compute Pod (Friend) over private Wi-Fi/Ethernet (`192.168.1.X`).
+- Connects Master Edge Station (Client Laptop) $\leftrightarrow$ Local Compute Pod (LAN GPU Node) over private Wi-Fi/Ethernet (`192.168.1.X`).
 - Replicates an industrial refinery control-room network communicating with a local server-room GPU rack.
 
 ---
@@ -74,13 +74,13 @@ $$\text{Remaining Safe Life (Years)} = \frac{t_{\text{actual}} - t_{\text{min}}}
 
 | Component | Path | Key Function |
 | :--- | :--- | :--- |
-| **Pydantic Schemas** | [`harness/types.py`](file:///c:/Users/bhanu/OneDrive/Desktop/sih%202026/harness/types.py) | Defines `WorkbenchState`, `TaskIntent`, `PSUApprovalNote` data contracts. |
-| **Semantic Router** | [`harness/semantic_router.py`](file:///c:/Users/bhanu/OneDrive/Desktop/sih%202026/harness/semantic_router.py) | Sub-10ms intent classifier selecting specialized SLMs (Code, Vision, Reasoner). |
-| **Math Sandbox** | [`harness/sandbox.py`](file:///c:/Users/bhanu/OneDrive/Desktop/sih%202026/harness/sandbox.py) | Subprocess runner executing ASME B31.3 math with 5s timeout. |
-| **State Machine DAG**| [`harness/state_graph.py`](file:///c:/Users/bhanu/OneDrive/Desktop/sih%202026/harness/state_graph.py) | Multi-step DAG orchestrator with 3-retry circuit breaker. |
-| **Sovereign RAG** | [`harness/sovereign_rag.py`](file:///c:/Users/bhanu/OneDrive/Desktop/sih%202026/harness/sovereign_rag.py) | On-premise BM25 keyword and vector retrieval over MRPL SOP manuals. |
-| **Multimodal Parser**| [`harness/multimodal_parser.py`](file:///c:/Users/bhanu/OneDrive/Desktop/sih%202026/harness/multimodal_parser.py) | Parses input `.xlsx` ultrasonic logs and P&ID JSON metadata. |
-| **Deliverable Engine**| [`harness/deliverable_engine.py`](file:///c:/Users/bhanu/OneDrive/Desktop/sih%202026/harness/deliverable_engine.py) | Generates official Microsoft Word (`.docx`) and Excel (`.xlsx`) deliverables. |
-| **Air-Gap Sniffer** | [`harness/network_monitor.py`](file:///c:/Users/bhanu/OneDrive/Desktop/sih%202026/harness/network_monitor.py) | Live socket sniffer verifying 0 outbound WAN egress. |
-| **FastAPI Backend** | [`api/server.py`](file:///c:/Users/bhanu/OneDrive/Desktop/sih%202026/api/server.py) | REST API hosting the Cyber Dark UI dashboard at `http://127.0.0.1:8000`. |
-| **CLI Demo Runner** | [`cli/demo.py`](file:///c:/Users/bhanu/OneDrive/Desktop/sih%202026/cli/demo.py) | Interactive ANSI terminal runner stepping through the 4 Grand Finale flows. |
+| **Pydantic Schemas** | [`harness/types.py`](../harness/types.py) | Defines `WorkbenchState`, `TaskIntent`, `PSUApprovalNote` data contracts. |
+| **Semantic Router** | [`harness/semantic_router.py`](../harness/semantic_router.py) | Sub-10ms intent classifier selecting specialized SLMs (Code, Vision, Reasoner). |
+| **Math Sandbox** | [`harness/sandbox.py`](../harness/sandbox.py) | Subprocess runner executing ASME B31.3 math with 5s timeout. |
+| **State Machine DAG**| [`harness/state_graph.py`](../harness/state_graph.py) | Multi-step DAG orchestrator with 3-retry circuit breaker. |
+| **Sovereign RAG** | [`harness/sovereign_rag.py`](../harness/sovereign_rag.py) | On-premise BM25 keyword and vector retrieval over MRPL SOP manuals. |
+| **Multimodal Parser**| [`harness/multimodal_parser.py`](../harness/multimodal_parser.py) | Parses input `.xlsx` ultrasonic logs and P&ID JSON metadata. |
+| **Deliverable Engine**| [`harness/deliverable_engine.py`](../harness/deliverable_engine.py) | Generates official Microsoft Word (`.docx`) and Excel (`.xlsx`) deliverables. |
+| **Air-Gap Sniffer** | [`harness/network_monitor.py`](../harness/network_monitor.py) | Live socket sniffer verifying 0 outbound WAN egress. |
+| **FastAPI Backend** | [`api/server.py`](../api/server.py) | REST API hosting the Cyber Dark UI dashboard at `http://127.0.0.1:8000`. |
+| **CLI Demo Runner** | [`cli/demo.py`](../cli/demo.py) | Interactive ANSI terminal runner stepping through the 4 Grand Finale flows. |

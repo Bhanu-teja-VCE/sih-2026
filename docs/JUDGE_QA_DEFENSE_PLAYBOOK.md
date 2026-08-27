@@ -1,5 +1,5 @@
 # Hostile Judge Q&A Defense Playbook — SIH 2026 (MRPL PS 26117)
-> **Author:** Bhanu Teja (AI Harness Architect & Team Lead)
+> **SIH 2026 Sovereign Industrial AI Team Guide**
 
 ---
 
