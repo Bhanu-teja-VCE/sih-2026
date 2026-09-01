@@ -255,14 +255,22 @@ def tamper_ledger_test():
     The Merkle DAG immediately catches the forgery and flags a cryptographic breach!
     """
     res = engine.ledger.tamper_block_output(block_index=3, forged_data={"required_min_thickness_mm": 5.0, "safe_margin_mm": 99.9})
+    try:
+        generate_certificate(is_tampered=True)
+    except Exception:
+        pass
     return res
 
 
 @app.post("/api/ledger/reset")
-def reset_ledger():
-    """Resets ledger back to clean genesis state."""
+def reset_ledger_state():
+    """Resets the Merkle Ledger back to the clean genesis root."""
     engine.ledger.reset()
-    return {"status": "LEDGER_RESET_CLEAN"}
+    try:
+        generate_certificate(is_tampered=False)
+    except Exception:
+        pass
+    return {"status": "LEDGER_RESET_CLEAN", "root_hash": engine.ledger.get_root_hash()}
 
 
 @app.get("/api/ledger/verify-disk-artifacts")
@@ -384,19 +392,21 @@ def execute_workflow(req: WorkflowRequest):
 
 @app.get("/api/airgap/certificate/pdf")
 def download_certificate_pdf():
-    """Serves the print-ready MRPL Corporate Achievement Certificate PDF."""
+    """Serves the print-ready MRPL Corporate Achievement Certificate PDF (or REVOKED certificate if tampered)."""
+    integrity = engine.ledger.verify_integrity()
+    is_tampered = not integrity.get("is_valid", True)
+    generate_certificate(is_tampered=is_tampered)
     path = os.path.join("deliverables", "MRPL_Proof_of_Execution_Certificate.pdf")
-    if not os.path.exists(path):
-        generate_certificate()
     return FileResponse(path, filename="MRPL_Proof_of_Execution_Certificate.pdf", media_type="application/pdf")
 
 
 @app.get("/api/airgap/certificate/png")
 def download_certificate_png():
-    """Serves the high-resolution MRPL Corporate Achievement Certificate PNG."""
+    """Serves the high-resolution MRPL Corporate Achievement Certificate PNG (or REVOKED certificate if tampered)."""
+    integrity = engine.ledger.verify_integrity()
+    is_tampered = not integrity.get("is_valid", True)
+    generate_certificate(is_tampered=is_tampered)
     path = os.path.join("deliverables", "MRPL_Proof_of_Execution_Certificate.png")
-    if not os.path.exists(path):
-        generate_certificate()
     return FileResponse(path, filename="MRPL_Proof_of_Execution_Certificate.png", media_type="image/png")
 
 

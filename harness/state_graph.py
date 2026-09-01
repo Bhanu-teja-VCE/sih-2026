@@ -215,8 +215,12 @@ class StateGraphEngine:
 
         if not code:
             p_lower = state.raw_prompt.lower()
-            if "lmtd" in p_lower or "heat" in p_lower:
+            if "lmtd" in p_lower or "heat" in p_lower or "exchanger" in p_lower:
                 code = self.sandbox.generate_heat_exchanger_lmtd_script(th_in=180.0, th_out=110.0, tc_in=30.0, tc_out=85.0)
+            elif "darcy" in p_lower or "friction" in p_lower or "head loss" in p_lower or "pressure drop" in p_lower:
+                code = self.sandbox.generate_darcy_weisbach_script(flow_velocity_ms=2.5, pipe_internal_dia_mm=150.0, pipe_length_m=100.0)
+            elif "reynolds" in p_lower or "flow regime" in p_lower or "laminar" in p_lower or "turbulent" in p_lower:
+                code = self.sandbox.generate_pipeline_reynolds_script(flow_velocity_ms=2.0, pipe_diameter_mm=200.0)
             else:
                 code = self.sandbox.generate_asme_b31_3_script(
                     design_pressure_mpa=4.0, outer_diameter_mm=219.1, allowable_stress_mpa=137.0, measured_thickness_mm=7.5

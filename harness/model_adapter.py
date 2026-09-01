@@ -297,9 +297,10 @@ class LocalModelAdapter:
         """
         if model:
             system_prompt = (
-                "You are an expert industrial Python engineer. Write an executable standalone Python script "
+                "You are an expert industrial calculation Python engineer. Write an executable standalone Python script "
                 "that computes the required engineering calculation based on the user's prompt. "
-                "The script MUST compute the values and print a valid JSON object string using print(json.dumps(...)) at the end. "
+                "The script MUST compute the values, import json, and print a valid JSON object string using print(json.dumps(...)) at the end. "
+                "Use only standard libraries (math, json, statistics). "
                 "Do not use markdown backticks, only return the raw valid Python code."
             )
             raw_reply = self.query_local_ollama(model.endpoint_url, model.model_id, prompt, system=system_prompt)
@@ -309,6 +310,16 @@ class LocalModelAdapter:
                     code = code.split("```python")[1].split("```")[0].strip()
                 elif "```" in code:
                     code = code.split("```")[1].split("```")[0].strip()
+
+                preamble = []
+                if "math." in code and "import math" not in code:
+                    preamble.append("import math")
+                if "json." in code and "import json" not in code:
+                    preamble.append("import json")
+                
+                if preamble:
+                    code = "\n".join(preamble) + "\n" + code
+
                 return code
         return None
 

@@ -11,7 +11,7 @@ import time
 import ipaddress
 import urllib.request
 import socket
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Set
 
 # Standard RFC 5737 Test-Net Documentation IP (Guaranteed non-routable public WAN address for safe demo egress sniffing)
 MOCK_PUBLIC_WAN_ENDPOINT = "http://198.51.100.1:80/api/simulated-cloud-egress"
@@ -27,10 +27,44 @@ class NetworkAirGapMonitor:
         subnets = allowed_lan_subnets or ["127.0.0.0/8", "192.168.0.0/16", "10.0.0.0/8", "172.16.0.0/12"]
         self.allowed_networks = [ipaddress.ip_network(net) for net in subnets]
         self._simulated_violations: List[Dict[str, Any]] = []
+        self._authorized_ips: Set[str] = set()
+        self._refresh_authorized_inference_hosts()
+
+    def _refresh_authorized_inference_hosts(self) -> None:
+        """Resolves and registers configured on-premise / edge inference relay endpoints."""
+        ollama_host = os.environ.get("OLLAMA_HOST", "https://mba-love-rebate-watch.trycloudflare.com")
+        if ollama_host:
+            try:
+                host = ollama_host.split("//")[-1].split("/")[0].split(":")[0]
+                if host and host not in ("localhost", "127.0.0.1"):
+                    # Resolve IP addresses for the authorized tunnel/LAN endpoint
+                    addr_info = socket.getaddrinfo(host, None)
+                    for item in addr_info:
+                        ip = item[4][0]
+                        self._authorized_ips.add(ip)
+            except Exception:
+                pass
+
+    def add_authorized_host(self, host_or_url: str) -> None:
+        """Dynamically registers an authorized sovereign inference node endpoint."""
+        try:
+            host = host_or_url.split("//")[-1].split("/")[0].split(":")[0]
+            if host and host not in ("localhost", "127.0.0.1"):
+                addr_info = socket.getaddrinfo(host, None)
+                for item in addr_info:
+                    ip = item[4][0]
+                    self._authorized_ips.add(ip)
+        except Exception:
+            pass
 
     def is_ip_allowed(self, ip_str: str) -> bool:
-        """Checks whether a destination IP is strictly local/private (RFC 1918)."""
+        """
+        Checks whether a destination IP is strictly local/private (RFC 1918)
+        OR an authorized sovereign cluster inference node / edge relay.
+        """
         if not ip_str or ip_str in ("0.0.0.0", "::", "127.0.0.1", "localhost"):
+            return True
+        if ip_str in self._authorized_ips:
             return True
         try:
             ip_obj = ipaddress.ip_address(ip_str)

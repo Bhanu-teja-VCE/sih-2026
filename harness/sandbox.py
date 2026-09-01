@@ -141,23 +141,26 @@ class CalculationSandbox:
 
             if proc.returncode == 0:
                 raw_out = proc.stdout.strip()
+                parsed = None
                 try:
                     parsed = json.loads(raw_out)
-                    return ToolCallResult(
-                        tool_name="SANDBOX_CALCULATOR",
-                        success=True,
-                        output=parsed,
-                        error=None,
-                        execution_time_ms=exec_time_ms
-                    )
                 except json.JSONDecodeError:
-                    return ToolCallResult(
-                        tool_name="SANDBOX_CALCULATOR",
-                        success=True,
-                        output=raw_out,
-                        error=None,
-                        execution_time_ms=exec_time_ms
-                    )
+                    # Attempt to extract JSON from stdout with preamble or trailing text
+                    if "{" in raw_out and "}" in raw_out:
+                        try:
+                            start_idx = raw_out.find("{")
+                            end_idx = raw_out.rfind("}") + 1
+                            parsed = json.loads(raw_out[start_idx:end_idx])
+                        except Exception:
+                            pass
+
+                return ToolCallResult(
+                    tool_name="SANDBOX_CALCULATOR",
+                    success=True,
+                    output=parsed if parsed is not None else raw_out,
+                    error=None,
+                    execution_time_ms=exec_time_ms
+                )
             else:
                 return ToolCallResult(
                     tool_name="SANDBOX_CALCULATOR",
@@ -291,4 +294,73 @@ def calculate_lmtd():
     }}
 
 print(json.dumps(calculate_lmtd()))
+"""
+
+    @staticmethod
+    def generate_darcy_weisbach_script(
+        flow_velocity_ms: float = 2.5,
+        pipe_internal_dia_mm: float = 150.0,
+        pipe_length_m: float = 100.0,
+        friction_factor: float = 0.02,
+        fluid_density_kg_m3: float = 850.0
+    ) -> str:
+        """Generates hydraulic Darcy-Weisbach friction head loss and pressure drop script."""
+        return f"""
+import json
+
+def calculate_darcy():
+    v = {flow_velocity_ms}
+    d = {pipe_internal_dia_mm} / 1000.0  # Convert to meters
+    L = {pipe_length_m}
+    f = {friction_factor}
+    rho = {fluid_density_kg_m3}
+    g = 9.80665
+
+    # Darcy-Weisbach head loss: h_f = f * (L/D) * (v^2 / (2*g))
+    head_loss_m = f * (L / d) * (v**2 / (2.0 * g))
+    # Pressure drop: delta_P = rho * g * h_f (in kPa)
+    delta_p_kpa = (rho * g * head_loss_m) / 1000.0
+
+    return {{
+        "calculation_type": "DARCY_WEISBACH_HYDRAULIC_HEAD_LOSS",
+        "flow_velocity_ms": round(v, 2),
+        "pipe_diameter_mm": {pipe_internal_dia_mm},
+        "pipe_length_m": round(L, 1),
+        "friction_factor": round(f, 4),
+        "head_loss_meters": round(head_loss_m, 3),
+        "pressure_drop_kpa": round(delta_p_kpa, 2),
+        "status": "APPROVED_HYDRAULIC_DESIGN"
+    }}
+
+print(json.dumps(calculate_darcy()))
+"""
+
+    @staticmethod
+    def generate_pipeline_reynolds_script(
+        flow_velocity_ms: float = 2.0,
+        pipe_diameter_mm: float = 200.0,
+        kinematic_viscosity_cst: float = 10.0
+    ) -> str:
+        """Generates Reynolds number flow regime calculation script."""
+        return f"""
+import json
+
+def calculate_reynolds():
+    v = {flow_velocity_ms}
+    d = {pipe_diameter_mm} / 1000.0  # meters
+    nu = {kinematic_viscosity_cst} * 1e-6  # m2/s
+
+    reynolds = (v * d) / nu
+    regime = "TURBULENT" if reynolds > 4000 else ("LAMINAR" if reynolds < 2300 else "TRANSITIONAL")
+
+    return {{
+        "calculation_type": "REYNOLDS_FLOW_REGIME",
+        "velocity_ms": round(v, 2),
+        "pipe_diameter_mm": {pipe_diameter_mm},
+        "reynolds_number": round(reynolds, 1),
+        "flow_regime": regime,
+        "status": "VERIFIED_REGIME"
+    }}
+
+print(json.dumps(calculate_reynolds()))
 """

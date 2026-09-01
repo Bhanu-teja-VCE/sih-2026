@@ -314,15 +314,15 @@
                             <span class="text-xs text-emerald-400 group-hover:translate-x-0.5 transition">↓</span>
                         </a>
 
-                        <button onclick="downloadCertificateFile()" class="p-2.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-purple-500/50 transition flex items-center justify-between group text-left w-full">
+                        <button id="cert-download-btn" onclick="downloadCertificateFile()" class="p-2.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-purple-500/50 transition flex items-center justify-between group text-left w-full">
                             <div class="flex items-center space-x-2.5">
-                                <div class="p-1.5 rounded bg-purple-950 text-purple-400 font-bold text-xs">CERT</div>
+                                <div id="cert-btn-badge" class="p-1.5 rounded bg-purple-950 text-purple-400 font-bold text-xs">CERT</div>
                                 <div>
-                                    <div class="text-xs font-bold text-slate-200 group-hover:text-purple-300">MRPL_Compliance_Certificate.pdf</div>
-                                    <div class="text-[10px] text-slate-500 font-mono">Official Corporate Achievement & Sovereignty Seal</div>
+                                    <div id="cert-btn-title" class="text-xs font-bold text-slate-200 group-hover:text-purple-300">MRPL_Compliance_Certificate.pdf</div>
+                                    <div id="cert-btn-sub" class="text-[10px] text-slate-500 font-mono">Official Corporate Achievement & Sovereignty Seal</div>
                                 </div>
                             </div>
-                            <span class="text-xs text-purple-400 group-hover:translate-x-0.5 transition">↓</span>
+                            <span id="cert-btn-arrow" class="text-xs text-purple-400 group-hover:translate-x-0.5 transition">↓</span>
                         </button>
                     </div>
 
@@ -776,6 +776,19 @@ No WAN external connections found.
                 document.getElementById("step-badge").className = "text-[10px] font-mono px-2 py-0.5 rounded bg-red-900 text-red-200 animate-pulse";
                 document.getElementById("proof-hash").className = "text-red-400 font-bold break-all block p-2 bg-red-950/80 rounded border border-red-800 animate-pulse";
                 document.getElementById("proof-hash").innerText = `🚨 CRYPTOGRAPHIC FORGERY CAUGHT AT BLOCK #${data.tampered_block_index}: Expected Hash Mismatch in Merkle Tree!`;
+
+                // 4. Update Deliverables Certificate Card to Red Revocation Mode
+                const certBtn = document.getElementById("cert-download-btn");
+                if (certBtn) {
+                    certBtn.className = "p-2.5 rounded-lg bg-red-950/80 hover:bg-red-900 border border-red-700 hover:border-red-500 transition flex items-center justify-between group text-left w-full animate-pulse";
+                    document.getElementById("cert-btn-badge").className = "p-1.5 rounded bg-red-900 text-red-200 font-bold text-xs";
+                    document.getElementById("cert-btn-badge").innerText = "VOID";
+                    document.getElementById("cert-btn-title").className = "text-xs font-bold text-red-300";
+                    document.getElementById("cert-btn-title").innerText = "🚨 MRPL_Certificate_REVOKED.pdf";
+                    document.getElementById("cert-btn-sub").className = "text-[10px] text-red-400 font-mono";
+                    document.getElementById("cert-btn-sub").innerText = "Certificate Revoked — Cryptographic Tamper Detected";
+                    document.getElementById("cert-btn-arrow").className = "text-xs text-red-400 group-hover:translate-x-0.5 transition";
+                }
             } catch (e) {
                 console.error("Tamper test error:", e);
             }
@@ -796,6 +809,19 @@ No WAN external connections found.
                     if (node) node.className = "p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 transition";
                     const status = document.getElementById(`status-node-${i}`);
                     if (status) status.innerHTML = `<span class="text-slate-500 text-[10px]">PENDING</span>`;
+                }
+
+                // Reset certificate button style
+                const certBtn = document.getElementById("cert-download-btn");
+                if (certBtn) {
+                    certBtn.className = "p-2.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-purple-500/50 transition flex items-center justify-between group text-left w-full";
+                    document.getElementById("cert-btn-badge").className = "p-1.5 rounded bg-purple-950 text-purple-400 font-bold text-xs";
+                    document.getElementById("cert-btn-badge").innerText = "CERT";
+                    document.getElementById("cert-btn-title").className = "text-xs font-bold text-slate-200 group-hover:text-purple-300";
+                    document.getElementById("cert-btn-title").innerText = "MRPL_Compliance_Certificate.pdf";
+                    document.getElementById("cert-btn-sub").className = "text-[10px] text-slate-500 font-mono";
+                    document.getElementById("cert-btn-sub").innerText = "Official Corporate Achievement & Sovereignty Seal";
+                    document.getElementById("cert-btn-arrow").className = "text-xs text-purple-400 group-hover:translate-x-0.5 transition";
                 }
 
                 document.getElementById("disk-verify-status").innerHTML = `<span class="text-slate-400">Status: Ready to audit physical files on disk.</span>`;

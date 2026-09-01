@@ -349,7 +349,32 @@ class ImmutableAuditLedger:
         """Formats an official proof-of-execution certificate for PSU auditing."""
         root_hash = self.get_root_hash()
         verification = self.verify_integrity()
-        status_str = "100% VERIFIED_VALID" if verification["is_valid"] else "TAMPERED_BREACH"
+        is_valid = verification.get("is_valid", False)
+
+        if not is_valid:
+            tampered_idx = verification.get("tampered_block_index", "UNKNOWN")
+            msg = verification.get("message", "Hash mismatch detected.")
+            return "\n".join([
+                "================================================================================",
+                "   🚨 [SECURITY ALERT] MERKLE INTEGRITY BREACH — CERTIFICATE REVOKED / VOID    ",
+                "                  CRYPTOGRAPHIC AUDIT COMPLIANCE FAILURE                        ",
+                "================================================================================",
+                f"Verification Status  : 🚨 FAILED — TAMPER DETECTED AT BLOCK #{tampered_idx}",
+                f"Security Incident    : {msg}",
+                f"Calculated Root Hash : {root_hash}",
+                f"Ledger Chain Health  : COMPROMISED (Non-Repudiation Seal Broken)",
+                f"Audit Action Required: Revert unauthorized modification and restore clean state.",
+                "--------------------------------------------------------------------------------",
+                "TRANSITION CHAIN AUDIT LOG:",
+                *[
+                    f"  [Block #{b.block_index:02d}] {b.node_name:<28} | Hash: {b.block_hash[:16]}... "
+                    + (" 🚨 [FORGED PAYLOAD DETECTED]" if b.block_index == tampered_idx else "")
+                    for b in self.chain
+                ],
+                "--------------------------------------------------------------------------------",
+                "VERIFICATION GUARANTEE: REVOKED. This execution trace CANNOT be certified for PSU use.",
+                "================================================================================",
+            ])
 
         cert_lines = [
             "================================================================================",
@@ -358,7 +383,7 @@ class ImmutableAuditLedger:
             "================================================================================",
             f"State Root Hash      : {root_hash}",
             f"Total Ledger Blocks  : {len(self.chain)}",
-            f"Chain Integrity      : {status_str}",
+            f"Chain Integrity      : 100% VERIFIED_VALID",
             f"Genesis Seed         : {self.genesis_seed}",
             f"Persistent Log       : {self.persistence_path}",
             "--------------------------------------------------------------------------------",
