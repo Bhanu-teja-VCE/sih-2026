@@ -345,11 +345,27 @@ class ImmutableAuditLedger:
         """Returns the latest state root hash sealing the entire causal execution history."""
         return self.chain[-1].block_hash if self.chain else "0" * 64
 
-    def generate_proof_of_execution_certificate(self) -> str:
+    def generate_proof_of_execution_certificate(self, is_airgap_breached: bool = False) -> str:
         """Formats an official proof-of-execution certificate for PSU auditing."""
         root_hash = self.get_root_hash()
         verification = self.verify_integrity()
         is_valid = verification.get("is_valid", False)
+
+        if is_airgap_breached:
+            return "\n".join([
+                "================================================================================",
+                "   🚨 [SECURITY ALERT] AIR-GAP INTEGRITY BREACH — CERTIFICATE REVOKED / VOID    ",
+                "                  UNAUTHORIZED EXTERNAL WAN CALLS DETECTED                      ",
+                "================================================================================",
+                "Verification Status  : 🚨 FAILED — AIR-GAP VIOLATION (0% SOVEREIGN INTEGRITY)",
+                "Security Incident    : Outbound WAN network packets detected during or after DAG execution.",
+                f"Calculated Root Hash : {root_hash}",
+                "Ledger Chain Health  : UNRELIABLE (Computational Sovereignty Compromised)",
+                "Audit Action Required: Terminate external cloud connections and restore 100% local sockets.",
+                "--------------------------------------------------------------------------------",
+                "VERIFICATION GUARANTEE: REVOKED. Execution trace is UNRELIABLE for PSU regulatory compliance.",
+                "================================================================================",
+            ])
 
         if not is_valid:
             tampered_idx = verification.get("tampered_block_index", "UNKNOWN")

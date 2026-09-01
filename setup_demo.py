@@ -219,6 +219,490 @@ print("[OK] Created ui/static/verify.html")
 
 
 # =====================================================================
+# 1B. CREATE ui/static/rag_studio.html (Dedicated ChatGPT/Gemini/RAGFlow Studio)
+# =====================================================================
+rag_studio_html_content = """<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MRPL Sovereign RAG Studio — Industrial Knowledge Assistant (RAGFlow Architecture)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body { font-family: 'Inter', -apple-system, sans-serif; background-color: #06090f; color: #e2e8f0; }
+        .font-mono { font-family: 'JetBrains Mono', monospace, Consolas; }
+        .cyber-card { background: rgba(13, 19, 33, 0.94); backdrop-filter: blur(16px); border: 1px solid rgba(0, 240, 255, 0.15); }
+        .glow-cyan { box-shadow: 0 0 25px rgba(6, 182, 212, 0.15); }
+        .glow-emerald { box-shadow: 0 0 25px rgba(16, 185, 129, 0.15); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(51, 65, 85, 0.8); border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #0ea5e9; }
+        .prose strong { color: #38bdf8; }
+        .prose code { color: #f472b6; background: rgba(15, 23, 42, 0.8); padding: 0.15rem 0.35rem; border-radius: 0.25rem; font-family: monospace; }
+        .prose ul { list-style-type: disc; margin-left: 1.25rem; }
+    </style>
+</head>
+<body class="h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-black overflow-hidden">
+
+    <!-- Top Navigation Bar -->
+    <header class="h-16 border-b border-slate-800 bg-slate-950/95 px-4 sm:px-6 flex items-center justify-between z-30 flex-shrink-0 shadow-2xl">
+        <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center font-bold text-black text-lg shadow-lg shadow-amber-500/20">
+                M
+            </div>
+            <div>
+                <div class="flex items-center space-x-2">
+                    <h1 class="text-sm font-extrabold tracking-wider text-slate-100 uppercase">MRPL Sovereign RAG Studio</h1>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-cyan-950 text-cyan-300 border border-cyan-700">RAGFlow-Style BM25 Layer</span>
+                </div>
+                <p class="text-[11px] text-slate-400 font-mono">Grounded Refinery SOP Search • 100% Air-Gapped Local Memory</p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+            <div class="hidden sm:flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs font-mono font-bold">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>0 WAN PACKETS LOGGED</span>
+            </div>
+            <a href="/" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-mono font-bold transition flex items-center space-x-1.5 border border-slate-700 shadow-md">
+                <span>← Back to Workbench</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Studio Split Layout -->
+    <div class="flex-1 flex overflow-hidden relative">
+
+        <!-- LEFT SIDEBAR: Document Ingestion & RAGFlow Chunk Inspector (Width: 380px) -->
+        <aside class="w-80 sm:w-96 border-r border-slate-800 bg-[#080d1a] flex flex-col flex-shrink-0 overflow-y-auto custom-scrollbar p-4 space-y-4">
+            
+            <!-- Section 1: Upload Document -->
+            <div class="cyber-card rounded-2xl p-4 border border-slate-800 flex flex-col space-y-3">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xs font-mono font-bold text-slate-200 uppercase tracking-wider">1. Ingest Refinery Document</h2>
+                    <span class="text-[10px] font-mono text-cyan-400">TXT, MD, JSON</span>
+                </div>
+                
+                <div id="drop-zone" onclick="document.getElementById('file-input').click()" class="border-2 border-dashed border-slate-700 hover:border-cyan-500 rounded-xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition bg-slate-950/40 hover:bg-cyan-950/20 group">
+                    <input type="file" id="file-input" accept=".txt,.md,.json,.pdf,.csv" class="hidden" onchange="handleFileUpload(event)">
+                    <div class="w-10 h-10 rounded-full bg-slate-900 group-hover:bg-cyan-900/50 flex items-center justify-center text-slate-400 group-hover:text-cyan-300 transition mb-2">
+                        📄
+                    </div>
+                    <span class="text-xs font-bold text-slate-300 group-hover:text-cyan-200">Click to upload SOP document</span>
+                    <span class="text-[10px] text-slate-500 mt-0.5">Air-gapped local memory ingestion</span>
+                </div>
+            </div>
+
+            <!-- Section 2: Pre-Loaded Curated SOPs -->
+            <div class="cyber-card rounded-2xl p-4 border border-slate-800 flex flex-col space-y-2.5">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xs font-mono font-bold text-slate-200 uppercase tracking-wider">Preloaded Sample SOPs</h2>
+                    <span class="text-[10px] font-mono text-amber-400">MRPL Ground Truth</span>
+                </div>
+                
+                <div class="flex flex-col space-y-1.5 text-xs font-mono">
+                    <button onclick="selectSampleSOP('mrpl_refinery_sop_master_handbook.txt')" class="p-2 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-left transition flex items-center justify-between group">
+                        <div class="truncate pr-2">
+                            <span class="text-slate-200 group-hover:text-cyan-300 block truncate">📘 MRPL SOP Master Handbook</span>
+                            <span class="text-[10px] text-slate-500">Section 14: Emergency DOP</span>
+                        </div>
+                        <span class="text-[10px] text-cyan-400">Load ➔</span>
+                    </button>
+
+                    <button onclick="selectSampleSOP('plant_safety_interlock_sop_102.txt')" class="p-2 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-left transition flex items-center justify-between group">
+                        <div class="truncate pr-2">
+                            <span class="text-slate-200 group-hover:text-cyan-300 block truncate">⚡ SOP-102 Safety Interlocks</span>
+                            <span class="text-[10px] text-slate-500">ESD-1 High-High Temp Trip</span>
+                        </div>
+                        <span class="text-[10px] text-cyan-400">Load ➔</span>
+                    </button>
+
+                    <button onclick="selectSampleSOP('centrifugal_pump_vibration_maintenance_sop.txt')" class="p-2 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-left transition flex items-center justify-between group">
+                        <div class="truncate pr-2">
+                            <span class="text-slate-200 group-hover:text-cyan-300 block truncate">⚙️ SOP-305 Pump Vibration</span>
+                            <span class="text-[10px] text-slate-500">ISO 10816 Zone Severity</span>
+                        </div>
+                        <span class="text-[10px] text-cyan-400">Load ➔</span>
+                    </button>
+
+                    <button onclick="selectSampleSOP('dop_procurement_authorization_memo.txt')" class="p-2 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-left transition flex items-center justify-between group">
+                        <div class="truncate pr-2">
+                            <span class="text-slate-200 group-hover:text-cyan-300 block truncate">📋 DOP Authorization Memo</span>
+                            <span class="text-[10px] text-slate-500">INR 45 Lakhs Retubing</span>
+                        </div>
+                        <span class="text-[10px] text-cyan-400">Load ➔</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section 3: Indexing Telemetry & Chunks Status -->
+            <div class="cyber-card rounded-2xl p-4 border border-slate-800 flex flex-col space-y-3">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xs font-mono font-bold text-slate-200 uppercase tracking-wider">Corpus Index Telemetry</h2>
+                    <span id="index-badge" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-950 text-emerald-300">ACTIVE</span>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+                    <div class="p-2 bg-slate-950 rounded-lg border border-slate-800">
+                        <span class="text-[10px] text-slate-400 block">Documents</span>
+                        <span id="stat-docs" class="text-base font-bold text-cyan-400">4 Files</span>
+                    </div>
+                    <div class="p-2 bg-slate-950 rounded-lg border border-slate-800">
+                        <span class="text-[10px] text-slate-400 block">Total Chunks</span>
+                        <span id="stat-chunks" class="text-base font-bold text-purple-400">18 Chunks</span>
+                    </div>
+                    <div class="p-2 bg-slate-950 rounded-lg border border-slate-800">
+                        <span class="text-[10px] text-slate-400 block">Total Tokens</span>
+                        <span id="stat-tokens" class="text-base font-bold text-emerald-400">2,840</span>
+                    </div>
+                    <div class="p-2 bg-slate-950 rounded-lg border border-slate-800">
+                        <span class="text-[10px] text-slate-400 block">Unique Terms</span>
+                        <span id="stat-terms" class="text-base font-bold text-amber-400">742</span>
+                    </div>
+                </div>
+
+                <button onclick="reindexCorpus()" class="w-full py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-xl text-xs font-mono font-bold transition flex items-center justify-center space-x-1.5 shadow-lg shadow-cyan-600/20">
+                    <span>⚡ Re-Index &amp; Tokenize Corpus</span>
+                </button>
+            </div>
+
+            <!-- Section 4: RAGFlow Live Chunks Inspector Drawer -->
+            <div class="cyber-card rounded-2xl p-4 border border-slate-800 flex flex-col space-y-2">
+                <div class="flex items-center justify-between cursor-pointer" onclick="toggleChunksList()">
+                    <h2 class="text-xs font-mono font-bold text-slate-200 uppercase tracking-wider">Inspect Chunks (<span id="chunk-drawer-count">18</span>)</h2>
+                    <span id="chunk-toggle-icon" class="text-xs text-cyan-400">▼</span>
+                </div>
+                <div id="chunks-container" class="hidden flex flex-col space-y-2 max-h-64 overflow-y-auto custom-scrollbar pt-2 text-[11px] font-mono text-slate-300">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- RIGHT MAIN AREA: ChatGPT / Gemini Style Conversational Stream -->
+        <main class="flex-1 flex flex-col bg-[#050811] relative overflow-hidden">
+            
+            <!-- Quick Demo Prompts Header Bar -->
+            <div class="p-3 border-b border-slate-800/80 bg-slate-950/60 flex items-center space-x-2 overflow-x-auto custom-scrollbar flex-shrink-0">
+                <span class="text-[10px] font-mono font-bold text-slate-400 whitespace-nowrap">DEMO PROMPTS:</span>
+                
+                <button onclick="setPrompt('Search MRPL Standard Operating Procedures for Section 14: Emergency Turnaround delegation of power limits and required General Manager approval thresholds.')" class="px-2.5 py-1 rounded-full bg-slate-900 hover:bg-cyan-950 text-slate-300 hover:text-cyan-300 border border-slate-800 text-[11px] font-mono whitespace-nowrap transition">
+                    💰 Section 14 DOP Limits
+                </button>
+                <button onclick="setPrompt('What is the Emergency Shutdown trigger criteria for high-high temperature interlock TT-101-HH under SOP-102?')" class="px-2.5 py-1 rounded-full bg-slate-900 hover:bg-cyan-950 text-slate-300 hover:text-cyan-300 border border-slate-800 text-[11px] font-mono whitespace-nowrap transition">
+                    ⚡ SOP-102 ESD-1 Interlock
+                </button>
+                <button onclick="setPrompt('According to SOP-305, what is the maximum acceptable vibration velocity RMS for centrifugal pumps before emergency trip?')" class="px-2.5 py-1 rounded-full bg-slate-900 hover:bg-cyan-950 text-slate-300 hover:text-cyan-300 border border-slate-800 text-[11px] font-mono whitespace-nowrap transition">
+                    ⚙️ SOP-305 Pump Vibration
+                </button>
+                <button onclick="setPrompt('What ASME standard governs crude furnace fired heater tube replacement at MRPL, and what is the required inspection frequency?')" class="px-2.5 py-1 rounded-full bg-slate-900 hover:bg-cyan-950 text-slate-300 hover:text-cyan-300 border border-slate-800 text-[11px] font-mono whitespace-nowrap transition">
+                    🔍 ASME B31.3 Inspection Policy
+                </button>
+            </div>
+
+            <!-- Chat Message Stream -->
+            <div id="chat-messages" class="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6 space-y-6">
+                
+                <!-- Initial Welcome Message from MRPL Sovereign Bot -->
+                <div class="flex items-start space-x-3.5 max-w-3xl">
+                    <div class="w-8 h-8 rounded-xl bg-cyan-950 border border-cyan-500/50 flex items-center justify-center font-bold text-cyan-300 text-xs flex-shrink-0 shadow-lg shadow-cyan-500/20">
+                        AI
+                    </div>
+                    <div class="flex-1 bg-slate-900/90 rounded-2xl rounded-tl-none p-4 border border-slate-800 shadow-md">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-cyan-300 font-mono">MRPL Sovereign Knowledge Assistant (RAGFlow Hybrid Engine)</span>
+                            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">100% AIR-GAPPED</span>
+                        </div>
+                        <div class="text-sm text-slate-200 leading-relaxed font-sans space-y-2">
+                            <p>
+                                Welcome to the <strong>MRPL Sovereign RAG Studio</strong>. I am your on-premise industrial knowledge assistant, running strictly on local sovereign hardware with zero cloud egress.
+                            </p>
+                            <p class="text-xs text-slate-400">
+                                I am grounded in your local SOP handbooks, interlock thresholds, and delegation of power limits. Ask any operational question or select a demo prompt above to test live retrieval!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Chat Input Area -->
+            <div class="p-4 border-t border-slate-800 bg-slate-950/90 flex-shrink-0">
+                <div class="max-w-4xl mx-auto flex flex-col space-y-2">
+                    <div class="relative flex items-end rounded-2xl bg-slate-900/90 border border-slate-700 focus-within:border-cyan-500 focus-within:ring-1 focus-within:ring-cyan-500 shadow-xl transition">
+                        <textarea id="prompt-input" rows="2" placeholder="Ask about MRPL SOPs, DOP financial limits, vibration thresholds, or boiler tube policies..." class="w-full bg-transparent p-3.5 pr-28 text-sm text-slate-100 placeholder-slate-500 focus:outline-none resize-none font-sans custom-scrollbar" onkeydown="handleKey(event)"></textarea>
+                        
+                        <div class="absolute right-2.5 bottom-2.5 flex items-center space-x-2">
+                            <button id="send-btn" onclick="sendPrompt()" class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white rounded-xl text-xs font-mono font-bold transition flex items-center space-x-1.5 shadow-lg shadow-cyan-500/25">
+                                <span>Ask SOP Bot</span>
+                                <span id="send-arrow">➔</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between text-[11px] font-mono text-slate-500 px-2">
+                        <span>Model: <strong class="text-slate-400">DeepSeek-R1 (BM25 Grounded)</strong></span>
+                        <span>Zero External API Calls • 100% Confidentiality Guaranteed</span>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- SLIDE-OUT SOURCE CHUNK INSPECTOR DRAWER (RAGFlow Style) -->
+        <div id="source-drawer" class="hidden absolute top-0 right-0 w-96 h-full bg-[#090e1d] border-l border-cyan-500/40 shadow-2xl z-40 flex flex-col transition">
+            <div class="p-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                    <h3 class="font-bold text-xs text-slate-100 font-mono">Grounded Source Chunk Viewer</h3>
+                </div>
+                <button onclick="closeSourceDrawer()" class="text-slate-400 hover:text-white text-xs font-mono px-2 py-1 bg-slate-900 rounded">✕</button>
+            </div>
+            
+            <div class="p-4 flex-1 overflow-y-auto custom-scrollbar flex flex-col space-y-3 font-mono text-xs">
+                <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <span class="text-[10px] text-slate-400 block">Document Name:</span>
+                    <span id="drawer-doc-name" class="font-bold text-cyan-300">--</span>
+                </div>
+                <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <span class="text-[10px] text-slate-400 block">Relevance BM25 Score:</span>
+                    <span id="drawer-doc-score" class="font-bold text-emerald-400">--</span>
+                </div>
+                <div class="flex flex-col space-y-1">
+                    <span class="text-[10px] text-slate-400">Verbatim Chunk Snippet:</span>
+                    <div id="drawer-doc-text" class="p-3 bg-slate-950 rounded-xl border border-slate-800 text-slate-200 leading-relaxed max-h-96 overflow-y-auto custom-scrollbar whitespace-pre-wrap font-sans text-xs">
+                        --
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        const API_BASE = window.location.origin;
+        let lastRetrievedChunks = [];
+
+        async function loadTelemetry() {
+            try {
+                const res = await fetch(`${API_BASE}/api/rag/documents`);
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById("stat-docs").innerText = `${data.total_documents} Files`;
+                    document.getElementById("stat-chunks").innerText = `${data.total_chunks} Chunks`;
+                    document.getElementById("stat-tokens").innerText = data.total_tokens_indexed.toLocaleString();
+                    document.getElementById("stat-terms").innerText = data.unique_terms_indexed.toLocaleString();
+                    document.getElementById("chunk-drawer-count").innerText = data.total_chunks;
+                    
+                    renderChunksDrawer(data.chunks || []);
+                }
+            } catch (e) {
+                console.error("Failed to load RAG telemetry:", e);
+            }
+        }
+
+        function renderChunksDrawer(chunks) {
+            const container = document.getElementById("chunks-container");
+            if (!chunks || chunks.length === 0) {
+                container.innerHTML = `<div class="text-slate-500 p-2 text-center">No chunks indexed yet.</div>`;
+                return;
+            }
+            container.innerHTML = chunks.map((c, i) => `
+                <div onclick="openRawChunk('${c.doc_id}', '${encodeURIComponent(c.text)}')" class="p-2.5 bg-slate-950 rounded-lg border border-slate-800 hover:border-cyan-500/50 cursor-pointer transition">
+                    <div class="flex items-center justify-between text-[10px] text-cyan-400 font-bold mb-1">
+                        <span>Chunk #${i+1} • ${c.doc_id}</span>
+                        <span class="text-slate-500">${c.tokens ? c.tokens.length : 0} tokens</span>
+                    </div>
+                    <div class="text-[10px] text-slate-300 line-clamp-2">${c.text}</div>
+                </div>
+            `).join("");
+        }
+
+        function toggleChunksList() {
+            const el = document.getElementById("chunks-container");
+            const icon = document.getElementById("chunk-toggle-icon");
+            if (el.classList.contains("hidden")) {
+                el.classList.remove("hidden");
+                icon.innerText = "▲";
+            } else {
+                el.classList.add("hidden");
+                icon.innerText = "▼";
+            }
+        }
+
+        function openRawChunk(docId, encodedText, score = "Indexed In Corpus") {
+            document.getElementById("drawer-doc-name").innerText = docId;
+            document.getElementById("drawer-doc-score").innerText = score;
+            document.getElementById("drawer-doc-text").innerText = decodeURIComponent(encodedText);
+            document.getElementById("source-drawer").classList.remove("hidden");
+        }
+
+        function closeSourceDrawer() {
+            document.getElementById("source-drawer").classList.add("hidden");
+        }
+
+        function setPrompt(text) {
+            document.getElementById("prompt-input").value = text;
+            document.getElementById("prompt-input").focus();
+        }
+
+        function handleKey(e) {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                sendPrompt();
+            }
+        }
+
+        async function selectSampleSOP(filename) {
+            try {
+                const res = await fetch(`${API_BASE}/api/rag/load-sample?filename=${encodeURIComponent(filename)}`, { method: "POST" });
+                const data = await res.json();
+                loadTelemetry();
+                appendAIMessage(`Loaded **${filename}** into sovereign in-memory BM25 index (${data.chunks_indexed} new chunks). You can now ask questions about this document!`);
+            } catch (e) {
+                console.error("Error loading sample SOP:", e);
+            }
+        }
+
+        async function reindexCorpus() {
+            try {
+                document.getElementById("index-badge").innerText = "INDEXING...";
+                document.getElementById("index-badge").className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-950 text-amber-300 animate-pulse";
+                
+                const res = await fetch(`${API_BASE}/api/rag/reindex`, { method: "POST" });
+                const data = await res.json();
+                
+                document.getElementById("index-badge").innerText = "ACTIVE";
+                document.getElementById("index-badge").className = "px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-950 text-emerald-300";
+                loadTelemetry();
+                appendAIMessage(`✓ Complete corpus successfully re-indexed into memory! Indexed **${data.total_chunks} chunks** across **${data.total_documents} documents** with 100% air-gap compliance.`);
+            } catch (e) {
+                console.error("Reindex error:", e);
+            }
+        }
+
+        async function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                appendUserMessage(`Uploading file: ${file.name}`);
+                const res = await fetch(`${API_BASE}/api/rag/upload`, {
+                    method: "POST",
+                    body: formData
+                });
+                const data = await res.json();
+                loadTelemetry();
+                appendAIMessage(`✓ Successfully ingested and chunked **${file.name}** into **${data.chunks_created} atomic chunks**. Ready for grounded question answering!`);
+            } catch (err) {
+                console.error("Upload error:", err);
+                appendAIMessage(`🚨 Error uploading document: ${err.message}`);
+            }
+        }
+
+        function appendUserMessage(text) {
+            const chat = document.getElementById("chat-messages");
+            const div = document.createElement("div");
+            div.className = "flex items-start justify-end space-x-3 max-w-3xl ml-auto";
+            div.innerHTML = `
+                <div class="bg-cyan-950/70 border border-cyan-600/40 rounded-2xl rounded-tr-none p-3.5 text-sm text-cyan-100 font-sans shadow-md">
+                    ${text}
+                </div>
+                <div class="w-8 h-8 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-slate-300 text-xs flex-shrink-0">
+                    U
+                </div>
+            `;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function appendAIMessage(markdownText, citations = [], rawChunks = []) {
+            const chat = document.getElementById("chat-messages");
+            const div = document.createElement("div");
+            div.className = "flex items-start space-x-3.5 max-w-3xl";
+            
+            lastRetrievedChunks = rawChunks || [];
+
+            const citationHtml = citations && citations.length > 0 ? `
+                <div class="mt-3 pt-2.5 border-t border-slate-800/80 flex flex-wrap gap-1.5">
+                    <span class="text-[10px] font-mono text-slate-500 mr-1 flex items-center">Grounded Sources:</span>
+                    ${citations.map((c, idx) => {
+                        const chunkMatch = lastRetrievedChunks.find(ch => ch.doc_id === c) || (lastRetrievedChunks[idx] || {});
+                        const encoded = encodeURIComponent(chunkMatch.text || "Direct Grounded Reference");
+                        const score = chunkMatch.relevance_score ? `Score: ${chunkMatch.relevance_score}` : "Verified";
+                        return `<button onclick="openRawChunk('${c}', '${encoded}', '${score}')" class="px-2.5 py-0.5 rounded-full bg-slate-950 hover:bg-cyan-950 text-cyan-400 hover:text-cyan-200 border border-cyan-800/60 hover:border-cyan-500 text-[10px] font-mono transition flex items-center space-x-1">
+                            <span>📌 [Ref ${idx+1}: ${c}]</span>
+                            <span class="text-[9px] text-slate-500">🔍</span>
+                        </button>`;
+                    }).join("")}
+                </div>
+            ` : "";
+
+            div.innerHTML = `
+                <div class="w-8 h-8 rounded-xl bg-cyan-950 border border-cyan-500/50 flex items-center justify-center font-bold text-cyan-300 text-xs flex-shrink-0 shadow-lg shadow-cyan-500/20">
+                    AI
+                </div>
+                <div class="flex-1 bg-slate-900/90 rounded-2xl rounded-tl-none p-4 border border-slate-800 shadow-md">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-cyan-300 font-mono">MRPL Sovereign Assistant</span>
+                        <span class="text-[10px] font-mono text-emerald-400">Grounded SOP Answer</span>
+                    </div>
+                    <div class="text-sm text-slate-200 leading-relaxed font-sans prose prose-invert max-w-none">
+                        ${marked.parse(markdownText)}
+                    </div>
+                    ${citationHtml}
+                </div>
+            `;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        async function sendPrompt() {
+            const input = document.getElementById("prompt-input");
+            const prompt = input.value.trim();
+            if (!prompt) return;
+
+            appendUserMessage(prompt);
+            input.value = "";
+
+            const sendBtn = document.getElementById("send-btn");
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = `<span>Thinking...</span>`;
+
+            try {
+                const res = await fetch(`${API_BASE}/api/rag/chat`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt: prompt, top_k: 3 })
+                });
+                const data = await res.json();
+                appendAIMessage(data.answer, data.sources_cited, data.retrieved_chunks);
+            } catch (err) {
+                console.error("Chat error:", err);
+                appendAIMessage(`🚨 Error executing sovereign retrieval: ${err.message}`);
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = `<span>Ask SOP Bot</span> <span>➔</span>`;
+            }
+        }
+
+        window.onload = loadTelemetry;
+    </script>
+</body>
+</html>"""
+
+with open("ui/static/rag_studio.html", "w", encoding="utf-8") as f:
+    f.write(rag_studio_html_content)
+print("[OK] Created ui/static/rag_studio.html")
+
+
+# =====================================================================
 # 2. CREATE UNIFIED sample_files/ DIRECTORY STRUCTURE
 # =====================================================================
 base_sample_dir = "sample_files"

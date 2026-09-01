@@ -175,9 +175,11 @@ def generate_certificate(
     output_pdf_name: str = "MRPL_Proof_of_Execution_Certificate.pdf",
     extracted_metrics: Optional[Dict[str, Any]] = None,
     is_tampered: bool = False,
+    is_airgap_breached: bool = False,
 ) -> Dict[str, str]:
     """
-    Generates a prestigious, print-ready corporate certificate of achievement or a verified revocation certificate when tampered.
+    Renders an official PSU Proof-of-Execution Certificate in high-resolution PNG & PDF formats.
+    Dynamically renders alert stamps, red themes, and revocation notices if tampered or air-gap is breached.
     Returns: {"png_path": str, "pdf_path": str, "certificate_id": str, "root_hash": str}
     """
     base_dir = Path(deliverables_dir)
@@ -186,17 +188,20 @@ def generate_certificate(
     ledger_path = base_dir / "audit_ledger.jsonl"
     records = load_ledger_records(ledger_path)
 
-    # 1. Canvas Dimensions (High-Resolution 2000 x 1400 px, 300 DPI equivalent)
+    is_invalid = is_tampered or is_airgap_breached
     W, H = 2000, 1400
-    img = Image.new("RGB", (W, H), BG_PARCHMENT)
+    bg_color = STATUS_RED_BG if is_invalid else BG_PARCHMENT
+    img = Image.new("RGB", (W, H), color=bg_color)
     draw = ImageDraw.Draw(img)
 
-    # Fonts
-    f_org = find_font(34, bold=True)
-    f_sub_org = find_font(16, bold=False)
-    f_engine = find_font(18, bold=True)
-    f_title = find_font(34 if is_tampered else 36, bold=True)
-    f_body = find_font(18, bold=False)
+    # ============================================================
+    # 1. TYPOGRAPHY HIERARCHY
+    # ============================================================
+    f_org = find_font(26, bold=True)
+    f_sub_org = find_font(13, bold=False)
+    f_engine = find_font(14, bold=True)
+    f_title = find_font(22, bold=True)
+    f_body = find_font(14, bold=False)
     f_card_title = find_font(14, bold=True)
     f_card_val = find_font(20, bold=True)
     f_card_sub = find_font(13, bold=False)
@@ -205,19 +210,26 @@ def generate_certificate(
     f_sig_name = find_font(16, bold=True)
     f_sig_title = find_font(13, bold=False)
 
-    # Theme colors based on tamper state
-    border_main = STATUS_RED if is_tampered else EMERALD_DARK
-    border_accent = STATUS_RED if is_tampered else GOLD_RICH
-    cert_title_text = "⚠️ CERTIFICATE OF MERKLE BREACH — CRYPTOGRAPHIC INTEGRITY COMPROMISED" if is_tampered else CERT_TITLE
-    cert_title_color = STATUS_RED if is_tampered else NAVY_DEEP
+    # Theme colors based on tamper / air-gap state
+    border_main = STATUS_RED if is_invalid else EMERALD_DARK
+    border_accent = STATUS_RED if is_invalid else GOLD_RICH
+    
+    if is_airgap_breached:
+        cert_title_text = "🚨 CERTIFICATE OF AIR-GAP BREACH — EXECUTION UNRELIABLE / REVOKED"
+    elif is_tampered:
+        cert_title_text = "⚠️ CERTIFICATE OF MERKLE BREACH — CRYPTOGRAPHIC INTEGRITY COMPROMISED"
+    else:
+        cert_title_text = CERT_TITLE
+        
+    cert_title_color = STATUS_RED if is_invalid else NAVY_DEEP
 
     # ============================================================
     # 2. ORNATE PRESTIGE BORDERS (Multi-layered Guilloche)
     # ============================================================
     draw.rectangle((24, 24, W - 24, H - 24), outline=border_main, width=6)
     draw.rectangle((34, 34, W - 34, H - 34), outline=border_accent, width=3)
-    draw.rectangle((44, 44, W - 44, H - 44), outline=STATUS_RED if is_tampered else EMERALD_MED, width=1)
-    draw.rectangle((48, 48, W - 48, H - 48), outline=STATUS_RED_BG if is_tampered else GOLD_LIGHT, width=1)
+    draw.rectangle((44, 44, W - 44, H - 44), outline=STATUS_RED if is_invalid else EMERALD_MED, width=1)
+    draw.rectangle((48, 48, W - 48, H - 48), outline=STATUS_RED_BG if is_invalid else GOLD_LIGHT, width=1)
 
     corner_size = 40
     for cx, cy in [(48, 48), (W - 48, 48), (48, H - 48), (W - 48, H - 48)]:
@@ -226,8 +238,11 @@ def generate_certificate(
         draw.line((cx, cy, cx + dx * corner_size, cy), fill=border_accent, width=4)
         draw.line((cx, cy, cx, cy + dy * corner_size), fill=border_accent, width=4)
 
-    # Optional VOID Watermark when tampered
-    if is_tampered:
+    # Watermark when invalid
+    if is_airgap_breached:
+        f_watermark = find_font(70, bold=True)
+        draw_centered_text(draw, "🚨 VOID — AIR-GAP BREACH DETECTED — 0% SOVEREIGN 🚨", 680, f_watermark, "#FCA5A5", W)
+    elif is_tampered:
         f_watermark = find_font(72, bold=True)
         draw_centered_text(draw, "🚨 VOID — MERKLE FORGERY CAUGHT — AUDIT FAILED 🚨", 680, f_watermark, "#FCA5A5", W)
 
@@ -237,14 +252,20 @@ def generate_certificate(
     draw.rectangle((100, 65, W - 100, 67), fill=border_accent)
     draw_centered_text(draw, ORG_NAME, 80, f_org, border_main, W)
     draw_centered_text(draw, ORG_SUBTITLE, 126, f_sub_org, TEXT_MUTED, W)
-    draw_centered_text(draw, ENGINE_TITLE, 154, f_engine, STATUS_RED if is_tampered else GOLD_DARK, W)
+    draw_centered_text(draw, ENGINE_TITLE, 154, f_engine, STATUS_RED if is_invalid else GOLD_DARK, W)
 
     draw.line((250, 185, W - 250, 185), fill=border_accent, width=2)
     draw.ellipse((W//2 - 6, 185 - 6, W//2 + 6, 185 + 6), fill=border_accent)
 
     draw_centered_text(draw, cert_title_text, 202, f_title, cert_title_color, W)
 
-    if is_tampered:
+    if is_airgap_breached:
+        citation = (
+            "CRITICAL SECURITY VIOLATION: An outbound WAN packet egress / external cloud call was detected during or after "
+            "the execution of Problem Statement MRPL PS 26117. Data confidentiality has been compromised by unauthorized external communication. "
+            "This certificate is officially REVOKED, INVALIDATED, and declared UNRELIABLE for PSU regulatory compliance."
+        )
+    elif is_tampered:
         citation = (
             "CRITICAL SECURITY COMPLIANCE NOTICE: An unauthorized modification / in-memory payload tampering was detected "
             "during the execution verification trace for Problem Statement MRPL PS 26117. The SHA-256 Merkle DAG seal has failed "
@@ -273,7 +294,7 @@ def generate_certificate(
 
     cy_txt = 265
     for l in lines:
-        draw_centered_text(draw, l, cy_txt, f_body, STATUS_RED if is_tampered else TEXT_BLACK, W)
+        draw_centered_text(draw, l, cy_txt, f_body, STATUS_RED if is_invalid else TEXT_BLACK, W)
         cy_txt += 26
 
     # ============================================================
@@ -289,7 +310,46 @@ def generate_certificate(
     life_yrs = metrics.get("remaining_life_years", 5.27)
     root_hash = records[-1].get("hash", hashlib.sha256(b"MRPL_ROOT").hexdigest()) if records else "e3b0c44298fc1c149afbf4c8996fb924"
 
-    if is_tampered:
+    if is_airgap_breached:
+        cards_data = [
+            {
+                "badge": "AIR-GAP VIOLATION",
+                "title": "NETWORK SNIFFER",
+                "val": "WAN EGRESS",
+                "val_color": STATUS_RED,
+                "sub": "External Call Detected",
+                "bg": STATUS_RED_BG,
+                "border": STATUS_RED,
+            },
+            {
+                "badge": "ASME B31.3 UNVERIFIED",
+                "title": "SANDBOX INTEGRITY",
+                "val": "UNRELIABLE",
+                "val_color": STATUS_RED,
+                "sub": "Non-Airgapped Output",
+                "bg": STATUS_RED_BG,
+                "border": STATUS_RED,
+            },
+            {
+                "badge": "SOVEREIGN STATUS",
+                "title": "AIR-GAP AUDIT",
+                "val": "0% SOVEREIGN",
+                "val_color": STATUS_RED,
+                "sub": "Data Leak Risk",
+                "bg": STATUS_RED_BG,
+                "border": STATUS_RED,
+            },
+            {
+                "badge": "GOVERNANCE STATUS",
+                "title": "PSU AUDIT LEDGER",
+                "val": "REVOKED",
+                "val_color": STATUS_RED,
+                "sub": "Regulatory Violation",
+                "bg": STATUS_RED_BG,
+                "border": STATUS_RED,
+            },
+        ]
+    elif is_tampered:
         cards_data = [
             {
                 "badge": "INTEGRITY ALERT",

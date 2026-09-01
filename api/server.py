@@ -143,6 +143,82 @@ def serve_verification_portal(certificate_id: Optional[str] = None):
     return {"error": "ui/static/verify.html not found"}
 
 
+@app.get("/rag-studio")
+def serve_rag_studio():
+    """Serves the Dedicated Sovereign RAG Studio Interface."""
+    rag_path = os.path.join("ui", "static", "rag_studio.html")
+    if os.path.exists(rag_path):
+        return FileResponse(rag_path)
+    return {"error": "ui/static/rag_studio.html not found"}
+
+
+@app.get("/api/rag/documents")
+def get_rag_documents():
+    """Returns current Sovereign RAG corpus statistics and chunk list."""
+    stats = engine.rag.get_stats()
+    return {
+        **stats,
+        "chunks": engine.rag.chunks[:50]
+    }
+
+
+@app.post("/api/rag/upload")
+async def upload_rag_document(file: UploadFile = File(...)):
+    """Uploads and ingests a custom refinery SOP document into Sovereign RAG."""
+    os.makedirs(os.path.join("sample_files", "02_sovereign_rag_sops"), exist_ok=True)
+    save_path = os.path.join("sample_files", "02_sovereign_rag_sops", file.filename)
+    content = await file.read()
+    with open(save_path, "wb") as f:
+        f.write(content)
+    
+    text_content = content.decode("utf-8", errors="ignore")
+    chunks_created = engine.rag.add_document(doc_id=file.filename, content=text_content, metadata={"source": file.filename})
+    return {
+        "status": "DOCUMENT_INGESTED_AND_CHUNKED",
+        "filename": file.filename,
+        "chunks_created": chunks_created,
+        "total_corpus_chunks": len(engine.rag.chunks)
+    }
+
+
+@app.post("/api/rag/load-sample")
+def load_sample_sop(filename: str):
+    """Loads a specific pre-loaded refinery SOP file into in-memory RAG."""
+    fpath = os.path.join("sample_files", "02_sovereign_rag_sops", filename)
+    if not os.path.exists(fpath):
+        fpath = os.path.join("data", filename)
+    
+    if os.path.exists(fpath):
+        chunks = engine.rag.load_file(fpath, metadata={"source": filename})
+        return {"status": "SAMPLE_SOP_LOADED", "filename": filename, "chunks_indexed": chunks}
+    return {"status": "ERROR_FILE_NOT_FOUND", "filename": filename}
+
+
+@app.post("/api/rag/reindex")
+def reindex_rag_corpus():
+    """Re-indexes all available SOP documents from disk into memory."""
+    engine.rag.clear()
+    sop_dirs = [os.path.join("sample_files", "02_sovereign_rag_sops"), "data"]
+    for s_dir in sop_dirs:
+        if os.path.exists(s_dir):
+            for fname in os.listdir(s_dir):
+                if fname.endswith(".txt") or fname.endswith(".md"):
+                    fpath = os.path.join(s_dir, fname)
+                    engine.rag.load_file(fpath, metadata={"source": fname})
+    return engine.rag.get_stats()
+
+
+class RAGChatRequest(BaseModel):
+    prompt: str
+    top_k: int = 3
+
+
+@app.post("/api/rag/chat")
+def chat_rag_endpoint(req: RAGChatRequest):
+    """Answers user prompt strictly grounded in on-premise refinery SOP documents."""
+    return engine.rag.chat(req.prompt, top_k=req.top_k, model_adapter_instance=model_adapter)
+
+
 @app.get("/api/telemetry")
 @app.get("/api/hardware/telemetry")
 def get_telemetry():
@@ -166,23 +242,35 @@ def get_airgap_audit_log():
 
 @app.post("/api/groq/query")
 @app.post("/api/airgap/test-egress")
+@app.post("/api/airgap/breach-test")
 def test_airgap_egress(req: Optional[Dict[str, Any]] = None):
     """
     Demonstrates live socket interception in front of judges by triggering a simulated
     public WAN egress attempt without exposing or using any real cloud keys.
+    Immediately invalidates the certificate to show that external calls compromise reliability!
     """
     res = network_monitor.trigger_egress_test()
+    try:
+        generate_certificate(is_airgap_breached=True)
+    except Exception:
+        pass
     return {
         **res,
-        "cloud_response": "🚨 [SECURITY INTERCEPTION] Outbound WAN packet to 198.51.100.1:80 caught by Sovereign Sniffer! Egress breach flagged.",
-        "egress_intercepted": True
+        "cloud_response": "🚨 [SECURITY INTERCEPTION] Outbound WAN packet to 198.51.100.1:80 caught by Sovereign Sniffer! Egress breach flagged. Certificate invalidated.",
+        "egress_intercepted": True,
+        "certificate_status": "REVOKED_AIRGAP_BREACH"
     }
 
 
 @app.post("/api/airgap/reset")
 def reset_airgap_status():
     """Resets airgap monitor violations back to clean state."""
-    return network_monitor.reset_airgap()
+    res = network_monitor.reset_airgap()
+    try:
+        generate_certificate(is_airgap_breached=False)
+    except Exception:
+        pass
+    return res
 
 
 @app.post("/api/local/chat")
@@ -402,20 +490,24 @@ def execute_workflow(req: WorkflowRequest):
 
 @app.get("/api/airgap/certificate/pdf")
 def download_certificate_pdf():
-    """Serves the print-ready MRPL Corporate Achievement Certificate PDF (or REVOKED certificate if tampered)."""
+    """Serves the print-ready MRPL Corporate Achievement Certificate PDF (or REVOKED certificate if tampered or air-gap breached)."""
     integrity = engine.ledger.verify_integrity()
+    airgap_state = network_monitor.scan_sockets()
     is_tampered = not integrity.get("is_valid", True)
-    generate_certificate(is_tampered=is_tampered)
+    is_airgap_breached = not airgap_state.get("is_airgapped", True)
+    generate_certificate(is_tampered=is_tampered, is_airgap_breached=is_airgap_breached)
     path = os.path.join("deliverables", "MRPL_Proof_of_Execution_Certificate.pdf")
     return FileResponse(path, filename="MRPL_Proof_of_Execution_Certificate.pdf", media_type="application/pdf")
 
 
 @app.get("/api/airgap/certificate/png")
 def download_certificate_png():
-    """Serves the high-resolution MRPL Corporate Achievement Certificate PNG (or REVOKED certificate if tampered)."""
+    """Serves the high-resolution MRPL Corporate Achievement Certificate PNG (or REVOKED certificate if tampered or air-gap breached)."""
     integrity = engine.ledger.verify_integrity()
+    airgap_state = network_monitor.scan_sockets()
     is_tampered = not integrity.get("is_valid", True)
-    generate_certificate(is_tampered=is_tampered)
+    is_airgap_breached = not airgap_state.get("is_airgapped", True)
+    generate_certificate(is_tampered=is_tampered, is_airgap_breached=is_airgap_breached)
     path = os.path.join("deliverables", "MRPL_Proof_of_Execution_Certificate.png")
     return FileResponse(path, filename="MRPL_Proof_of_Execution_Certificate.png", media_type="image/png")
 
