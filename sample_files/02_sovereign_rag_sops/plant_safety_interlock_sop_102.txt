@@ -1,0 +1,8 @@
+================================================================================
+MRPL PLANT SAFETY INTERLOCK & EMERGENCY SHUTDOWN (ESD) PROCEDURE (SOP-102)
+================================================================================
+1. High-High Temperature Interlock (TT-101-HH):
+If furnace coil outlet temperature exceeds 395 °C for more than 15 consecutive seconds, the Emergency Shutdown System (ESD-1) shall automatically trip the main fuel gas shut-off valve (XV-1041) and inject purge steam.
+
+2. Low-Low Flow Interlock (FT-102-LL):
+If crude hydrocarbon feed flow rate drops below 180 m3/hr, burner firing rate shall automatically modulate down to minimum pilot flame to prevent localized coil skin overheating and coking.

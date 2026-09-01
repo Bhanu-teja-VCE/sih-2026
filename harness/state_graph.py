@@ -37,10 +37,14 @@ class StateGraphEngine:
         self.rag = SovereignRAG()
         self.deliverables = DeliverableEngine(output_dir="deliverables")
 
-        # Pre-load refinery standard operating procedures into RAG engine
-        sop_path = os.path.join("data", "refinery_sop_handbook.txt")
-        if os.path.exists(sop_path):
-            self.rag.load_file(sop_path, metadata={"source": "MRPL_SOP_HANDBOOK_V2"})
+        # Pre-load refinery standard operating procedures into Sovereign RAG engine
+        sop_dirs = [os.path.join("sample_files", "02_sovereign_rag_sops"), "data"]
+        for s_dir in sop_dirs:
+            if os.path.exists(s_dir):
+                for fname in os.listdir(s_dir):
+                    if fname.endswith(".txt"):
+                        fpath = os.path.join(s_dir, fname)
+                        self.rag.load_file(fpath, metadata={"source": fname})
 
     def execute_workflow(
         self,

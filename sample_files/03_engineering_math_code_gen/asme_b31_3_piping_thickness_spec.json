@@ -1,0 +1,22 @@
+{
+  "standard": "ASME_B31_3",
+  "formula": "t_min = (P * D) / (2 * (S * E * W + P * Y)) + CA",
+  "parameters": {
+    "design_pressure_mpa": 4.0,
+    "outer_diameter_mm": 219.1,
+    "allowable_stress_mpa": 137.0,
+    "joint_efficiency": 1.0,
+    "weld_factor": 1.0,
+    "temperature_y_coefficient": 0.4,
+    "corrosion_allowance_mm": 3.0,
+    "measured_thickness_mm": 7.48,
+    "annual_corrosion_rate_mm_yr": 0.25
+  },
+  "expected_results": {
+    "pressure_thickness_mm": 3.162,
+    "required_min_thickness_mm": 6.162,
+    "safe_margin_mm": 1.318,
+    "remaining_life_years": 5.27,
+    "status": "APPROVED_SAFE"
+  }
+}

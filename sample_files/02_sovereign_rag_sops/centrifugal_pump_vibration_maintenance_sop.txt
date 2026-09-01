@@ -1,0 +1,11 @@
+================================================================================
+MRPL ROTATING EQUIPMENT & CENTRIFUGAL PUMP MAINTENANCE GUIDELINES (SOP-305)
+================================================================================
+1. ISO 10816 Vibration Severity Limits for Refinery Pumps (P-101A/B):
+- Velocity RMS < 2.8 mm/s: Zone A (Good / Normal Operation)
+- Velocity RMS 2.8 - 4.5 mm/s: Zone B (Acceptable for Unrestricted Long-term Operation)
+- Velocity RMS 4.5 - 7.1 mm/s: Zone C (Unsatisfactory - Plan maintenance within 30 days)
+- Velocity RMS > 7.1 mm/s: Zone D (Critical Danger - Immediate Trip / Standby Switchover)
+
+2. Mechanical Seal Flush Plan:
+All hot hydrocarbon pumps operating above 150 °C must utilize API Plan 53B pressurized barrier fluid system with continuous pressure switch monitoring.

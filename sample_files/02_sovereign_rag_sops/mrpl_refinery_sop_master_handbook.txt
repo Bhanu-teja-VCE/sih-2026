@@ -1,0 +1,31 @@
+================================================================================
+MANGALORE REFINERY AND PETROCHEMICALS LIMITED (MRPL)
+STANDARD OPERATING PROCEDURES & ASSET INTEGRITY MASTER HANDBOOK (REV 2026)
+================================================================================
+
+SECTION 1: GENERAL PRINCIPLES OF COMPUTATIONAL SOVEREIGNTY & AIR-GAP COMPLIANCE
+All refinery engineering data, Piping and Instrumentation Diagrams (P&IDs), ultrasonic inspection logs, financial estimates, and Delegation of Power approval correspondence are classified as STRICTLY CONFIDENTIAL. Transmission of refinery telemetry or documents to external public cloud LLMs (e.g. OpenAI, Anthropic, Groq) constitutes a severe regulatory violation under the Petroleum and Natural Gas Regulatory Board (PNGRB) Cybersecurity Guidelines. All automated synthesis must execute exclusively on on-premise sovereign hardware.
+
+SECTION 2: CRUDE DISTILLATION UNIT (CDU) TUBE INTEGRITY & ASME B31.3 STANDARDS
+2.1 Fired furnace heater tubes (Equipment Tag B-101) operating in heavy sour crude service must maintain a minimum wall thickness governed by ASME B31.3 Paragraph 304.1.2 Modified Barlow's Equation:
+    t_min = (P * D) / (2 * (S * E * W + P * Y)) + c
+Where:
+- P = Internal Design Pressure in MPa
+- D = Outer Pipe Diameter in mm
+- S = Allowable Material Stress at Design Temperature in MPa
+- E = Joint Quality Factor (1.0 for seamless piping)
+- W = Weld Joint Strength Reduction Factor (1.0)
+- Y = Temperature Coefficient (0.4 for ferritic steel under 482 deg C)
+- c = Sum of mechanical tolerances and specified corrosion allowance (standard 3.0 mm for heavy crude).
+
+2.2 Inspection Grid & Corrosion Monitoring Frequency:
+Ultrasonic thickness gauging (NDT) on radiant furnace coils must be conducted at 16 designated test grid locations during every planned turnaround or at intervals not exceeding 24 operating months.
+
+SECTION 14: EMERGENCY TURNAROUND & FINANCIAL DELEGATION OF POWER (DOP)
+14.1 Procurement and Emergency Maintenance Limits:
+(a) Expenditure up to INR 25,00,000/- (Twenty Five Lakhs) may be authorized by the Deputy General Manager (Inspection / Operations).
+(b) Expenditure exceeding INR 25,00,000/- up to INR 1,00,00,000/- (One Crore) requires prior administrative sanction from the Chief General Manager (Technical Services).
+(c) Capital expenditure exceeding INR 1,00,00,000/- requires Board Level Executive Committee approval.
+
+14.2 Boiler Tube Replacement Policy:
+If measured wall thickness drops below the calculated ASME B31.3 t_min threshold with a remaining operational life of less than 12 months, immediate retubing authorization must be initiated under Delegation of Power Item 4.2(b).

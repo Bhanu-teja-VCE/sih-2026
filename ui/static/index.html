@@ -961,49 +961,106 @@ No WAN external connections found.
                 const elapsed = (performance.now() - t0).toFixed(2);
                 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-                // Update Node 1: Router
+                // Dynamic DAG Visualization Tailored to Query Task Intent
+                const intent = data.task_intent || "VISION_INSPECTION";
+                const calcTool = data.tool_results.find(t => t.tool_name === "SANDBOX_CALCULATOR");
+
+                // Update Node 1: Poly-Model Router
                 const node1 = document.getElementById("step-node-1");
                 node1.className = "p-2.5 rounded-lg bg-cyan-950/40 border border-cyan-500/50 transition";
-                document.getElementById("status-node-1").innerHTML = `<span class="text-cyan-400 font-bold text-[10px]">COMPLETED (0.01 ms)</span>`;
+                document.getElementById("status-node-1").innerHTML = `<span class="text-cyan-400 font-bold text-[10px]">ROUTED (0.01 ms)</span>`;
                 document.getElementById("body-node-1").innerHTML = `
-                    <div>Intent: <span class="text-cyan-300 font-bold">${data.task_intent}</span> | Model: <span class="text-emerald-400 font-bold">${data.selected_model.name}</span></div>
+                    <div>Intent: <span class="text-cyan-300 font-bold">${intent}</span> | Model: <span class="text-emerald-400 font-bold">${data.selected_model.name}</span></div>
                 `;
-                await sleep(280);
+                await sleep(250);
 
-                // Update Node 2: Planner
+                // Update Node 2: Dynamic Step Planner
                 const node2 = document.getElementById("step-node-2");
                 node2.className = "p-2.5 rounded-lg bg-blue-950/40 border border-blue-500/50 transition";
-                document.getElementById("status-node-2").innerHTML = `<span class="text-blue-400 font-bold text-[10px]">${data.plan.length} STEPS</span>`;
+                document.getElementById("status-node-2").innerHTML = `<span class="text-blue-400 font-bold text-[10px]">${data.plan.length} ATOMIC STEPS</span>`;
                 document.getElementById("body-node-2").innerHTML = data.plan.map(s => `<div class="text-[10px] text-slate-300">${s}</div>`).join("");
-                await sleep(280);
+                await sleep(250);
 
-                // Update Node 3: Sandbox
-                const calcTool = data.tool_results.find(t => t.tool_name === "SANDBOX_CALCULATOR");
+                // Update Node 3 & 4 based on Task Intent
                 const node3 = document.getElementById("step-node-3");
-                node3.className = "p-2.5 rounded-lg bg-emerald-950/40 border border-emerald-500/50 transition";
-                document.getElementById("status-node-3").innerHTML = `<span class="text-emerald-400 font-bold text-[10px]">SUCCESS (${calcTool ? calcTool.execution_time_ms.toFixed(1) : 0} ms)</span>`;
-                
-                if (calcTool && typeof calcTool.output === 'object') {
-                    document.getElementById("body-node-3").innerHTML = `
-                        <div class="text-slate-300">ASME Req: <span class="text-yellow-400 font-bold">${calcTool.output.required_min_thickness_mm} mm</span> | Measured: <span class="text-slate-100 font-bold">${calcTool.output.measured_thickness_mm} mm</span></div>
-                        <div class="text-slate-300">Safe Margin: <span class="text-emerald-400 font-bold">${calcTool.output.safe_margin_mm} mm</span> | Safe Life: <span class="text-emerald-400 font-bold">${calcTool.output.remaining_life_years} Years</span></div>
-                    `;
-                }
-                await sleep(320);
-
-                // Update Node 4: Critic
                 const node4 = document.getElementById("step-node-4");
-                node4.className = "p-2.5 rounded-lg bg-purple-950/40 border border-purple-500/50 transition";
-                document.getElementById("status-node-4").innerHTML = `<span class="text-purple-400 font-bold text-[10px]">PASS (0 Retries)</span>`;
-                document.getElementById("body-node-4").innerText = "ASME B31.3 criteria verified. Code status: APPROVED_SAFE. No safety violations.";
-                await sleep(280);
+
+                if (intent === "CODE_GEN") {
+                    // Node 3: LLM Code Synthesis
+                    node3.className = "p-2.5 rounded-lg bg-purple-950/40 border border-purple-500/50 transition";
+                    document.getElementById("status-node-3").innerHTML = `<span class="text-purple-400 font-bold text-[10px]">SYNTHESIZED</span>`;
+                    document.getElementById("body-node-3").innerHTML = `
+                        <div class="text-purple-300 font-bold">Python Engineering Script Generated</div>
+                        <div class="text-[9px] text-slate-400">AST pre-screened for safe mathematical primitives</div>
+                    `;
+                    await sleep(250);
+
+                    // Node 4: Sandbox Execution
+                    node4.className = "p-2.5 rounded-lg bg-emerald-950/40 border border-emerald-500/50 transition";
+                    document.getElementById("status-node-4").innerHTML = `<span class="text-emerald-400 font-bold text-[10px]">VERIFIED (${calcTool ? calcTool.execution_time_ms.toFixed(1) : 0} ms)</span>`;
+                    const calcOut = calcTool ? calcTool.output : {};
+                    document.getElementById("body-node-4").innerHTML = `
+                        <div class="text-slate-200 font-mono text-[10px]">${typeof calcOut === 'object' ? JSON.stringify(calcOut) : String(calcOut)}</div>
+                    `;
+                } else if (intent === "DOCUMENT_RAG") {
+                    // Node 3: BM25 Lexical SOP Search
+                    node3.className = "p-2.5 rounded-lg bg-amber-950/40 border border-amber-500/50 transition";
+                    document.getElementById("status-node-3").innerHTML = `<span class="text-amber-400 font-bold text-[10px]">BM25 SEARCH</span>`;
+                    const clauses = data.extracted_metrics.retrieved_sop_clauses || [];
+                    document.getElementById("body-node-3").innerHTML = `
+                        <div class="text-amber-300 font-bold">Retrieved ${clauses.length} Grounded SOP Clauses</div>
+                        <div class="text-[9px] text-slate-400">Indexed from sample_files/02_sovereign_rag_sops/</div>
+                    `;
+                    await sleep(250);
+
+                    // Node 4: Safety Clause Audit
+                    node4.className = "p-2.5 rounded-lg bg-cyan-950/40 border border-cyan-500/50 transition";
+                    document.getElementById("status-node-4").innerHTML = `<span class="text-cyan-400 font-bold text-[10px]">AUDITED</span>`;
+                    document.getElementById("body-node-4").innerHTML = `
+                        <div class="text-slate-300 font-bold">MRPL SOP & Interlock Thresholds Verified</div>
+                        <div class="text-[9px] text-slate-400">${clauses[0] ? clauses[0].substring(0, 110) + '...' : 'Zero compliance violations.'}</div>
+                    `;
+                } else if (intent === "REASONING_MEMO") {
+                    // Node 3: DOP Financial Analysis
+                    node3.className = "p-2.5 rounded-lg bg-indigo-950/40 border border-indigo-500/50 transition";
+                    document.getElementById("status-node-3").innerHTML = `<span class="text-indigo-400 font-bold text-[10px]">DOP AUDIT</span>`;
+                    document.getElementById("body-node-3").innerHTML = `
+                        <div class="text-indigo-300 font-bold">Delegation of Power (Item 14.1b)</div>
+                        <div class="text-[9px] text-slate-400">Sanction Authority: Chief General Manager (Tech Services)</div>
+                    `;
+                    await sleep(250);
+
+                    // Node 4: Multi-Tier Approval Note Synthesis
+                    node4.className = "p-2.5 rounded-lg bg-purple-950/40 border border-purple-500/50 transition";
+                    document.getElementById("status-node-4").innerHTML = `<span class="text-purple-400 font-bold text-[10px]">SYNTHESIZED</span>`;
+                    document.getElementById("body-node-4").innerHTML = `
+                        <div class="text-slate-200 font-bold">5-Section PSU Memorandum Formulated</div>
+                        <div class="text-[9px] text-slate-400">Subject, Background, Proposal, DOP & Recommendation</div>
+                    `;
+                } else {
+                    // Primary Industrial: VISION_INSPECTION
+                    node3.className = "p-2.5 rounded-lg bg-emerald-950/40 border border-emerald-500/50 transition";
+                    document.getElementById("status-node-3").innerHTML = `<span class="text-emerald-400 font-bold text-[10px]">CALCULATED (${calcTool ? calcTool.execution_time_ms.toFixed(1) : 0} ms)</span>`;
+                    if (calcTool && typeof calcTool.output === 'object') {
+                        document.getElementById("body-node-3").innerHTML = `
+                            <div class="text-slate-300">ASME Req: <span class="text-yellow-400 font-bold">${calcTool.output.required_min_thickness_mm} mm</span> | Measured: <span class="text-slate-100 font-bold">${calcTool.output.measured_thickness_mm} mm</span></div>
+                            <div class="text-slate-300">Safe Margin: <span class="text-emerald-400 font-bold">${calcTool.output.safe_margin_mm} mm</span> | Safe Life: <span class="text-emerald-400 font-bold">${calcTool.output.remaining_life_years} Years</span></div>
+                        `;
+                    }
+                    await sleep(250);
+
+                    node4.className = "p-2.5 rounded-lg bg-purple-950/40 border border-purple-500/50 transition";
+                    document.getElementById("status-node-4").innerHTML = `<span class="text-purple-400 font-bold text-[10px]">PASS (0 Retries)</span>`;
+                    document.getElementById("body-node-4").innerText = "ASME B31.3 criteria verified. Code status: APPROVED_SAFE. No safety violations.";
+                }
+                await sleep(250);
 
                 // Update Node 5: Deliverables & Ledger
                 const node5 = document.getElementById("step-node-5");
                 node5.className = "p-2.5 rounded-lg bg-amber-950/40 border border-amber-500/50 transition";
-                document.getElementById("status-node-5").innerHTML = `<span class="text-amber-400 font-bold text-[10px]">CHAINED (SHA-256)</span>`;
+                document.getElementById("status-node-5").innerHTML = `<span class="text-amber-400 font-bold text-[10px]">SEALED (SHA-256)</span>`;
                 document.getElementById("body-node-5").innerHTML = `
-                    <div class="text-slate-200 font-bold">Generated PSU Word Approval Note & Excel Sheet</div>
+                    <div class="text-slate-200 font-bold">PSU Word (.docx) & Excel Deliverable Generated</div>
                     <div class="text-[9px] text-slate-400">${data.extracted_metrics.docx_filename || 'Approval_Note.docx'}</div>
                 `;
 

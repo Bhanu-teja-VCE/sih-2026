@@ -1,0 +1,17 @@
+{
+  "calculation_type": "HEAT_EXCHANGER_LMTD_THERMAL_DUTY",
+  "parameters": {
+    "th_inlet_celsius": 180.0,
+    "th_outlet_celsius": 110.0,
+    "tc_inlet_celsius": 30.0,
+    "tc_outlet_celsius": 85.0,
+    "heat_transfer_area_m2": 120.0,
+    "overall_u_coeff_w_m2k": 450.0
+  },
+  "formulae": {
+    "dt1": "Th_in - Tc_out = 180 - 85 = 95 C",
+    "dt2": "Th_out - Tc_in = 110 - 30 = 80 C",
+    "lmtd": "(dt1 - dt2) / ln(dt1 / dt2)",
+    "duty_kw": "(U * Area * LMTD) / 1000"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "diagram_id": "MRPL-PID-CDU-0101-REV4",
+  "unit": "Crude Distillation Unit (CDU-1)",
+  "equipment": [
+    {
+      "tag": "B-101",
+      "type": "Crude Pre-Flash Direct Fired Furnace",
+      "design_duty_gcal_hr": 42.5,
+      "tubes_spec": "ASTM A106 Gr B, 8 NPS Sch 40",
+      "design_pressure_mpa": 4.0,
+      "design_temperature_c": 400.0,
+      "safety_valve_tag": "PSV-101A/B",
+      "set_pressure_barg": 42.0
+    },
+    {
+      "tag": "C-101",
+      "type": "Main Atmospheric Fractionation Column",
+      "trays_count": 48,
+      "top_temperature_c": 115.0,
+      "bottom_temperature_c": 355.0
+    }
+  ],
+  "control_loops": [
+    {
+      "loop_id": "TIC-101",
+      "variable": "Furnace Coil Outlet Temperature",
+      "setpoint_c": 365.0
+    },
+    {
+      "loop_id": "PIC-104",
+      "variable": "Fuel Gas Header Pressure",
+      "setpoint_barg": 3.5
+    }
+  ]
+}

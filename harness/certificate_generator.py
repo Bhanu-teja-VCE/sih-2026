@@ -452,18 +452,9 @@ def generate_certificate(
     # Right QR Code
     qr_x = W - 320
     if QR_AVAILABLE:
-        qr_payload = json.dumps({
-            "certificate_id": cert_id,
-            "organization": ORG_NAME,
-            "problem_statement": "MRPL_PS26117",
-            "root_merkle_hash": root_hash,
-            "air_gap_status": "0_WAN_PACKETS_CONFIRMED",
-            "integrity_status": "TAMPER_DETECTED_REVOKED" if is_tampered else "VALID_SEALED",
-            "asme_b31_3_life_years": life_yrs,
-            "timestamp": gen_time.isoformat(),
-        }, separators=(",", ":"))
+        verify_url = f"http://127.0.0.1:8000/verify/{cert_id}"
         qr = qrcode.QRCode(version=None, error_correction=qrcode.constants.ERROR_CORRECT_M, box_size=4, border=1)
-        qr.add_data(qr_payload)
+        qr.add_data(verify_url)
         qr.make(fit=True)
         qr_img = qr.make_image(fill_color=STATUS_RED if is_tampered else NAVY_DEEP, back_color=PAPER_WHITE).convert("RGB")
         qr_img.thumbnail((120, 120))

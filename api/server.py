@@ -133,6 +133,16 @@ def serve_team_guide():
     return {"error": "docs/team_master_guide.html not found"}
 
 
+@app.get("/verify")
+@app.get("/verify/{certificate_id}")
+def serve_verification_portal(certificate_id: Optional[str] = None):
+    """Serves the Official Mobile & Desktop Cryptographic Verification Portal when QR codes are scanned."""
+    verify_path = os.path.join("ui", "static", "verify.html")
+    if os.path.exists(verify_path):
+        return FileResponse(verify_path)
+    return {"error": "ui/static/verify.html not found"}
+
+
 @app.get("/api/telemetry")
 @app.get("/api/hardware/telemetry")
 def get_telemetry():

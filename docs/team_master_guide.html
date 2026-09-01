@@ -1229,21 +1229,167 @@
                 </div>
             </section>
 
-            <!-- SECTION 8: TEAM MATRIX & RUN COMMANDS -->
+            <!-- SECTION 8: MASTER SAMPLE_FILES SUITE, DATA DECODER & SOVEREIGN RAG TESTING -->
+            <section id="sample-files-and-rag" class="cyber-card rounded-2xl p-8 border border-cyan-500/40 scroll-mt-20 flex flex-col space-y-6">
+                <div class="border-b border-slate-800 pb-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs font-mono font-bold text-cyan-400 tracking-wider">SECTION 08</span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold badge-cyan">SAMPLE_FILES &amp; RAG MASTER GUIDE</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white tracking-tight mt-1">📁 Unified Sample Files Directory, Data Structure Decoder &amp; Sovereign RAG Guide</h2>
+                    <p class="text-sm text-slate-400 mt-1">Complete breakdown of all industrial input files, mathematical meaning, and live RAG test questions for judges.</p>
+                </div>
+
+                <!-- 1. Unified Directory Location -->
+                <div class="p-4 bg-slate-950/80 rounded-xl border border-slate-800 flex flex-col space-y-2 font-mono text-xs">
+                    <div class="flex items-center justify-between">
+                        <span class="text-cyan-400 font-bold">📍 Unified Sample Files Root Location:</span>
+                        <span class="px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 font-bold">sih 2026/sample_files/</span>
+                    </div>
+                    <p class="text-slate-300 font-sans text-xs">
+                        All curated test files across all 4 problem statement categories are centralized in the <code class="text-cyan-300">sample_files/</code> folder on disk:
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 text-[11px]">
+                        <div class="p-3 bg-purple-950/20 rounded-lg border border-purple-800/40">
+                            <span class="text-purple-300 font-bold block mb-1">01_multimodal_vision/</span>
+                            <div class="text-slate-300">• <code>crude_furnace_b101_ultrasonic_ndt_report.xlsx</code> (16-point UT grid)</div>
+                            <div class="text-slate-300">• <code>sample_pid_crude_distillation_metadata.json</code> (P&amp;ID valves &amp; lines)</div>
+                        </div>
+                        <div class="p-3 bg-cyan-950/20 rounded-lg border border-cyan-800/40">
+                            <span class="text-cyan-300 font-bold block mb-1">02_sovereign_rag_sops/</span>
+                            <div class="text-slate-300">• <code>mrpl_refinery_sop_master_handbook.txt</code> (Master SOP &amp; DOP)</div>
+                            <div class="text-slate-300">• <code>plant_safety_interlock_sop_102.txt</code> (Trip limits &amp; ESD-1)</div>
+                            <div class="text-slate-300">• <code>centrifugal_pump_vibration_maintenance_sop.txt</code> (ISO 10816)</div>
+                        </div>
+                        <div class="p-3 bg-emerald-950/20 rounded-lg border border-emerald-800/40">
+                            <span class="text-emerald-300 font-bold block mb-1">03_engineering_math_code_gen/</span>
+                            <div class="text-slate-300">• <code>asme_b31_3_piping_thickness_spec.json</code> (Barlow modified inputs)</div>
+                            <div class="text-slate-300">• <code>heat_exchanger_lmtd_thermal_duty_spec.json</code> (LMTD temperatures)</div>
+                            <div class="text-slate-300">• <code>darcy_weisbach_hydraulic_flow_spec.json</code> (Hydraulic head loss)</div>
+                        </div>
+                        <div class="p-3 bg-amber-950/20 rounded-lg border border-amber-800/40">
+                            <span class="text-amber-300 font-bold block mb-1">04_psu_reasoning_memos/</span>
+                            <div class="text-slate-300">• <code>dop_procurement_authorization_memo.txt</code> (Capex DOP request)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Plain-English Data Structure Decoder -->
+                <div class="flex flex-col space-y-4">
+                    <h3 class="text-lg font-bold text-white flex items-center space-x-2">
+                        <span>🔍 Plain-English Data Decoder (What Goes In, What the Math Does, What Comes Out)</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        
+                        <!-- Decoder Card 1: Ultrasonic Excel Report -->
+                        <div class="p-4 bg-slate-900/90 rounded-xl border border-slate-800 flex flex-col space-y-3 font-sans">
+                            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                                <span class="font-bold text-purple-300 font-mono">1. What is in the Inspection Report (.xlsx)?</span>
+                                <span class="badge-purple px-2 py-0.5 rounded text-[10px] font-mono">INPUT</span>
+                            </div>
+                            <ul class="space-y-1.5 text-slate-300 leading-relaxed">
+                                <li><strong class="text-slate-100">Equipment Tag (B-101):</strong> Crude Distillation Fired Furnace Tubes carrying crude oil at 365°C.</li>
+                                <li><strong class="text-slate-100">Design Pressure (P = 4.0 MPa):</strong> The internal operational pressure (approx 40 times atmospheric pressure).</li>
+                                <li><strong class="text-slate-100">Outer Diameter (D = 219.1 mm):</strong> Standard 8-inch nominal industrial pipe size.</li>
+                                <li><strong class="text-slate-100">Allowable Stress (S = 137.0 MPa):</strong> The maximum safe tensile load ASTM A106 Grade B steel can bear at operating temperature.</li>
+                                <li><strong class="text-slate-100">Corrosion Allowance (c = 3.0 mm):</strong> Sacrificial steel thickness allocated for chemical wear.</li>
+                                <li><strong class="text-slate-100">16-Point Test Grid (Rows A-D vs Q1-Q4):</strong> 16 ultrasonic sensor readings across the pipe circumference. Minimum thickness found was <span class="text-red-400 font-bold font-mono">7.48 mm</span> at radiant peak Grid B3.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Decoder Card 2: ASME B31.3 Calculation & Output -->
+                        <div class="p-4 bg-slate-900/90 rounded-xl border border-slate-800 flex flex-col space-y-3 font-sans">
+                            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                                <span class="font-bold text-emerald-300 font-mono">2. What Does the Subprocess Sandbox Calculate?</span>
+                                <span class="badge-emerald px-2 py-0.5 rounded text-[10px] font-mono">SANDBOX MATH</span>
+                            </div>
+                            <div class="p-2.5 bg-slate-950 rounded-lg font-mono text-[11px] text-cyan-300">
+                                t_pressure = (4.0 * 219.1) / (2 * (137.0*1.0*1.0 + 4.0*0.4)) = 3.162 mm<br>
+                                t_min = 3.162 + 3.0 (Corrosion Allowance) = 6.162 mm<br>
+                                Safe Margin = 7.48 - 6.162 = +1.318 mm<br>
+                                Safe Life = 1.318 mm / (0.25 mm/yr) = 5.27 Years
+                            </div>
+                            <p class="text-slate-300 leading-relaxed">
+                                <strong class="text-slate-100">What Comes Out:</strong> The engine automatically compiles a formal 5-section Word Document (<code class="text-emerald-300">Approval_Note_B-101.docx</code>), an Excel Sheet (<code class="text-emerald-300">Engineering_Calculations.xlsx</code>), and seals both files into the Merkle DAG with zero cloud transfer.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. How to Test the Sovereign RAG Bot & Exact Questions -->
+                <div class="flex flex-col space-y-4 pt-2">
+                    <h3 class="text-lg font-bold text-white flex items-center space-x-2">
+                        <span>🤖 How to Test the Sovereign RAG Bot (Live Demo Questions for Judges)</span>
+                    </h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Our Sovereign RAG engine runs 100% on local memory using an on-premise Okapi BM25 ranking algorithm indexed directly over MRPL SOP handbooks in <code class="text-cyan-300">sample_files/02_sovereign_rag_sops/</code>. Copy and paste any of these 4 test questions into the Workbench:
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
+                        
+                        <!-- RAG Question 1 -->
+                        <div class="p-3.5 bg-slate-900/90 rounded-xl border border-cyan-800/60 flex flex-col justify-between space-y-2">
+                            <div>
+                                <span class="text-cyan-400 font-bold block mb-1">RAG TEST PROMPT 1: Delegation of Power (DOP) Limits</span>
+                                <p class="text-slate-200 font-sans text-xs select-all bg-slate-950 p-2 rounded border border-slate-800">
+                                    "Search MRPL Standard Operating Procedures for Section 14: Emergency Turnaround delegation of power limits and required General Manager approval thresholds."
+                                </p>
+                            </div>
+                            <div class="text-[10px] text-slate-400">Target File: <code>mrpl_refinery_sop_master_handbook.txt</code></div>
+                        </div>
+
+                        <!-- RAG Question 2 -->
+                        <div class="p-3.5 bg-slate-900/90 rounded-xl border border-cyan-800/60 flex flex-col justify-between space-y-2">
+                            <div>
+                                <span class="text-cyan-400 font-bold block mb-1">RAG TEST PROMPT 2: Plant Safety Interlocks</span>
+                                <p class="text-slate-200 font-sans text-xs select-all bg-slate-950 p-2 rounded border border-slate-800">
+                                    "What is the Emergency Shutdown trigger criteria for high-high temperature interlock TT-101-HH under SOP-102?"
+                                </p>
+                            </div>
+                            <div class="text-[10px] text-slate-400">Target File: <code>plant_safety_interlock_sop_102.txt</code></div>
+                        </div>
+
+                        <!-- RAG Question 3 -->
+                        <div class="p-3.5 bg-slate-900/90 rounded-xl border border-cyan-800/60 flex flex-col justify-between space-y-2">
+                            <div>
+                                <span class="text-cyan-400 font-bold block mb-1">RAG TEST PROMPT 3: Centrifugal Pump Vibration</span>
+                                <p class="text-slate-200 font-sans text-xs select-all bg-slate-950 p-2 rounded border border-slate-800">
+                                    "According to SOP-305, what is the maximum acceptable vibration velocity RMS for centrifugal pumps before emergency trip?"
+                                </p>
+                            </div>
+                            <div class="text-[10px] text-slate-400">Target File: <code>centrifugal_pump_vibration_maintenance_sop.txt</code></div>
+                        </div>
+
+                        <!-- RAG Question 4 -->
+                        <div class="p-3.5 bg-slate-900/90 rounded-xl border border-cyan-800/60 flex flex-col justify-between space-y-2">
+                            <div>
+                                <span class="text-cyan-400 font-bold block mb-1">RAG TEST PROMPT 4: ASME B31.3 Inspection Frequency</span>
+                                <p class="text-slate-200 font-sans text-xs select-all bg-slate-950 p-2 rounded border border-slate-800">
+                                    "What ASME standard governs crude furnace fired heater tube replacement at MRPL, and what is the required inspection frequency?"
+                                </p>
+                            </div>
+                            <div class="text-[10px] text-slate-400">Target File: <code>mrpl_refinery_sop_master_handbook.txt</code></div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 9: TEAM MATRIX & RUN COMMANDS -->
             <section id="team-matrix" class="cyber-card rounded-2xl p-8 border border-slate-800 scroll-mt-20">
                 <div class="border-b border-slate-800 pb-4 mb-4">
-                    <span class="text-xs font-mono font-bold text-slate-400 tracking-wider">SECTION 08</span>
-                    <h2 class="text-xl font-bold text-white tracking-tight mt-1">👥 Team Responsibility Matrix & Key File Paths</h2>
+                    <span class="text-xs font-mono font-bold text-slate-400 tracking-wider">SECTION 09</span>
+                    <h2 class="text-xl font-bold text-white tracking-tight mt-1">👥 Team Responsibility Matrix &amp; Key File Paths</h2>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs font-mono">
                     <div class="p-4 bg-slate-900/60 rounded-xl space-y-2">
-                        <h4 class="text-sm font-bold text-cyan-400 font-sans">Team Roles & Delegations:</h4>
-                        <p><strong class="text-slate-200">AI Harness Engineering:</strong> State Graph DAG, AST Sandbox, API Gateway, Air-Gap Sniffer & UI.</p>
-                        <p><strong class="text-slate-200">Presentation & Pitch:</strong> AICTE/MRPL Slide Deck (<code class="text-cyan-300">presentation/SIH_PITCH_DECK_STORYBOARD.md</code>)</p>
-                        <p><strong class="text-slate-200">Industrial Datasets:</strong> Ultrasonic Logs & P&ID Schematics (<code class="text-cyan-300">data/sample_boiler_inspection_data.xlsx</code>)</p>
-                        <p><strong class="text-slate-200">Engineering Auditing:</strong> ASME B31.3 Math Auditing & Word Formatting Verification</p>
-                        <p><strong class="text-slate-200">Defense & Logistics:</strong> Live Pitch Rehearsal & Judge Q&A Defense (<code class="text-cyan-300">docs/JUDGE_QA_DEFENSE_PLAYBOOK.md</code>)</p>
+                        <h4 class="text-sm font-bold text-cyan-400 font-sans">Team Roles &amp; Delegations:</h4>
+                        <p><strong class="text-slate-200">AI Harness Engineering:</strong> State Graph DAG, AST Sandbox, API Gateway, Air-Gap Sniffer &amp; UI.</p>
+                        <p><strong class="text-slate-200">Presentation &amp; Pitch:</strong> AICTE/MRPL Slide Deck (<code class="text-cyan-300">presentation/SIH_PITCH_DECK_STORYBOARD.md</code>)</p>
+                        <p><strong class="text-slate-200">Industrial Datasets:</strong> Ultrasonic Logs &amp; P&amp;ID Schematics (<code class="text-cyan-300">sample_files/01_multimodal_vision/</code>)</p>
+                        <p><strong class="text-slate-200">Engineering Auditing:</strong> ASME B31.3 Math Auditing &amp; Word Formatting Verification</p>
+                        <p><strong class="text-slate-200">Defense &amp; Logistics:</strong> Live Pitch Rehearsal &amp; Judge Q&amp;A Defense (<code class="text-cyan-300">docs/JUDGE_QA_DEFENSE_PLAYBOOK.md</code>)</p>
                     </div>
 
                     <div class="p-4 bg-slate-900/60 rounded-xl space-y-2">

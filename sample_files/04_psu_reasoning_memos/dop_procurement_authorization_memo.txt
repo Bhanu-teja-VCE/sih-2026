@@ -1,0 +1,18 @@
+================================================================================
+MANGALORE REFINERY AND PETROCHEMICALS LIMITED (MRPL)
+INTER-OFFICE MEMORANDUM & APPROVAL NOTE PROPOSAL
+================================================================================
+To: Chief General Manager (Technical Services)
+From: Chief Manager (Inspection & Non-Destructive Testing)
+Date: 15-August-2026
+Subject: Proposal for Planned Retubing & Coil Procurement for CDU Furnace B-101
+
+1. BACKGROUND:
+Ultrasonic thickness survey on crude furnace B-101 revealed radiant coil minimum wall thickness of 7.48 mm against ASME B31.3 threshold of 6.162 mm. Although currently certified for continued safe operation for 5.27 years, procurement lead time for specialized ASTM A106 Grade B seamless coils is estimated at 14 months.
+
+2. FINANCIAL PROPOSAL & DELEGATION OF POWER:
+Estimated procurement and installation cost: INR 45,00,000/- (Rupees Forty-Five Lakhs Only).
+Under Item 14.1(b) of MRPL Delegation of Power (DOP), financial sanction of this magnitude falls within the delegated authority of the Chief General Manager (Technical Services).
+
+3. RECOMMENDATION:
+Approval is solicited for initiating global e-tender on GeM portal for procurement of 120 meters of 8 NPS Schedule 40 seamless coils to be scheduled for installation during Q4 Turnaround.
