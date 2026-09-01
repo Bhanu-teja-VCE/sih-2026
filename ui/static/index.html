@@ -398,36 +398,85 @@ No WAN external connections found.
             </div>
         </section>
 
-        <!-- BOTTOM PANEL 2: Local Sovereign Model Chat (GREEN 100% AIR-GAPPED VERIFIED) -->
+        <!-- BOTTOM PANEL 2: Local Sovereign Model Chat (GREEN 100% AIR-GAPPED VERIFIED + MULTIMODAL VISION) -->
         <section id="local-console-card" class="cyber-glass rounded-xl p-4 border border-emerald-500/40 flex flex-col space-y-3 bg-[#030d08]">
             <div class="flex items-center justify-between border-b border-emerald-950/80 pb-2">
                 <div class="flex items-center space-x-2">
                     <span class="text-base">🛡️</span>
                     <div>
-                        <h3 class="text-xs font-mono font-bold text-emerald-400 tracking-wider">2. LOCAL SOVEREIGN AI CONSOLE (100% ON-PREMISE • ZERO WAN CALLS)</h3>
-                        <p class="text-[10px] font-mono text-slate-400">Ask our local SLM anything — runs on localhost (127.0.0.1) with 0 WAN packets logged and solid green badge</p>
+                        <h3 class="text-xs font-mono font-bold text-emerald-400 tracking-wider">2. LOCAL SOVEREIGN AI CONSOLE (POLY-MODEL INTENT & MULTIMODAL VISION)</h3>
+                        <p class="text-[10px] font-mono text-slate-400">Ask coding math, SOP rules, or attach P&ID images — watch the Poly-Model Router auto-switch models in &lt;5ms</p>
                     </div>
                 </div>
-                <span class="px-2.5 py-0.5 rounded bg-emerald-950 text-emerald-400 text-[10px] font-mono font-bold border border-emerald-800">
-                    HOST: 127.0.0.1
-                </span>
+                <div class="flex items-center space-x-2">
+                    <span id="local-active-router-pill" class="px-2.5 py-0.5 rounded bg-purple-950 text-purple-300 text-[10px] font-mono font-bold border border-purple-800">
+                        ROUTER: AUTO-SELECT
+                    </span>
+                    <span class="px-2.5 py-0.5 rounded bg-emerald-950 text-emerald-400 text-[10px] font-mono font-bold border border-emerald-800">
+                        0 WAN PACKETS (SOVEREIGN)
+                    </span>
+                </div>
             </div>
 
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
-                <input type="text" id="local-input" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-mono" placeholder="Ask local sovereign model (e.g. 'Calculate ASME wall thickness for furnace tube' or 'Search SOP turnaround limits')...">
+            <!-- Quick Example Prompts -->
+            <div class="flex flex-wrap gap-1.5 text-[10px] font-mono">
+                <span class="text-slate-500 self-center">Quick Test:</span>
+                <button type="button" onclick="setLocalQuickPrompt('vision')" class="px-2 py-0.5 bg-purple-950/60 hover:bg-purple-900 border border-purple-800/80 text-purple-300 rounded transition">
+                    🔍 P&ID / Vision Analysis (Qwen2-VL)
+                </button>
+                <button type="button" onclick="setLocalQuickPrompt('math')" class="px-2 py-0.5 bg-cyan-950/60 hover:bg-cyan-900 border border-cyan-800/80 text-cyan-300 rounded transition">
+                    📐 ASME Barlow Math (Qwen2.5-Coder)
+                </button>
+                <button type="button" onclick="setLocalQuickPrompt('sop')" class="px-2 py-0.5 bg-amber-950/60 hover:bg-amber-900 border border-amber-800/80 text-amber-300 rounded transition">
+                    📜 Refinery SOP & Policy (DeepSeek-R1)
+                </button>
+            </div>
+
+            <!-- Image Upload Preview Chip (Hidden by default) -->
+            <div id="local-image-preview-container" class="hidden flex items-center space-x-2 p-1.5 bg-slate-900/90 rounded-lg border border-purple-500/50 w-fit text-xs font-mono">
+                <img id="local-image-preview-thumb" src="" class="h-10 w-10 object-cover rounded border border-purple-400" alt="Preview">
+                <div class="flex flex-col">
+                    <span id="local-image-name" class="text-[11px] text-purple-300 font-bold max-w-[200px] truncate">image.png</span>
+                    <span class="text-[9px] text-slate-400">Attached for Vision SLM (Qwen2-VL)</span>
+                </div>
+                <button type="button" onclick="removeLocalAttachedImage()" class="p-1 hover:bg-slate-800 text-slate-400 hover:text-red-400 rounded transition" title="Remove image">
+                    ✕
+                </button>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+                <!-- Hidden Image Input -->
+                <input type="file" id="local-image-file-input" accept="image/*" class="hidden" onchange="handleLocalImageUpload(event)">
+                
+                <!-- Attach Image Button -->
+                <button type="button" onclick="document.getElementById('local-image-file-input').click()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-purple-300 border border-purple-700/60 hover:border-purple-400 font-bold text-xs font-mono rounded-lg transition flex items-center justify-center space-x-1.5 shrink-0" title="Attach an engineering drawing, P&ID diagram, or photo (or paste via Ctrl+V)">
+                    <span>🖼️</span>
+                    <span class="hidden sm:inline">Attach Image</span>
+                </button>
+
+                <!-- Text Input -->
+                <input type="text" id="local-input" oninput="updateLocalRouterPill()" onpaste="handleLocalInputPaste(event)" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-mono" placeholder="Type prompt or paste image (Ctrl+V) — e.g. 'Read the valves on this P&ID' or 'Calculate ASME B31.3 wall thickness'...">
+                
+                <!-- Send Button -->
                 <button id="local-send-btn" onclick="sendLocalModelQuery()" class="px-5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs font-mono rounded-lg transition flex items-center justify-center space-x-2 shrink-0 shadow-lg shadow-emerald-600/30">
-                    <span>Send to Local Model 🛡️</span>
+                    <span>Execute Inference 🛡️</span>
                     <span id="local-spinner" class="hidden animate-spin h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full"></span>
                 </button>
             </div>
 
             <!-- Local Model Response Box -->
-            <div id="local-response-box" class="hidden p-3 bg-[#04140c] border border-emerald-800/80 rounded-lg text-xs font-mono leading-relaxed space-y-1.5">
-                <div class="text-[10px] text-emerald-400 font-bold flex items-center justify-between border-b border-emerald-900/60 pb-1">
-                    <span>LOCAL MODEL EXECUTION (ON-PREMISE INFERENCE):</span>
-                    <span class="text-emerald-300">Target: 127.0.0.1 (0 WAN Packets Logged • 100% Sovereign)</span>
+            <div id="local-response-box" class="hidden p-3 bg-[#04140c] border border-emerald-800/80 rounded-lg text-xs font-mono leading-relaxed space-y-2">
+                <div class="text-[10px] text-emerald-400 font-bold flex flex-wrap items-center justify-between gap-2 border-b border-emerald-900/60 pb-1.5">
+                    <div class="flex items-center space-x-2">
+                        <span id="local-res-model-badge" class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-bold">MODEL: QWEN2-VL-7B</span>
+                        <span id="local-res-intent-badge" class="px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">INTENT: VISION_INSPECTION</span>
+                    </div>
+                    <span id="local-res-target-badge" class="text-emerald-300">0 WAN Packets Logged • 100% Sovereign Air-Gap</span>
                 </div>
-                <div id="local-reply-text" class="text-slate-200 text-[11px] whitespace-pre-wrap"></div>
+                <div class="flex flex-col sm:flex-row gap-3 items-start">
+                    <img id="local-res-image-thumb" src="" class="hidden max-h-32 rounded border border-purple-500/80 shadow-md shrink-0" alt="Analyzed Artifact">
+                    <div id="local-reply-text" class="text-slate-200 text-[11px] whitespace-pre-wrap flex-1"></div>
+                </div>
             </div>
         </section>
 
@@ -526,30 +575,159 @@ No WAN external connections found.
             }
         }
 
+        // ==========================================
+        // MULTIMODAL LOCAL CONSOLE CHAT LOGIC
+        // ==========================================
+        let currentLocalImageB64 = null;
+
+        function handleLocalImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentLocalImageB64 = e.target.result;
+                showLocalAttachedImage(file.name, currentLocalImageB64);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleLocalInputPaste(event) {
+            const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+            for (let index in items) {
+                const item = items[index];
+                if (item.kind === 'file' && item.type.startsWith('image/')) {
+                    const blob = item.getAsFile();
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        currentLocalImageB64 = e.target.result;
+                        showLocalAttachedImage("Pasted_Image_" + new Date().toLocaleTimeString() + ".png", currentLocalImageB64);
+                    };
+                    reader.readAsDataURL(blob);
+                }
+            }
+        }
+
+        function showLocalAttachedImage(name, b64) {
+            const previewContainer = document.getElementById("local-image-preview-container");
+            const thumb = document.getElementById("local-image-preview-thumb");
+            const nameEl = document.getElementById("local-image-name");
+            
+            thumb.src = b64;
+            nameEl.innerText = name || "Attached Image";
+            previewContainer.classList.remove("hidden");
+            
+            updateLocalRouterPill();
+        }
+
+        function removeLocalAttachedImage() {
+            currentLocalImageB64 = null;
+            document.getElementById("local-image-file-input").value = "";
+            document.getElementById("local-image-preview-container").classList.add("hidden");
+            document.getElementById("local-image-preview-thumb").src = "";
+            updateLocalRouterPill();
+        }
+
+        function updateLocalRouterPill() {
+            const inputVal = (document.getElementById("local-input").value || "").toLowerCase();
+            const routerPill = document.getElementById("local-active-router-pill");
+
+            if (currentLocalImageB64) {
+                routerPill.innerText = "ROUTING: QWEN2-VL-7B (VISION SLM)";
+                routerPill.className = "px-2.5 py-0.5 rounded bg-purple-950 text-purple-300 text-[10px] font-mono font-bold border border-purple-500 shadow-md shadow-purple-950 animate-pulse";
+                return;
+            }
+
+            const codeKeywords = ["python", "script", "code", "asme", "barlow", "math", "calc", "formula", "corrosion", "thickness"];
+            const ragKeywords = ["sop", "procedure", "manual", "handbook", "policy", "memo", "dop", "delegation"];
+
+            if (codeKeywords.some(k => inputVal.includes(k))) {
+                routerPill.innerText = "ROUTING: QWEN-2.5-CODER-7B (MATH & CODE)";
+                routerPill.className = "px-2.5 py-0.5 rounded bg-cyan-950 text-cyan-300 text-[10px] font-mono font-bold border border-cyan-500 shadow-md shadow-cyan-950";
+            } else if (ragKeywords.some(k => inputVal.includes(k))) {
+                routerPill.innerText = "ROUTING: DEEPSEEK-R1-8B (REASONING & SOP)";
+                routerPill.className = "px-2.5 py-0.5 rounded bg-amber-950 text-amber-300 text-[10px] font-mono font-bold border border-amber-500 shadow-md shadow-amber-950";
+            } else {
+                routerPill.innerText = "ROUTER: AUTO-SELECT INTENT";
+                routerPill.className = "px-2.5 py-0.5 rounded bg-slate-900 text-slate-400 text-[10px] font-mono font-bold border border-slate-700";
+            }
+        }
+
+        function setLocalQuickPrompt(type) {
+            const inputEl = document.getElementById("local-input");
+            if (type === 'vision') {
+                inputEl.value = "Inspect this engineering diagram and identify all safety control valves, instrumentation tags, and operational flow lines.";
+                if (!currentLocalImageB64) {
+                    const sampleSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200" fill="#0b1329"><rect width="400" height="200" fill="#080f24" stroke="#00f0ff" stroke-width="2"/><line x1="40" y1="100" x2="360" y2="100" stroke="#00f0ff" stroke-width="4"/><circle cx="120" cy="100" r="24" fill="#142952" stroke="#22d3ee" stroke-width="2"/><text x="120" y="105" fill="#e2e8f0" font-family="monospace" font-size="12" text-anchor="middle">FCV-102</text><polygon points="260,80 290,100 260,120" fill="#a855f7"/><polygon points="320,80 290,100 320,120" fill="#a855f7"/><circle cx="290" cy="65" r="14" fill="#4c1d95" stroke="#c084fc" stroke-width="1.5"/><text x="290" y="70" fill="#fff" font-family="monospace" font-size="10" text-anchor="middle">PT-104</text><text x="200" y="170" fill="#34d399" font-family="monospace" font-size="12" text-anchor="middle">MRPL CDU-1 HIGH-PRESSURE REFINERY FEED LINE</text></svg>`;
+                    const b64 = "data:image/svg+xml;base64," + btoa(sampleSvg);
+                    currentLocalImageB64 = b64;
+                    showLocalAttachedImage("Sample_PID_Schematic_CDU1.svg", b64);
+                }
+            } else if (type === 'math') {
+                removeLocalAttachedImage();
+                inputEl.value = "Write a Python script to calculate ASME B31.3 Barlow wall thickness for 4.0 MPa design pressure and 219.1mm pipe diameter.";
+            } else if (type === 'sop') {
+                removeLocalAttachedImage();
+                inputEl.value = "What is the MRPL SOP rule regarding furnace tube minimum thickness before mandatory shutdown?";
+            }
+            updateLocalRouterPill();
+        }
+
         async function sendLocalModelQuery() {
             const inputEl = document.getElementById("local-input");
             const prompt = inputEl.value.trim();
-            if (!prompt) return;
+            if (!prompt && !currentLocalImageB64) return;
 
             const btn = document.getElementById("local-send-btn");
             const spinner = document.getElementById("local-spinner");
             const resBox = document.getElementById("local-response-box");
             const replyText = document.getElementById("local-reply-text");
+            const modelBadge = document.getElementById("local-res-model-badge");
+            const intentBadge = document.getElementById("local-res-intent-badge");
+            const targetBadge = document.getElementById("local-res-target-badge");
+            const resThumb = document.getElementById("local-res-image-thumb");
 
             btn.disabled = true;
             spinner.classList.remove("hidden");
             resBox.classList.remove("hidden");
-            replyText.innerText = "Processing query strictly on local hardware (127.0.0.1)...";
+            replyText.innerText = currentLocalImageB64
+                ? "Routing visual artifact to Multimodal Vision SLM (Qwen2-VL-7B) on sovereign GPU..."
+                : "Routing prompt via Poly-Model Semantic Router to on-premise SLM...";
+
+            if (currentLocalImageB64) {
+                resThumb.src = currentLocalImageB64;
+                resThumb.classList.remove("hidden");
+            } else {
+                resThumb.classList.add("hidden");
+                resThumb.src = "";
+            }
 
             try {
+                const reqPayload = {
+                    prompt: prompt || "Analyze this engineering image in detail.",
+                    images: currentLocalImageB64 ? [currentLocalImageB64] : null
+                };
+
                 const res = await fetch(`${API_BASE}/api/local/chat`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ prompt: prompt })
+                    body: JSON.stringify(reqPayload)
                 });
                 const data = await res.json();
-                replyText.innerText = data.local_response;
                 
+                replyText.innerText = data.local_response;
+                modelBadge.innerText = `MODEL: ${data.model_used || "Qwen2-VL-7B"}`;
+                intentBadge.innerText = `INTENT: ${data.intent_detected || "VISION_INSPECTION"}`;
+                targetBadge.innerText = `Target: ${data.execution_target || "127.0.0.1"} (0 WAN Packets)`;
+
+                if (data.model_used && data.model_used.toLowerCase().includes("vision") || (data.intent_detected && data.intent_detected.includes("VISION"))) {
+                    modelBadge.className = "px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-600 font-bold";
+                } else if (data.model_used && data.model_used.toLowerCase().includes("coder")) {
+                    modelBadge.className = "px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-600 font-bold";
+                } else {
+                    modelBadge.className = "px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-600 font-bold";
+                }
+
                 // Refresh sniffer to prove 0 WAN egress
                 fetchAirgapAudit();
                 updateTelemetry();

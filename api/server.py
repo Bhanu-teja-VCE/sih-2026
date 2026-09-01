@@ -94,6 +94,8 @@ class EgressTestRequest(BaseModel):
 
 class LocalChatRequest(BaseModel):
     prompt: str = Field(description="Natural language query for the local sovereign LLM")
+    images: Optional[List[str]] = Field(default=None, description="Optional Base64-encoded images for vision SLM analysis")
+    attached_files: Optional[List[str]] = Field(default_factory=list, description="Attached filenames")
 
 
 # =============================================================================
@@ -176,19 +178,33 @@ def reset_airgap_status():
 @app.post("/api/local/chat")
 def chat_local_model(req: LocalChatRequest):
     """
-    Executes natural language inference via the local on-premise model adapter / semantic router.
-    Runs 100% locally on localhost (127.0.0.1) with 0 WAN egress!
+    Executes natural language & multimodal vision inference via the local on-premise model adapter / semantic router.
+    Dynamically routes to Vision SLM (Qwen2-VL-7B), Code SLM (Qwen2.5-Coder), or Reasoning SLM (DeepSeek-R1).
+    Runs 100% on sovereign infrastructure with 0 WAN egress!
     """
-    intent, model, rationale = router.route(req.prompt)
-    reply = model_adapter.generate_conversational_response(req.prompt, intent, model)
+    has_images = bool(req.images and len(req.images) > 0)
+    intent, model, rationale = router.route(
+        req.prompt,
+        attached_files=req.attached_files,
+        has_images=has_images
+    )
+    reply = model_adapter.generate_conversational_response(
+        req.prompt,
+        intent,
+        model,
+        images=req.images
+    )
 
     airgap_state = network_monitor.scan_sockets()
 
     return {
         "local_response": reply,
         "model_used": model.name,
+        "model_role": model.role.value,
         "intent_detected": intent.value,
-        "execution_target": "127.0.0.1 (Local Sovereign Engine)",
+        "routing_rationale": rationale,
+        "has_images": has_images,
+        "execution_target": f"{model.endpoint_url} ({model.name})",
         "is_airgapped": airgap_state["is_airgapped"],
         "wan_packets_logged": 0,
         "security_status": "100% AIR-GAPPED & SOVEREIGN VERIFIED"

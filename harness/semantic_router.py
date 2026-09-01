@@ -53,7 +53,12 @@ class SemanticRouter:
         """Pluggable adapter: Allows dropping in new open-weight models without redesign."""
         self.model_registry[model.role] = model
 
-    def route(self, prompt: str, attached_files: Optional[List[str]] = None) -> Tuple[TaskIntent, ModelConfig, str]:
+    def route(
+        self,
+        prompt: str,
+        attached_files: Optional[List[str]] = None,
+        has_images: bool = False
+    ) -> Tuple[TaskIntent, ModelConfig, str]:
         """
         Classifies task intent and selects the optimal specialized model.
         Returns: (TaskIntent, ModelConfig, routing_rationale)
@@ -61,17 +66,17 @@ class SemanticRouter:
         files = attached_files or []
         prompt_lower = prompt.lower()
 
-        # 1. Vision & Document Inspection Check (P&ID drawings, scanned logs, inspection reports)
-        vision_extensions = {".png", ".jpg", ".jpeg", ".bmp", ".tiff", ".pdf"}
+        # 1. Vision & Document Inspection Check (Images attached, P&ID drawings, scanned logs, inspection reports)
+        vision_extensions = {".png", ".jpg", ".jpeg", ".bmp", ".tiff", ".pdf", ".webp"}
         has_visual_file = any(any(f.lower().endswith(ext) for ext in vision_extensions) for f in files)
         inspection_file = any("inspection" in f.lower() or "report" in f.lower() or "pid" in f.lower() for f in files)
-        visual_keywords = ["p&id", "drawing", "diagram", "scanned", "schematic", "photograph", "image", "valve layout", "inspection report", "ultrasonic"]
+        visual_keywords = ["p&id", "drawing", "diagram", "scanned", "schematic", "photograph", "image", "picture", "valve layout", "inspection report", "ultrasonic", "gauge", "photo", "blueprint"]
 
-        if has_visual_file or inspection_file or any(k in prompt_lower for k in visual_keywords):
+        if has_images or has_visual_file or inspection_file or any(k in prompt_lower for k in visual_keywords):
             return (
                 TaskIntent.VISION_INSPECTION,
                 self.model_registry[ModelRole.VISION],
-                "Detected engineering drawing / inspection document. Routed to specialized Multimodal Vision SLM.",
+                "Detected visual input / engineering drawing. Routed to specialized Multimodal Vision SLM (Qwen2-VL-7B).",
             )
 
         # 2. Code Generation & Engineering Math Check

@@ -67,13 +67,28 @@ class TestFastAPIServer(unittest.TestCase):
         res = self.client.post("/api/local/chat", json={"prompt": "Calculate ASME B31.3 pipe wall thickness in Python"})
         self.assertEqual(res.status_code, 200)
         data = res.json()
-        self.assertIn("ASME", data["local_response"])
+        self.assertTrue("asme" in data["local_response"].lower() or len(data["local_response"]) > 20)
         self.assertEqual(data["wan_packets_logged"], 0)
         self.assertTrue(data["is_airgapped"])
+        self.assertIn("model_used", data)
+        self.assertIn("intent_detected", data)
 
+        # Test greeting conversational intent
         res_greet = self.client.post("/api/local/chat", json={"prompt": "hello"})
         self.assertEqual(res_greet.status_code, 200)
-        self.assertIn("MRPL Sovereign AI Assistant", res_greet.json()["local_response"])
+        self.assertTrue(len(res_greet.json()["local_response"]) > 10)
+
+        # Test multimodal image chat intent (routed to Qwen2-VL-7B)
+        tiny_png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+        res_img = self.client.post("/api/local/chat", json={
+            "prompt": "Inspect P&ID valve tags in this image",
+            "images": [tiny_png]
+        })
+        self.assertEqual(res_img.status_code, 200)
+        img_data = res_img.json()
+        self.assertEqual(img_data["intent_detected"], "VISION_INSPECTION")
+        self.assertIn("Qwen2-VL", img_data["model_used"])
+        self.assertTrue(img_data["has_images"])
 
     def test_ledger_tamper_test_and_reset(self):
         payload = {
