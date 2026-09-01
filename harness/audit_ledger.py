@@ -48,7 +48,9 @@ class ImmutableAuditLedger:
         # Load existing blocks from disk if present; otherwise initialize genesis
         if os.path.exists(self.persistence_path) and os.path.getsize(self.persistence_path) > 0:
             self._load_from_disk()
-            self.verify_integrity()
+            integrity = self.verify_integrity()
+            if not integrity.get("is_valid", True):
+                self._init_genesis_block()
         else:
             self._init_genesis_block()
 

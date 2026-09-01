@@ -30,6 +30,10 @@ class TestPipelineStressSuite(unittest.TestCase):
         cls.sandbox = CalculationSandbox(default_timeout_seconds=2.0)
         cls.router = SemanticRouter()
 
+    @classmethod
+    def tearDownClass(cls):
+        cls.engine.ledger.reset()
+
     # =========================================================================
     # 1. SANDBOX ADVERSARIAL STRESS TESTS (Security & Evasion Checks)
     # =========================================================================

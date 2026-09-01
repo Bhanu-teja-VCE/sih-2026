@@ -17,6 +17,10 @@ class TestStateGraphEngine(unittest.TestCase):
 
     def setUp(self):
         self.engine = StateGraphEngine()
+        self.engine.ledger.reset()
+
+    def tearDown(self):
+        self.engine.ledger.reset()
 
     def test_vision_inspection_branch(self):
         prompt = "Read the attached boiler ultrasonic inspection report for B-101 and draft approval note"
