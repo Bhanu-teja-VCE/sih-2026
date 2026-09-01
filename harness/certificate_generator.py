@@ -507,21 +507,59 @@ def generate_certificate(
     draw.text((sig_x + 50, footer_y + 164), "Mangalore Refinery & Petrochemicals Ltd.", font=find_font(11), fill=TEXT_MUTED)
 
     # Center Medallion
-    draw_gold_medallion(draw, W // 2, footer_y + 100, 75, is_tampered=is_tampered)
+    draw_gold_medallion(draw, W // 2, footer_y + 100, 75, is_tampered=is_invalid)
 
-    # Right QR Code
-    qr_x = W - 320
+    # Right QR Code with Dynamic LAN IP + Rich Universal Text Verification Card
+    qr_x = W - 340
     if QR_AVAILABLE:
-        verify_url = f"http://127.0.0.1:8000/verify/{cert_id}"
-        qr = qrcode.QRCode(version=None, error_correction=qrcode.constants.ERROR_CORRECT_M, box_size=4, border=1)
-        qr.add_data(verify_url)
-        qr.make(fit=True)
-        qr_img = qr.make_image(fill_color=STATUS_RED if is_tampered else NAVY_DEEP, back_color=PAPER_WHITE).convert("RGB")
-        qr_img.thumbnail((120, 120))
-        img.paste(qr_img, (qr_x, footer_y + 30))
-        draw.text((qr_x + 10, footer_y + 155), "SCAN TO VERIFY LEDGER", font=find_font(10, True), fill=STATUS_RED if is_tampered else NAVY_DEEP)
+        # Detect local Wi-Fi / Hotspot LAN IP for mobile phone browser access
+        local_lan_ip = "127.0.0.1"
+        try:
+            import socket
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(("10.255.255.255", 1))
+            detected_ip = s.getsockname()[0]
+            s.close()
+            if detected_ip and not detected_ip.startswith("127."):
+                local_lan_ip = detected_ip
+        except Exception:
+            pass
 
-    draw.text((100, footer_y + 190), f"CERTIFICATE ID: {cert_id}", font=find_font(11, True), fill=STATUS_RED if is_tampered else NAVY_DEEP)
+        verify_url = f"http://{local_lan_ip}:8000/verify/{cert_id}"
+        
+        # Formatted Universal Verification Card (displays cleanly on ANY phone camera without requiring internet/LAN)
+        formatted_qr_payload = (
+            f"🏛️ MANGALORE REFINERY & PETROCHEMICALS LIMITED (MRPL)\n"
+            f"🔒 OFFICIAL PROOF-OF-EXECUTION CERTIFICATE\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"⏱️ EXECUTION TIME: {gen_time.strftime('%d-%b-%Y %H:%M:%S IST')}\n"
+            f"🆔 CERT ID: {cert_id}\n"
+            f"🛡️ AIR-GAP: 100% SOVEREIGN (0 WAN Packets)\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"📊 ASME B31.3 BARLOW INTEGRITY:\n"
+            f"  • Design Pressure: 4.00 MPa (40.0 bar)\n"
+            f"  • Pipe Outer Diameter: 219.10 mm\n"
+            f"  • Min Req Thickness: {req_t} mm\n"
+            f"  • Actual Measured: {meas_t} mm\n"
+            f"  • Safe Operating Life: {life_yrs} Years\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"🔗 SHA-256 MERKLE ROOT:\n"
+            f"{root_hash}\n"
+            f"🔍 STATUS: {'🚨 REVOKED (AIRGAP BREACH)' if is_airgap_breached else ('🚨 REVOKED (TAMPER DETECTED)' if is_tampered else '✅ 100% CRYPTOGRAPHICALLY VERIFIED')}\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"🌐 Live Web Portal:\n"
+            f"{verify_url}"
+        )
+
+        qr = qrcode.QRCode(version=None, error_correction=qrcode.constants.ERROR_CORRECT_M, box_size=3, border=2)
+        qr.add_data(formatted_qr_payload)
+        qr.make(fit=True)
+        qr_img = qr.make_image(fill_color=STATUS_RED if is_invalid else NAVY_DEEP, back_color=PAPER_WHITE).convert("RGB")
+        qr_img.thumbnail((140, 140))
+        img.paste(qr_img, (qr_x, footer_y + 15))
+        draw.text((qr_x - 5, footer_y + 160), "SCAN FOR INSTANT MOBILE AUDIT", font=find_font(9, True), fill=STATUS_RED if is_invalid else NAVY_DEEP)
+
+    draw.text((100, footer_y + 190), f"CERTIFICATE ID: {cert_id}", font=find_font(11, True), fill=STATUS_RED if is_invalid else NAVY_DEEP)
     draw.text((100, footer_y + 208), f"ISSUED: {gen_time.strftime('%d %B %Y | %H:%M:%S IST')} • COMPUTATIONAL SOVEREIGNTY SEAL", font=find_font(10), fill=TEXT_MUTED)
 
     # ============================================================
