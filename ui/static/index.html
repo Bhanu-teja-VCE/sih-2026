@@ -378,76 +378,31 @@ No WAN external connections found.
 
         </div>
 
-        <!-- BOTTOM PANEL 1: Live Groq Cloud AI Egress Tester (RED ALERT TRIGGER) -->
-        <section id="groq-console-card" class="cyber-glass rounded-xl p-4 border border-red-500/40 flex flex-col space-y-3 bg-[#0d0408]">
-            <div class="flex items-center justify-between border-b border-red-950/80 pb-2">
+        <!-- SWITCHABLE AI CONSOLE (MATCHES USER SPEC EXACTLY) -->
+        <section class="cyber-glass rounded-2xl p-4 sm:p-5 border border-slate-800 flex flex-col space-y-3 bg-[#080d1a]/95 backdrop-blur-xl">
+            <!-- Label & Telemetry -->
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-mono tracking-widest text-slate-400 uppercase font-semibold">AI CONSOLE</span>
                 <div class="flex items-center space-x-2">
-                    <span class="text-base animate-pulse">🚨</span>
-                    <div>
-                        <h3 class="text-xs font-mono font-bold text-red-400 tracking-wider">1. PUBLIC CLOUD AI CONSOLE (GROQ API) — PROVES AIR-GAP SNIFFER INTERCEPTS WAN CALLS</h3>
-                        <p class="text-[10px] font-mono text-slate-400">Send a cloud query to watch the sniffer instantly catch the outbound WAN socket and trigger the alarm</p>
-                    </div>
-                </div>
-                <button onclick="resetAirgapAudit()" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-[11px] font-mono text-slate-300 rounded-lg border border-slate-700 transition">
-                    🛡️ Clear Egress Alert
-                </button>
-            </div>
-
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
-                <input type="text" id="groq-input" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-red-500 font-mono" placeholder="Ask Groq Cloud AI anything (e.g. 'What is crude furnace turnaround?')...">
-                <button id="groq-send-btn" onclick="sendGroqCloudQuery()" class="px-5 py-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold text-xs font-mono rounded-lg transition flex items-center justify-center space-x-2 shrink-0 shadow-lg shadow-red-600/30">
-                    <span>Send to Groq Cloud 🚀</span>
-                    <span id="groq-spinner" class="hidden animate-spin h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full"></span>
-                </button>
-            </div>
-
-            <!-- Groq Response Box -->
-            <div id="groq-response-box" class="hidden p-3 bg-[#16040a] border border-red-800/80 rounded-lg text-xs font-mono leading-relaxed space-y-1.5">
-                <div class="text-[10px] text-red-400 font-bold flex items-center justify-between border-b border-red-900/60 pb-1">
-                    <span>INTERCEPTED OUTBOUND WAN SOCKET:</span>
-                    <span class="text-red-300">Endpoint: api.groq.com (104.18.2.144:443)</span>
-                </div>
-                <div id="groq-reply-text" class="text-slate-200 text-[11px]"></div>
-            </div>
-        </section>
-
-        <!-- BOTTOM PANEL 2: Local Sovereign Model Chat (GREEN 100% AIR-GAPPED VERIFIED + MULTIMODAL VISION) -->
-        <section id="local-console-card" class="cyber-glass rounded-xl p-4 border border-emerald-500/40 flex flex-col space-y-3 bg-[#030d08]">
-            <div class="flex items-center justify-between border-b border-emerald-950/80 pb-2">
-                <div class="flex items-center space-x-2">
-                    <span class="text-base">🛡️</span>
-                    <div>
-                        <h3 class="text-xs font-mono font-bold text-emerald-400 tracking-wider">2. LOCAL SOVEREIGN AI CONSOLE (POLY-MODEL INTENT & MULTIMODAL VISION)</h3>
-                        <p class="text-[10px] font-mono text-slate-400">Ask coding math, SOP rules, or attach P&ID images — watch the Poly-Model Router auto-switch models in &lt;5ms</p>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <span id="local-active-router-pill" class="px-2.5 py-0.5 rounded bg-purple-950 text-purple-300 text-[10px] font-mono font-bold border border-purple-800">
-                        ROUTER: AUTO-SELECT
-                    </span>
-                    <span class="px-2.5 py-0.5 rounded bg-emerald-950 text-emerald-400 text-[10px] font-mono font-bold border border-emerald-800">
-                        0 WAN PACKETS (SOVEREIGN)
+                    <span id="ai-console-pill" class="px-2.5 py-0.5 rounded bg-cyan-950/60 text-cyan-300 text-[10px] font-mono border border-cyan-700/60 font-medium">
+                        0 WAN PACKETS · SOVEREIGN
                     </span>
                 </div>
             </div>
 
-            <!-- Quick Example Prompts -->
-            <div class="flex flex-wrap gap-1.5 text-[10px] font-mono">
-                <span class="text-slate-500 self-center">Quick Test:</span>
-                <button type="button" onclick="setLocalQuickPrompt('vision')" class="px-2 py-0.5 bg-purple-950/60 hover:bg-purple-900 border border-purple-800/80 text-purple-300 rounded transition">
-                    🔍 P&ID / Vision Analysis (Qwen2-VL)
+            <!-- Switchable Mode Tabs -->
+            <div class="grid grid-cols-2 gap-3">
+                <button type="button" id="tab-local-sovereign" onclick="switchConsoleMode('local')" class="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-medium transition duration-200 text-center border border-cyan-400/90 bg-cyan-950/30 text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.15)] flex items-center justify-center space-x-2">
+                    <span>Local sovereign</span>
                 </button>
-                <button type="button" onclick="setLocalQuickPrompt('math')" class="px-2 py-0.5 bg-cyan-950/60 hover:bg-cyan-900 border border-cyan-800/80 text-cyan-300 rounded transition">
-                    📐 ASME Barlow Math (Qwen2.5-Coder)
-                </button>
-                <button type="button" onclick="setLocalQuickPrompt('sop')" class="px-2 py-0.5 bg-amber-950/60 hover:bg-amber-900 border border-amber-800/80 text-amber-300 rounded transition">
-                    📜 Refinery SOP & Policy (DeepSeek-R1)
+                <button type="button" id="tab-cloud-groq" onclick="switchConsoleMode('cloud')" class="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-medium transition duration-200 text-center border border-slate-800/90 bg-slate-900/40 text-slate-400 hover:border-slate-700 hover:text-slate-300 flex items-center justify-center space-x-2">
+                    <span>Cloud (Groq) — demo only</span>
                 </button>
             </div>
 
-            <!-- Image Upload Preview Chip (Hidden by default) -->
+            <!-- Image Upload Preview Chip (for Vision SLM) -->
             <div id="local-image-preview-container" class="hidden flex items-center space-x-2 p-1.5 bg-slate-900/90 rounded-lg border border-purple-500/50 w-fit text-xs font-mono">
-                <img id="local-image-preview-thumb" src="" class="h-10 w-10 object-cover rounded border border-purple-400" alt="Preview">
+                <img id="local-image-preview-thumb" src="" class="h-9 w-9 object-cover rounded border border-purple-400" alt="Preview">
                 <div class="flex flex-col">
                     <span id="local-image-name" class="text-[11px] text-purple-300 font-bold max-w-[200px] truncate">image.png</span>
                     <span class="text-[9px] text-slate-400">Attached for Vision SLM (Qwen2-VL)</span>
@@ -457,38 +412,49 @@ No WAN external connections found.
                 </button>
             </div>
 
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+            <!-- Unified Single-Line Sleek Input Bar -->
+            <div class="flex items-center space-x-2 bg-[#090e1a] border border-slate-800 rounded-xl p-1.5 focus-within:border-cyan-400/80 transition">
                 <!-- Hidden Image Input -->
                 <input type="file" id="local-image-file-input" accept="image/*" class="hidden" onchange="handleLocalImageUpload(event)">
                 
-                <!-- Attach Image Button -->
-                <button type="button" onclick="document.getElementById('local-image-file-input').click()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-purple-300 border border-purple-700/60 hover:border-purple-400 font-bold text-xs font-mono rounded-lg transition flex items-center justify-center space-x-1.5 shrink-0" title="Attach an engineering drawing, P&ID diagram, or photo (or paste via Ctrl+V)">
-                    <span>🖼️</span>
-                    <span class="hidden sm:inline">Attach Image</span>
+                <!-- Attachment Button -->
+                <button type="button" id="console-attach-btn" onclick="document.getElementById('local-image-file-input').click()" class="p-2 text-slate-400 hover:text-cyan-300 hover:bg-slate-800/80 rounded-lg transition" title="Attach an engineering drawing, P&ID diagram, or photo (or paste via Ctrl+V)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
                 </button>
 
-                <!-- Text Input -->
-                <input type="text" id="local-input" oninput="updateLocalRouterPill()" onpaste="handleLocalInputPaste(event)" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-mono" placeholder="Type prompt or paste image (Ctrl+V) — e.g. 'Read the valves on this P&ID' or 'Calculate ASME B31.3 wall thickness'...">
+                <!-- Input Field -->
+                <input type="text" id="ai-console-input" onkeydown="handleConsoleKeyDown(event)" onpaste="handleLocalInputPaste(event)" class="flex-1 bg-transparent px-2 py-1.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none font-mono" placeholder="Type a prompt, or attach a P&ID image...">
                 
-                <!-- Send Button -->
-                <button id="local-send-btn" onclick="sendLocalModelQuery()" class="px-5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs font-mono rounded-lg transition flex items-center justify-center space-x-2 shrink-0 shadow-lg shadow-emerald-600/30">
-                    <span>Execute Inference 🛡️</span>
-                    <span id="local-spinner" class="hidden animate-spin h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full"></span>
+                <!-- Solid Cyan Run Button -->
+                <button id="ai-console-run-btn" onclick="executeCurrentConsoleMode()" class="px-6 py-2.5 bg-[#00e5ff] hover:bg-[#00cce6] text-black font-extrabold text-xs font-mono rounded-lg transition shadow-[0_0_15px_rgba(0,229,255,0.4)] flex items-center justify-center space-x-2 shrink-0">
+                    <span id="ai-console-run-text">Run</span>
+                    <span id="ai-console-spinner" class="hidden animate-spin h-3.5 w-3.5 border-2 border-black border-t-transparent rounded-full"></span>
                 </button>
             </div>
 
-            <!-- Local Model Response Box -->
-            <div id="local-response-box" class="hidden p-3 bg-[#04140c] border border-emerald-800/80 rounded-lg text-xs font-mono leading-relaxed space-y-2">
+            <!-- Subtitle Information / Explanatory Text -->
+            <div class="flex items-center justify-between text-[11px] font-mono">
+                <span id="ai-console-subtitle" class="text-slate-400">Router auto-selects Qwen2.5-Coder / DeepSeek-R1 / Qwen2-VL · 0 WAN packets</span>
+                <div id="ai-console-quick-tags" class="flex items-center space-x-1.5 text-[10px]">
+                    <span class="text-slate-500">Quick:</span>
+                    <button type="button" onclick="setConsoleQuickPrompt('vision')" class="px-1.5 py-0.5 bg-purple-950/50 hover:bg-purple-900 border border-purple-800/60 text-purple-300 rounded transition">🖼️ P&ID</button>
+                    <button type="button" onclick="setConsoleQuickPrompt('math')" class="px-1.5 py-0.5 bg-cyan-950/50 hover:bg-cyan-900 border border-cyan-800/60 text-cyan-300 rounded transition">📐 Math</button>
+                    <button type="button" onclick="setConsoleQuickPrompt('sop')" class="px-1.5 py-0.5 bg-amber-950/50 hover:bg-amber-900 border border-amber-800/60 text-amber-300 rounded transition">📜 SOP</button>
+                </div>
+            </div>
+
+            <!-- Dynamic Response Box -->
+            <div id="ai-console-response-box" class="hidden p-3.5 bg-[#04120a] border border-emerald-800/80 rounded-xl text-xs font-mono leading-relaxed space-y-2 mt-2 transition">
                 <div class="text-[10px] text-emerald-400 font-bold flex flex-wrap items-center justify-between gap-2 border-b border-emerald-900/60 pb-1.5">
                     <div class="flex items-center space-x-2">
-                        <span id="local-res-model-badge" class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-bold">MODEL: QWEN2-VL-7B</span>
-                        <span id="local-res-intent-badge" class="px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">INTENT: VISION_INSPECTION</span>
+                        <span id="ai-console-res-model-badge" class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-bold">MODEL: QWEN2-VL-7B</span>
+                        <span id="ai-console-res-intent-badge" class="px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800">INTENT: VISION_INSPECTION</span>
                     </div>
-                    <span id="local-res-target-badge" class="text-emerald-300">0 WAN Packets Logged • 100% Sovereign Air-Gap</span>
+                    <span id="ai-console-res-target-badge" class="text-emerald-300">0 WAN Packets Logged • 100% Sovereign Air-Gap</span>
                 </div>
                 <div class="flex flex-col sm:flex-row gap-3 items-start">
-                    <img id="local-res-image-thumb" src="" class="hidden max-h-32 rounded border border-purple-500/80 shadow-md shrink-0" alt="Analyzed Artifact">
-                    <div id="local-reply-text" class="text-slate-200 text-[11px] whitespace-pre-wrap flex-1"></div>
+                    <img id="ai-console-res-image-thumb" src="" class="hidden max-h-32 rounded border border-purple-500/80 shadow-md shrink-0" alt="Analyzed Artifact">
+                    <div id="ai-console-reply-text" class="text-slate-200 text-[11px] whitespace-pre-wrap flex-1 leading-relaxed"></div>
                 </div>
             </div>
         </section>
@@ -553,45 +519,73 @@ No WAN external connections found.
             }
         }
 
-        async function sendGroqCloudQuery() {
-            const inputEl = document.getElementById("groq-input");
-            const prompt = inputEl.value.trim();
-            if (!prompt) return;
+        // ==========================================
+        // SWITCHABLE AI CONSOLE LOGIC
+        // ==========================================
+        let currentConsoleMode = 'local';
+        let currentLocalImageB64 = null;
 
-            const btn = document.getElementById("groq-send-btn");
-            const spinner = document.getElementById("groq-spinner");
-            const resBox = document.getElementById("groq-response-box");
-            const replyText = document.getElementById("groq-reply-text");
+        function switchConsoleMode(mode) {
+            currentConsoleMode = mode;
+            const tabLocal = document.getElementById("tab-local-sovereign");
+            const tabCloud = document.getElementById("tab-cloud-groq");
+            const inputEl = document.getElementById("ai-console-input");
+            const subtitleEl = document.getElementById("ai-console-subtitle");
+            const pillEl = document.getElementById("ai-console-pill");
+            const runBtn = document.getElementById("ai-console-run-btn");
+            const attachBtn = document.getElementById("console-attach-btn");
+            const quickTags = document.getElementById("ai-console-quick-tags");
+            const resBox = document.getElementById("ai-console-response-box");
 
-            btn.disabled = true;
-            spinner.classList.remove("hidden");
-            resBox.classList.remove("hidden");
-            replyText.innerText = "Connecting to Groq Cloud AI over WAN socket...";
+            resBox.classList.add("hidden");
 
-            try {
-                const res = await fetch(`${API_BASE}/api/groq/query`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ prompt: prompt })
-                });
-                const data = await res.json();
-                replyText.innerText = data.cloud_response || data.message || "Cloud response received.";
+            if (mode === 'local') {
+                tabLocal.className = "w-full py-2.5 px-4 rounded-lg text-xs font-mono font-medium transition duration-200 text-center border border-cyan-400/90 bg-cyan-950/30 text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.15)] flex items-center justify-center space-x-2";
+                tabCloud.className = "w-full py-2.5 px-4 rounded-lg text-xs font-mono font-medium transition duration-200 text-center border border-slate-800/90 bg-slate-900/40 text-slate-400 hover:border-slate-700 hover:text-slate-300 flex items-center justify-center space-x-2";
                 
-                // Immediately refresh sniffer audit terminal to show the intercepted socket
-                fetchAirgapAudit();
-                updateTelemetry();
-            } catch (e) {
-                replyText.innerText = `Outbound WAN connection error: ${e}`;
-            } finally {
-                btn.disabled = false;
-                spinner.classList.add("hidden");
+                inputEl.placeholder = "Type a prompt, or attach a P&ID image...";
+                subtitleEl.className = "text-slate-400";
+                subtitleEl.innerText = "Router auto-selects Qwen2.5-Coder / DeepSeek-R1 / Qwen2-VL · 0 WAN packets";
+                
+                pillEl.className = "px-2.5 py-0.5 rounded bg-cyan-950/60 text-cyan-300 text-[10px] font-mono border border-cyan-700/60 font-medium";
+                pillEl.innerText = "0 WAN PACKETS · SOVEREIGN";
+                
+                runBtn.className = "px-6 py-2.5 bg-[#00e5ff] hover:bg-[#00cce6] text-black font-extrabold text-xs font-mono rounded-lg transition shadow-[0_0_15px_rgba(0,229,255,0.4)] flex items-center justify-center space-x-2 shrink-0";
+                
+                attachBtn.classList.remove("hidden");
+                quickTags.classList.remove("hidden");
+            } else {
+                tabLocal.className = "w-full py-2.5 px-4 rounded-lg text-xs font-mono font-medium transition duration-200 text-center border border-slate-800/90 bg-slate-900/40 text-slate-400 hover:border-slate-700 hover:text-slate-300 flex items-center justify-center space-x-2";
+                tabCloud.className = "w-full py-2.5 px-4 rounded-lg text-xs font-mono font-medium transition duration-200 text-center border border-rose-500/80 bg-rose-950/30 text-rose-300 shadow-[0_0_15px_rgba(244,63,94,0.15)] flex items-center justify-center space-x-2";
+                
+                inputEl.placeholder = "Ask Groq Cloud AI to test outbound WAN interception (e.g. 'What is refinery turnaround?')...";
+                subtitleEl.className = "text-rose-400 font-medium";
+                subtitleEl.innerText = "🚨 Demonstrates air-gap socket interception on outbound WAN call · Flagged immediately";
+                
+                pillEl.className = "px-2.5 py-0.5 rounded bg-rose-950/80 text-rose-300 text-[10px] font-mono border border-rose-700/80 font-medium animate-pulse";
+                pillEl.innerText = "WAN EGRESS DEMO · PUBLIC CLOUD";
+                
+                runBtn.className = "px-6 py-2.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-xs font-mono rounded-lg transition shadow-[0_0_15px_rgba(244,63,94,0.4)] flex items-center justify-center space-x-2 shrink-0";
+                
+                attachBtn.classList.add("hidden");
+                removeLocalAttachedImage();
+                quickTags.classList.add("hidden");
             }
         }
 
-        // ==========================================
-        // MULTIMODAL LOCAL CONSOLE CHAT LOGIC
-        // ==========================================
-        let currentLocalImageB64 = null;
+        function handleConsoleKeyDown(event) {
+            if (event.key === 'Enter') {
+                executeCurrentConsoleMode();
+            }
+        }
+
+        function executeCurrentConsoleMode() {
+            if (currentConsoleMode === 'local') {
+                sendLocalModelQuery();
+            } else {
+                sendGroqCloudQuery();
+            }
+        }
 
         function handleLocalImageUpload(event) {
             const file = event.target.files[0];
@@ -606,6 +600,7 @@ No WAN external connections found.
         }
 
         function handleLocalInputPaste(event) {
+            if (currentConsoleMode !== 'local') return;
             const items = (event.clipboardData || event.originalEvent.clipboardData).items;
             for (let index in items) {
                 const item = items[index];
@@ -629,45 +624,23 @@ No WAN external connections found.
             thumb.src = b64;
             nameEl.innerText = name || "Attached Image";
             previewContainer.classList.remove("hidden");
-            
-            updateLocalRouterPill();
         }
 
         function removeLocalAttachedImage() {
             currentLocalImageB64 = null;
-            document.getElementById("local-image-file-input").value = "";
-            document.getElementById("local-image-preview-container").classList.add("hidden");
-            document.getElementById("local-image-preview-thumb").src = "";
-            updateLocalRouterPill();
+            const fileInput = document.getElementById("local-image-file-input");
+            if (fileInput) fileInput.value = "";
+            const previewContainer = document.getElementById("local-image-preview-container");
+            if (previewContainer) previewContainer.classList.add("hidden");
+            const thumb = document.getElementById("local-image-preview-thumb");
+            if (thumb) thumb.src = "";
         }
 
-        function updateLocalRouterPill() {
-            const inputVal = (document.getElementById("local-input").value || "").toLowerCase();
-            const routerPill = document.getElementById("local-active-router-pill");
-
-            if (currentLocalImageB64) {
-                routerPill.innerText = "ROUTING: QWEN2-VL-7B (VISION SLM)";
-                routerPill.className = "px-2.5 py-0.5 rounded bg-purple-950 text-purple-300 text-[10px] font-mono font-bold border border-purple-500 shadow-md shadow-purple-950 animate-pulse";
-                return;
+        function setConsoleQuickPrompt(type) {
+            if (currentConsoleMode !== 'local') {
+                switchConsoleMode('local');
             }
-
-            const codeKeywords = ["python", "script", "code", "asme", "barlow", "math", "calc", "formula", "corrosion", "thickness"];
-            const ragKeywords = ["sop", "procedure", "manual", "handbook", "policy", "memo", "dop", "delegation"];
-
-            if (codeKeywords.some(k => inputVal.includes(k))) {
-                routerPill.innerText = "ROUTING: QWEN-2.5-CODER-7B (MATH & CODE)";
-                routerPill.className = "px-2.5 py-0.5 rounded bg-cyan-950 text-cyan-300 text-[10px] font-mono font-bold border border-cyan-500 shadow-md shadow-cyan-950";
-            } else if (ragKeywords.some(k => inputVal.includes(k))) {
-                routerPill.innerText = "ROUTING: DEEPSEEK-R1-8B (REASONING & SOP)";
-                routerPill.className = "px-2.5 py-0.5 rounded bg-amber-950 text-amber-300 text-[10px] font-mono font-bold border border-amber-500 shadow-md shadow-amber-950";
-            } else {
-                routerPill.innerText = "ROUTER: AUTO-SELECT INTENT";
-                routerPill.className = "px-2.5 py-0.5 rounded bg-slate-900 text-slate-400 text-[10px] font-mono font-bold border border-slate-700";
-            }
-        }
-
-        function setLocalQuickPrompt(type) {
-            const inputEl = document.getElementById("local-input");
+            const inputEl = document.getElementById("ai-console-input");
             if (type === 'vision') {
                 inputEl.value = "Inspect this engineering diagram and identify all safety control valves, instrumentation tags, and operational flow lines.";
                 if (!currentLocalImageB64) {
@@ -683,26 +656,76 @@ No WAN external connections found.
                 removeLocalAttachedImage();
                 inputEl.value = "What is the MRPL SOP rule regarding furnace tube minimum thickness before mandatory shutdown?";
             }
-            updateLocalRouterPill();
         }
 
-        async function sendLocalModelQuery() {
-            const inputEl = document.getElementById("local-input");
+        async function sendGroqCloudQuery() {
+            const inputEl = document.getElementById("ai-console-input");
             const prompt = inputEl.value.trim();
-            if (!prompt && !currentLocalImageB64) return;
+            if (!prompt) return;
 
-            const btn = document.getElementById("local-send-btn");
-            const spinner = document.getElementById("local-spinner");
-            const resBox = document.getElementById("local-response-box");
-            const replyText = document.getElementById("local-reply-text");
-            const modelBadge = document.getElementById("local-res-model-badge");
-            const intentBadge = document.getElementById("local-res-intent-badge");
-            const targetBadge = document.getElementById("local-res-target-badge");
-            const resThumb = document.getElementById("local-res-image-thumb");
+            const btn = document.getElementById("ai-console-run-btn");
+            const spinner = document.getElementById("ai-console-spinner");
+            const resBox = document.getElementById("ai-console-response-box");
+            const replyText = document.getElementById("ai-console-reply-text");
+            const modelBadge = document.getElementById("ai-console-res-model-badge");
+            const intentBadge = document.getElementById("ai-console-res-intent-badge");
+            const targetBadge = document.getElementById("ai-console-res-target-badge");
+            const resThumb = document.getElementById("ai-console-res-image-thumb");
 
             btn.disabled = true;
             spinner.classList.remove("hidden");
             resBox.classList.remove("hidden");
+            resBox.className = "p-3.5 bg-[#16040a] border border-red-800/80 rounded-xl text-xs font-mono leading-relaxed space-y-2 mt-2 transition";
+            
+            resThumb.classList.add("hidden");
+            modelBadge.innerText = "TARGET: GROQ CLOUD AI (LLAMA-3.3-70B)";
+            modelBadge.className = "px-2 py-0.5 rounded bg-red-950 text-red-300 border border-red-700 font-bold";
+            intentBadge.innerText = "INTENT: PUBLIC_CLOUD_EGRESS_DEMO";
+            intentBadge.className = "px-2 py-0.5 rounded bg-red-950 text-red-300 border border-red-700";
+            targetBadge.innerText = "🚨 INTERCEPTED OUTBOUND WAN SOCKET: api.groq.com (104.18.2.144:443)";
+            targetBadge.className = "text-red-400 font-bold animate-pulse";
+
+            replyText.innerText = "Connecting to Groq Cloud AI over public WAN socket...";
+
+            try {
+                const res = await fetch(`${API_BASE}/api/groq/query`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt: prompt })
+                });
+                const data = await res.json();
+                replyText.innerText = data.cloud_response || data.message || "Cloud response received.";
+                
+                // Refresh sniffer to show the intercepted WAN packet
+                fetchAirgapAudit();
+                updateTelemetry();
+            } catch (e) {
+                replyText.innerText = `Outbound WAN connection error: ${e}`;
+            } finally {
+                btn.disabled = false;
+                spinner.classList.add("hidden");
+            }
+        }
+
+        async function sendLocalModelQuery() {
+            const inputEl = document.getElementById("ai-console-input");
+            const prompt = inputEl.value.trim();
+            if (!prompt && !currentLocalImageB64) return;
+
+            const btn = document.getElementById("ai-console-run-btn");
+            const spinner = document.getElementById("ai-console-spinner");
+            const resBox = document.getElementById("ai-console-response-box");
+            const replyText = document.getElementById("ai-console-reply-text");
+            const modelBadge = document.getElementById("ai-console-res-model-badge");
+            const intentBadge = document.getElementById("ai-console-res-intent-badge");
+            const targetBadge = document.getElementById("ai-console-res-target-badge");
+            const resThumb = document.getElementById("ai-console-res-image-thumb");
+
+            btn.disabled = true;
+            spinner.classList.remove("hidden");
+            resBox.classList.remove("hidden");
+            resBox.className = "p-3.5 bg-[#04120a] border border-emerald-800/80 rounded-xl text-xs font-mono leading-relaxed space-y-2 mt-2 transition";
+
             replyText.innerText = currentLocalImageB64
                 ? "Routing visual artifact to Multimodal Vision SLM (Qwen2-VL-7B) on sovereign GPU..."
                 : "Routing prompt via Poly-Model Semantic Router to on-premise SLM...";
@@ -732,6 +755,7 @@ No WAN external connections found.
                 modelBadge.innerText = `MODEL: ${data.model_used || "Qwen2-VL-7B"}`;
                 intentBadge.innerText = `INTENT: ${data.intent_detected || "VISION_INSPECTION"}`;
                 targetBadge.innerText = `Target: ${data.execution_target || "127.0.0.1"} (0 WAN Packets)`;
+                targetBadge.className = "text-emerald-300 font-bold";
 
                 if (data.model_used && data.model_used.toLowerCase().includes("vision") || (data.intent_detected && data.intent_detected.includes("VISION"))) {
                     modelBadge.className = "px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-600 font-bold";
