@@ -32,7 +32,7 @@ class NetworkAirGapMonitor:
 
     def _refresh_authorized_inference_hosts(self) -> None:
         """Resolves and registers configured on-premise / edge inference relay endpoints."""
-        ollama_host = os.environ.get("OLLAMA_HOST", "https://mba-love-rebate-watch.trycloudflare.com")
+        ollama_host = os.environ.get("OLLAMA_HOST", "https://libraries-large-textbook-conjunction.trycloudflare.com")
         if ollama_host:
             try:
                 host = ollama_host.split("//")[-1].split("/")[0].split(":")[0]

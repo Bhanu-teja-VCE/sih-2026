@@ -192,7 +192,7 @@ class SovereignRAG:
                 slm_spec = ModelSpec(
                     name="deepseek-r1:8b",
                     role=ModelRole.REASONING_SLM,
-                    endpoint_url=os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434")
+                    endpoint_url=os.environ.get("OLLAMA_HOST", "https://libraries-large-textbook-conjunction.trycloudflare.com")
                 )
                 answer = model_adapter_instance.generate_conversational_response(
                     prompt,

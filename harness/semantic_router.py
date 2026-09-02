@@ -9,9 +9,9 @@ from typing import List, Optional, Tuple, Dict
 from harness.types import TaskIntent, ModelRole, ModelConfig, WorkbenchState
 
 # Configurable via environment variable:
-#   set OLLAMA_HOST=https://mba-love-rebate-watch.trycloudflare.com
-#   or set OLLAMA_HOST=http://192.168.1.X:11434
-_DEFAULT_OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "https://mba-love-rebate-watch.trycloudflare.com")
+#   set OLLAMA_HOST=https://libraries-large-textbook-conjunction.trycloudflare.com
+#   or set OLLAMA_HOST=http://192.168.170.74:11434
+_DEFAULT_OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "https://libraries-large-textbook-conjunction.trycloudflare.com")
 
 
 class SemanticRouter:
