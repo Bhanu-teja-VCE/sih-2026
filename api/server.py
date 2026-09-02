@@ -70,6 +70,10 @@ mcp_engine = LocalMCPEngine()
 os.makedirs("uploads", exist_ok=True)
 os.makedirs("deliverables", exist_ok=True)
 
+# Server-level certificate state flags — only set explicitly by tamper/airgap endpoints
+# This prevents stale scan_sockets() results from corrupting the cert on every download
+_cert_state = {"is_tampered": False, "is_airgap_breached": False}
+
 
 # Request/Response DTOs
 class ClassifyRequest(BaseModel):
@@ -249,7 +253,9 @@ def test_airgap_egress(req: Optional[Dict[str, Any]] = None):
     public WAN egress attempt without exposing or using any real cloud keys.
     Immediately invalidates the certificate to show that external calls compromise reliability!
     """
+    global _cert_state
     res = network_monitor.trigger_egress_test()
+    _cert_state["is_airgap_breached"] = True
     try:
         generate_certificate(is_airgap_breached=True)
     except Exception:
@@ -265,11 +271,15 @@ def test_airgap_egress(req: Optional[Dict[str, Any]] = None):
 @app.post("/api/airgap/reset")
 def reset_airgap_status():
     """Resets airgap monitor violations back to clean state."""
+    global _cert_state
     res = network_monitor.reset_airgap()
-    try:
-        generate_certificate(is_airgap_breached=False)
-    except Exception:
-        pass
+    _cert_state["is_airgap_breached"] = False
+    # Only regenerate a clean cert if tamper is also clean
+    if not _cert_state["is_tampered"]:
+        try:
+            generate_certificate(is_tampered=False, is_airgap_breached=False)
+        except Exception:
+            pass
     return res
 
 
@@ -352,7 +362,9 @@ def tamper_ledger_test():
     Deliberately modifies intermediate sandbox calculation output in memory.
     The Merkle DAG immediately catches the forgery and flags a cryptographic breach!
     """
+    global _cert_state
     res = engine.ledger.tamper_block_output(block_index=3, forged_data={"required_min_thickness_mm": 5.0, "safe_margin_mm": 99.9})
+    _cert_state["is_tampered"] = True
     try:
         generate_certificate(is_tampered=True)
     except Exception:
@@ -363,11 +375,15 @@ def tamper_ledger_test():
 @app.post("/api/ledger/reset")
 def reset_ledger_state():
     """Resets the Merkle Ledger back to the clean genesis root."""
+    global _cert_state
     engine.ledger.reset()
-    try:
-        generate_certificate(is_tampered=False)
-    except Exception:
-        pass
+    _cert_state["is_tampered"] = False
+    # Only regenerate a clean cert if airgap is also clean
+    if not _cert_state["is_airgap_breached"]:
+        try:
+            generate_certificate(is_tampered=False, is_airgap_breached=False)
+        except Exception:
+            pass
     return {"status": "LEDGER_RESET_CLEAN", "root_hash": engine.ledger.get_root_hash()}
 
 
@@ -490,25 +506,29 @@ def execute_workflow(req: WorkflowRequest):
 
 @app.get("/api/airgap/certificate/pdf")
 def download_certificate_pdf():
-    """Serves the print-ready MRPL Corporate Achievement Certificate PDF (or REVOKED certificate if tampered or air-gap breached)."""
-    integrity = engine.ledger.verify_integrity()
-    airgap_state = network_monitor.scan_sockets()
-    is_tampered = not integrity.get("is_valid", True)
-    is_airgap_breached = not airgap_state.get("is_airgapped", True)
-    generate_certificate(is_tampered=is_tampered, is_airgap_breached=is_airgap_breached)
+    """
+    Serves the print-ready MRPL Corporate Achievement Certificate PDF.
+    NOTE: Does NOT regenerate — serves the certificate as generated during execute_workflow.
+    Regenerating on download would overwrite the valid cert with stale sniffer/ledger state.
+    If the certificate does not yet exist (no workflow run), it generates a clean genesis one.
+    """
     path = os.path.join("deliverables", "MRPL_Proof_of_Execution_Certificate.pdf")
+    if not os.path.exists(path):
+        generate_certificate(is_tampered=False, is_airgap_breached=False)
     return FileResponse(path, filename="MRPL_Proof_of_Execution_Certificate.pdf", media_type="application/pdf")
 
 
 @app.get("/api/airgap/certificate/png")
 def download_certificate_png():
-    """Serves the high-resolution MRPL Corporate Achievement Certificate PNG (or REVOKED certificate if tampered or air-gap breached)."""
-    integrity = engine.ledger.verify_integrity()
-    airgap_state = network_monitor.scan_sockets()
-    is_tampered = not integrity.get("is_valid", True)
-    is_airgap_breached = not airgap_state.get("is_airgapped", True)
-    generate_certificate(is_tampered=is_tampered, is_airgap_breached=is_airgap_breached)
+    """
+    Serves the high-resolution MRPL Corporate Achievement Certificate PNG.
+    NOTE: Does NOT regenerate — serves the certificate as generated during execute_workflow.
+    Regenerating on download would overwrite the valid cert with stale sniffer/ledger state.
+    If the certificate does not yet exist (no workflow run), it generates a clean genesis one.
+    """
     path = os.path.join("deliverables", "MRPL_Proof_of_Execution_Certificate.png")
+    if not os.path.exists(path):
+        generate_certificate(is_tampered=False, is_airgap_breached=False)
     return FileResponse(path, filename="MRPL_Proof_of_Execution_Certificate.png", media_type="image/png")
 
 
