@@ -527,37 +527,42 @@ def generate_certificate(
 
         verify_url = f"http://{local_lan_ip}:8000/verify/{cert_id}"
         
-        # Formatted Universal Verification Card (displays cleanly on ANY phone camera without requiring internet/LAN)
-        formatted_qr_payload = (
-            f"🏛️ MANGALORE REFINERY & PETROCHEMICALS LIMITED (MRPL)\n"
-            f"🔒 OFFICIAL PROOF-OF-EXECUTION CERTIFICATE\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"⏱️ EXECUTION TIME: {gen_time.strftime('%d-%b-%Y %H:%M:%S IST')}\n"
-            f"🆔 CERT ID: {cert_id}\n"
-            f"🛡️ AIR-GAP: 100% SOVEREIGN (0 WAN Packets)\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"📊 ASME B31.3 BARLOW INTEGRITY:\n"
-            f"  • Design Pressure: 4.00 MPa (40.0 bar)\n"
-            f"  • Pipe Outer Diameter: 219.10 mm\n"
-            f"  • Min Req Thickness: {req_t} mm\n"
-            f"  • Actual Measured: {meas_t} mm\n"
-            f"  • Safe Operating Life: {life_yrs} Years\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"🔗 SHA-256 MERKLE ROOT:\n"
-            f"{root_hash}\n"
-            f"🔍 STATUS: {'🚨 REVOKED (AIRGAP BREACH)' if is_airgap_breached else ('🚨 REVOKED (TAMPER DETECTED)' if is_tampered else '✅ 100% CRYPTOGRAPHICALLY VERIFIED')}\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"🌐 Live Web Portal:\n"
-            f"{verify_url}"
+        # Short, clean payload — keep it scannable (long payloads = high QR version = tiny modules)
+        short_payload = (
+            f"MRPL PROOF-OF-EXECUTION CERTIFICATE\n"
+            f"Cert ID: {cert_id}\n"
+            f"Issued: {gen_time.strftime('%d-%b-%Y %H:%M:%S IST')}\n"
+            f"Air-Gap: 100% SOVEREIGN (0 WAN Packets)\n"
+            f"ASME B31.3: MinT={req_t}mm Meas={meas_t}mm Life={life_yrs}Yrs\n"
+            f"Merkle SHA-256: {root_hash[:32]}...\n"
+            f"Status: {'REVOKED-AIRGAP' if is_airgap_breached else ('REVOKED-TAMPER' if is_tampered else 'VERIFIED-CLEAN')}\n"
+            f"PS 26117 | SIH 2026"
         )
 
-        qr = qrcode.QRCode(version=None, error_correction=qrcode.constants.ERROR_CORRECT_M, box_size=3, border=2)
-        qr.add_data(formatted_qr_payload)
+        # box_size=8 → each QR module is 8px → ~280-320px total QR image → scannable from phone
+        qr = qrcode.QRCode(
+            version=None,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=8,
+            border=3
+        )
+        qr.add_data(short_payload)
         qr.make(fit=True)
-        qr_img = qr.make_image(fill_color=STATUS_RED if is_invalid else NAVY_DEEP, back_color=PAPER_WHITE).convert("RGB")
-        qr_img.thumbnail((140, 140))
-        img.paste(qr_img, (qr_x, footer_y + 15))
-        draw.text((qr_x - 5, footer_y + 160), "SCAN FOR INSTANT MOBILE AUDIT", font=find_font(9, True), fill=STATUS_RED if is_invalid else NAVY_DEEP)
+        qr_img = qr.make_image(
+            fill_color=STATUS_RED if is_invalid else NAVY_DEEP,
+            back_color=PAPER_WHITE
+        ).convert("RGB")
+        # DO NOT thumbnail — paste at full generated size for maximum scannability
+        qr_size = qr_img.size[0]
+        qr_paste_x = W - qr_size - 60   # right-align with 60px margin
+        qr_paste_y = footer_y + 10
+        img.paste(qr_img, (qr_paste_x, qr_paste_y))
+        draw.text(
+            (qr_paste_x, qr_paste_y + qr_size + 8),
+            "SCAN TO VERIFY LEDGER",
+            font=find_font(11, True),
+            fill=STATUS_RED if is_invalid else NAVY_DEEP
+        )
 
     draw.text((100, footer_y + 190), f"CERTIFICATE ID: {cert_id}", font=find_font(11, True), fill=STATUS_RED if is_invalid else NAVY_DEEP)
     draw.text((100, footer_y + 208), f"ISSUED: {gen_time.strftime('%d %B %Y | %H:%M:%S IST')} • COMPUTATIONAL SOVEREIGNTY SEAL", font=find_font(10), fill=TEXT_MUTED)
