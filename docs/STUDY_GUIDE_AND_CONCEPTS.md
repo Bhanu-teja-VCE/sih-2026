@@ -70,17 +70,75 @@ $$\text{Remaining Safe Life (Years)} = \frac{t_{\text{actual}} - t_{\text{min}}}
 
 ---
 
-## 4. Codebase Reference Map
+## 4. Cryptographic Proofs & Merkle DAG Mechanics
+
+### A. Why Conventional Auditing Fails
+Standard software logging outputs flat text files (e.g. `app.log`). In an industrial PSU setting:
+1. Log entries can be retroactively edited with a text editor.
+2. Flat logs provide no mathematical proof that an ASME B31.3 calculation wasn't tampered with after human review.
+3. If an equipment failure triggers a judicial or safety inquiry, flat logs offer zero non-repudiation.
+
+### B. SHA-256 Merkle Block Transition Model (`harness/audit_ledger.py`)
+Our system binds every DAG node transition into a cryptographic block chain:
+```text
+Genesis Root (Block 0)
+       │
+       ▼
+Block 1 (Intent & Model Binding) ──► SHA256(Block 0 Hash + Input + Output)
+       │
+       ▼
+Block 2 (Step Planner DAG)       ──► SHA256(Block 1 Hash + Input + Output)
+       │
+       ▼
+Block 3 (Sandbox Math Execution) ──► SHA256(Block 2 Hash + Input + Output)
+       │
+       ▼
+Block 4 (Safety Critic Circuit)  ──► SHA256(Block 3 Hash + Input + Output)
+       │
+       ▼
+Block 5 (Office Deliverables)    ──► SHA256(Block 4 Hash + Binary File Hashes)
+       │
+       ▼
+   Merkle Root (Exported to QR Code Proof & Verification Certificate)
+```
+
+### C. Physical File Hash Verification (`verify_disk_artifacts`)
+Even if the database ledger is preserved, an attacker could modify the generated `.docx` memo or `.xlsx` workbook on the Windows/Linux filesystem.  
+The workbench calculates binary SHA-256 digests directly from disk storage:
+$$\text{Digest} = \text{SHA-256}(\text{read\_bytes}("deliverables/Approval\_Note.docx"))$$
+If even one character or font weight is altered on disk, the physical hash deviates from Block 5's cryptographic receipt, immediately flagging a tamper breach (`🚨 MERKLE FORGERY DETECTED`).
+
+---
+
+## 5. Sovereign RAG: BM25 + Dense Semantic Hybrid Retrieval
+
+### A. Why Cloud Vector DBs (Pinecone, Weaviate Cloud) Are Banned
+Transmitting internal Standard Operating Procedures (SOPs), emergency shutdown sequences, and Delegation of Power manuals to a remote vector database breaches on-premise air-gap requirements.
+
+### B. Air-Gapped Hybrid Indexing (`harness/sovereign_rag.py`)
+1. **Inverted BM25 Index:** Tokenizes documents locally using frequency-inverse document frequency weighting. Ensures 100% recall on technical equipment tags (e.g., `B-101`, `CDU-1`, `DOP Schedule 4.1`) where dense semantic embeddings often experience semantic drift.
+2. **Dense Semantic Matching:** Encodes chunks locally without internet access.
+3. **Reciprocal Rank Fusion (RRF):** Blends keyword and semantic scores:
+   $$RRF(d) = \sum_{m \in M} \frac{1}{60 + r_m(d)}$$
+4. **Grounded Source Attribution:** Every generated sentence in the RAG Studio links back to verifiable paragraph chunks with exact line numbers.
+
+---
+
+## 6. Codebase Reference Map
 
 | Component | Path | Key Function |
 | :--- | :--- | :--- |
 | **Pydantic Schemas** | [`harness/types.py`](../harness/types.py) | Defines `WorkbenchState`, `TaskIntent`, `PSUApprovalNote` data contracts. |
 | **Semantic Router** | [`harness/semantic_router.py`](../harness/semantic_router.py) | Sub-10ms intent classifier selecting specialized SLMs (Code, Vision, Reasoner). |
+| **Model Adapter** | [`harness/model_adapter.py`](../harness/model_adapter.py) | Pluggable local inference layer supporting Ollama, llama.cpp, and LAN pods. |
 | **Math Sandbox** | [`harness/sandbox.py`](../harness/sandbox.py) | Subprocess runner executing ASME B31.3 math with 5s timeout. |
 | **State Machine DAG**| [`harness/state_graph.py`](../harness/state_graph.py) | Multi-step DAG orchestrator with 3-retry circuit breaker. |
-| **Sovereign RAG** | [`harness/sovereign_rag.py`](../harness/sovereign_rag.py) | On-premise BM25 keyword and vector retrieval over MRPL SOP manuals. |
+| **Merkle Audit Ledger**| [`harness/audit_ledger.py`](../harness/audit_ledger.py) | Cryptographic block DAG & physical on-disk file binary hash auditor. |
+| **Sovereign RAG** | [`harness/sovereign_rag.py`](../harness/sovereign_rag.py) | On-premise BM25 keyword and dense semantic retrieval over MRPL SOP manuals. |
 | **Multimodal Parser**| [`harness/multimodal_parser.py`](../harness/multimodal_parser.py) | Parses input `.xlsx` ultrasonic logs and P&ID JSON metadata. |
 | **Deliverable Engine**| [`harness/deliverable_engine.py`](../harness/deliverable_engine.py) | Generates official Microsoft Word (`.docx`) and Excel (`.xlsx`) deliverables. |
+| **Certificate Generator**| [`harness/certificate_generator.py`](../harness/certificate_generator.py) | Renders printable PDF/PNG compliance certificates with scannable QR proof. |
 | **Air-Gap Sniffer** | [`harness/network_monitor.py`](../harness/network_monitor.py) | Live socket sniffer verifying 0 outbound WAN egress. |
 | **FastAPI Backend** | [`api/server.py`](../api/server.py) | REST API hosting the Cyber Dark UI dashboard at `http://127.0.0.1:8000`. |
 | **CLI Demo Runner** | [`cli/demo.py`](../cli/demo.py) | Interactive ANSI terminal runner stepping through the 4 Grand Finale flows. |
+
